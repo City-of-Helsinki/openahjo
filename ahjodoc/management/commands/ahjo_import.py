@@ -16,15 +16,16 @@ from ahjodoc.models import *
 
 class Command(BaseCommand):
     help = "Import OpenAHJO documents"
-
+   
     def handle(self, **options):
         scanner = AhjoScanner()
         doc_list = scanner.scan_documents(cached=False)
         static_dir = settings.STATIC_ROOT
         scanner.doc_store_path = os.path.join(static_dir, 'zip')
-        xml_dir = os.path.join(static_dir, 'xml')
+        xml_dir = 'xml'
+        xml_path = os.path.join(static_dir, xml_dir)
         try:
-            os.makedirs(xml_dir)
+            os.makedirs(xml_path)
         except OSError:
             pass
         for info in doc_list:
@@ -46,8 +47,10 @@ class Command(BaseCommand):
             zipf = scanner.download_document(info)
             adoc.import_from_zip(zipf)
             zipf.close()
-            fname = os.path.join(xml_dir, info['origin_id'] + '.xml')
+            fname = info['origin_id'] + '.xml'
             print "Storing cleaned XML to %s" % fname
-            xmlf = open(fname, 'w')
+            xmlf = open(os.path.join(xml_path, fname), 'w')
             adoc.output_cleaned_xml(xmlf)
             xmlf.close()
+            doc.xml_url = settings.STATIC_URL + xml_dir + '/' + fname
+            doc.save()
