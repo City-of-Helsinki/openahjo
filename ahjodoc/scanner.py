@@ -15,7 +15,7 @@ URL_BASE = "http://openhelsinki.hel.fi"
 class AhjoScanner(object):
     def __init__(self):
         self.doc_store_path = None
-        self.logger = logging.getLogger()
+        self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
     def scan_dir(self, path):
@@ -35,7 +35,7 @@ class AhjoScanner(object):
             fields = fname.split('%20')
             info = {}
             if len(fields) == len(FIELD_NAMES) - 1:
-                self.logger.warning("Language field missing in %s" % fname)
+                self.logger.warning("Language field missing in %s" % ' '.join(fields))
                 fields.append('Su')
             for idx, f in enumerate(FIELD_NAMES):
                 info[f] = fields[idx]

@@ -1,6 +1,6 @@
 requests
 requests-cache
-pyyaml
 lxml
 progressbar
-mongoengine
+psycopg2
+Django
