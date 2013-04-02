@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.conf.urls import patterns, include, url
 from tastypie.api import Api
 from ahjodoc.api import all_resources
@@ -20,10 +21,10 @@ base_urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
-    url(r'^openahjo/', include(v1_api.urls))
+    url(r'^', include(v1_api.urls))
 )
 
 prefix = getattr(settings, 'URL_PREFIX', '')
 urlpatterns = patterns('',
-    url("^" + prefix, include(base_urlpatterns))
+    url('^' + prefix, include(base_urlpatterns))
 )
