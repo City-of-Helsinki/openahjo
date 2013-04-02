@@ -4,3 +4,6 @@
 data
 *.sqlite
 config.yml
+local_settings.py
+static/zip
+static/xml

@@ -1,10 +1,16 @@
 from django.conf.urls import patterns, include, url
+from tastypie.api import Api
+from ahjodoc.api import all_resources
+
+v1_api = Api(api_name='v1')
+for res in all_resources:
+    v1_api.register(res())
 
 # Uncomment the next two lines to enable the admin:
 # from django.contrib import admin
 # admin.autodiscover()
 
-urlpatterns = patterns('',
+base_urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'openahjo.views.home', name='home'),
     # url(r'^openahjo/', include('openahjo.foo.urls')),
@@ -14,4 +20,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
+    url(r'^openahjo/', include(v1_api.urls))
+)
+
+prefix = getattr(settings, 'URL_PREFIX', '')
+urlpatterns = patterns('',
+    url("^" + prefix, include(base_urlpatterns))
 )

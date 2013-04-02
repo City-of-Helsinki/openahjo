@@ -7,7 +7,8 @@ class AhjoDocument(object):
     def __init__(self):
         pass
 
-    def clean_xml(self, root):
+    def clean_xml(self):
+        root = self.xml_root
         REMOVE_LIST = ('Logo', 'MuutoksenhakuohjeetSektio', 'AlatunnisteSektio')
         for el_name in REMOVE_LIST:
             el_list = root.xpath("//%s" % el_name)
@@ -38,9 +39,12 @@ class AhjoDocument(object):
         remove_empty_children(root)
 
     def parse_from_xml(self, xml_str):
-        root = etree.fromstring(xml_str)
-        self.clean_xml(root)
-        print etree.tostring(root, encoding='utf8')
+        self.xml_root = etree.fromstring(xml_str)
+        self.clean_xml()
+
+    def output_cleaned_xml(self, out_file):
+        s = etree.tostring(self.xml_root, encoding='utf8')
+        out_file.write(s)
 
     def import_from_zip(self, in_file):
         zipf = zipfile.ZipFile(in_file)

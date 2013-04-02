@@ -4,3 +4,4 @@ lxml
 progressbar
 psycopg2
 Django
+django-tastypie
