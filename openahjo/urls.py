@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 from tastypie.api import Api
 from ahjodoc.api import all_resources
 
@@ -28,3 +29,6 @@ prefix = getattr(settings, 'URL_PREFIX', '')
 urlpatterns = patterns('',
     url('^' + prefix, include(base_urlpatterns))
 )
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

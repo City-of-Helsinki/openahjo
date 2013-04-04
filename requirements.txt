@@ -5,3 +5,4 @@ progressbar
 psycopg2
 Django
 django-tastypie
+pytz

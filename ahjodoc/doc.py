@@ -2,6 +2,10 @@
 from lxml import etree
 import zipfile
 import logging
+from pytz import timezone
+from datetime import datetime
+
+local_timezone = timezone('Europe/Helsinki')
 
 class AhjoDocument(object):
     def __init__(self):
@@ -38,9 +42,24 @@ class AhjoDocument(object):
 
         remove_empty_children(root)
 
+    def parse_header_info(self):
+        desc_info = self.xml_root.xpath('//Kuvailutiedot/JulkaisuMuutostiedot')[0]
+        date = desc_info.find('JulkaisuEsilletulopaiva').text
+        time = desc_info.find('JulkaisuEsilletuloklo').text
+        time_str = "%s %s" % (date, time)
+        self.publish_time = datetime.strptime(time_str, '%Y-%m-%d %H:%M')
+        self.publish_time.replace(tzinfo=local_timezone)
+
     def parse_from_xml(self, xml_str):
         self.xml_root = etree.fromstring(xml_str)
+        if self.xml_root.tag == 'Esityslista':
+            self.type = "agenda"
+        elif self.xml_root.tag == 'Poytakirja':
+            self.type = "minutes"
+        else:
+            raise Exception("Invalid root tag in XML file: %s" % self.xml_root.tag)
         self.clean_xml()
+        self.parse_header_info()
 
     def output_cleaned_xml(self, out_file):
         s = etree.tostring(self.xml_root, encoding='utf8')
