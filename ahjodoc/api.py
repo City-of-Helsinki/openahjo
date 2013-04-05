@@ -4,7 +4,7 @@ from ahjodoc.models import *
 
 class MeetingDocument(ModelResource):
     class Meta:
-        queryset = MeetingDocument.objects.order_by('-publish_time')
+        queryset = MeetingDocument.objects.order_by('-last_modified_time')
         resource_name = 'meeting_document'
         filtering = {
             'type': ALL,

@@ -7,6 +7,7 @@ class MeetingDocument(models.Model):
     type = models.CharField(max_length=20)
     organisation = models.CharField(max_length=20)
     committee = models.CharField(max_length=20)
+    last_modified_time = models.DateTimeField()
     publish_time = models.DateTimeField()
     date = models.DateField()
     meeting_nr = models.PositiveIntegerField()

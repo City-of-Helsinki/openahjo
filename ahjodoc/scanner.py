@@ -5,8 +5,10 @@ import shutil
 import requests
 import requests_cache
 import logging
+from datetime import datetime
 from lxml import html
 from progressbar import ProgressBar
+from .doc import local_timezone
 
 CHUNK_SIZE = 32*1024
 
@@ -43,6 +45,12 @@ class AhjoScanner(object):
             # Skip Swedish documents
             if info['language'] != 'Su':
                 continue
+            # Fetch timestamp from directory listing
+            ts_text = link_el.getprevious().tail.split('    ')[0].strip()
+            time = datetime.strptime(ts_text, "%m/%d/%Y %I:%M %p")
+            time.replace(tzinfo=local_timezone)
+            info['last_modified'] = time
+
             info['url'] = URL_BASE + link
             info['origin_id'] = self.generate_doc_id(info)
             info_list.append(info)
