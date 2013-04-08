@@ -1,0 +1,538 @@
+ID,nameFIN,nameSWE,type
+1,Helsingin kaupunki,Helsingfors stad,13
+3000,Tarkastusvirasto,Revisionskontoret,8
+003000VH1,Tarkastusjohtaja,Revisionsdirektör,12
+003000VH2,Puheenjohtaja,Ordförande,12
+311,Tarkastuslautakunta,Revisionsnämnden,5
+312,Tarkastusjohtaja,Revisionsdirektören,10
+400,Kaupunginhallitus,Stadsstyrelse,2
+00400ES1,Tarkastuslautakunta,Revisionsnämnden,11
+1101,Hallintokeskus,Förvaltningscentralen,8
+11010,Hallinto-osasto/Halke,Förvaltningsavdelningen,9
+011010VH1,Osastopäällikkö,Avdelningschef,12
+11013,Kansainvälinen toiminta,Internationell verksamhet,9
+011013VH1,Kansainvälisen toiminnan päällikkö,Chef för internationell verksamhet,12
+11016,Viestintä,Kommunikation,9
+011016VH1,Viestintäpäällikkö,Kommunikationschef,12
+01101ES1,Kaupunginjohtaja,Stadsdirektören,10
+01101ES2,Rakennus- ja ympäristötoimi,Byggnads- och miljöväsendet,10
+01101ES3,Sosiaali- ja terveystoimi,Social- och hälsovårdsväsendet,10
+01101ES4,Sivistys- ja henkilöstötoimi,Bildnings- och personalväsendet,10
+01101ES5,Kaupunkisuunnittelu- ja kiinteistötoimi,Stadsplanerings- och fastighetsväsendet,10
+01101ES6,Keskusvaalilautakunnan sihteeri,Sekreterare,10
+01101VH1,Hallintojohtaja,Förvaltningsdirektör,12
+11030,Oikeuspalvelut,Rättstjänsten,9
+011030VH1,Kaupunginlakimies,Stadsjurist,12
+1180,Henkilöstön kehittämispalvelut-liikelaitoksen jk,Direktionen för affärsverket personalutvecklingstjänster,5
+1500,Talous- ja suunnittelukeskus,Ekonomi- och planeringscentralen,8
+01500VH1,Rahoitusjohtaja,Finansdirektör,12
+15100,Taloussuunnittelu- ja varainhallintaosasto,Ekonomiplanerings- och finansförvaltningsavdelningen,9
+015100VH1,Talousarviopäällikkö,Budgetchef,12
+15200,Kehittämisosasto,Utvecklingsavdelningen,9
+015200VH1,Kehittämispäällikkö,Utvecklingschef,12
+015200VH2,Aluerakentamispäällikkö,Områdesbyggnadschef,12
+15300,Sisäinen tarkastus,Intern revision,9
+015300VH1,Sisäisen tarkastuksen päällikkö,Chef för intern revision,12
+15400,Tietotekniikkaosasto,IT-avdelningen,9
+015400VH1,Tietotekniikkapäällikkö,IT-chef,12
+15600,Elinkeinopalvelu,Näringslivsservice,9
+015600VH1,Elinkeinojohtaja,Näringslivsdirektör,12
+015600VH2,Elinkeinopäällikö,Näringslivschef,12
+015600VH3,Kehityspäällikkö,Utvecklingschef,12
+015600VH4,Tapahtumapäällikkö,Evenemangschef,12
+015600VH5,Matkailupäällikkö,Turistchef,12
+1600,Taloushallintopalvelu-liikelaitos,Affärsverket ekonomiförvaltningstjänsten,8
+01600VH1,Toimitusjohtaja,Verkställande direktör,12
+1601,Toimitusjohtaja,Verkställande direktören,10
+16100,Hallinto-osasto/Talpa,Förvaltningsavdelningen/Talpa,9
+16200,Kirjanpito ja maksuliikenneosasto,Avdelningen för bokföring och betalningsrörelse,9
+16300,Laskutusosasto,Faktureringsavdelningen,9
+16500,Ostolaskuosasto,Avdelningen inköpsfakturor,9
+16600,Palkkiot ja palkanlaskenta -osasto,Avdelningen för arvoden och löneberäkning,9
+1800,Henkilöstökeskus,Personalcentralen,8
+01800VH1,Henkilöstöjohtaja,Personaldirektör,12
+18010,Henkilöstöpolitiikkaosasto,Personalpolitik,9
+018010VH1,Osastopäällikkö,Avdelningschef,12
+18050,Henkilöstövoimavaraosasto,Personalresurser,9
+018050VH1,Osastopäällikkö,Avdelningschef,12
+18060,Maahanmuutto-osasto,Invandring,9
+018060VH1,Maahanmuuttoasioiden  johtaja,Direktör för invandrarfrågor,12
+1900,Henkilöstön kehittämispalvelut-liikelaitos,Affärsverket personalutvecklingstjänster,8
+01900VH1,Toimitusjohtaja,Verkställande direktör,12
+1901,Toimitusjohtaja,Verkställande direktören,10
+2000,Työterveyskeskus,Företagshälsovårdscentralen,8
+02000VH1,Työterveysjohtaja,Företagshälsovårdsdirektör,12
+2300,Tietokeskus,Faktacentralen,8
+02300VH1,Johtaja,Direktör,12
+23100,Hallinto,Förvaltning,9
+023100VH1,Kehittämispäällikkö,Utvecklingschef,12
+23200,Kaupunginarkisto,Stadsarkivet,9
+023200VH1,Arkistotoimen päällikkö,Stadsarkivarie,12
+23300,Kaupunkitutkimus,Stadsforskning,9
+023300VH1,Tutkimuspäällikkö,Forskningschef,12
+23400,Tilastot ja tietopalvelu,Statistik och informationstjänst,9
+023400VH1,Tietohuoltopäällikkö,Informationsförsörjningschef,12
+2900,Kaupunginvaltuusto,Stadsfullmäktige,1
+2978,Kaupunginhallituksen konsernijaosto,Stadsstyrelsens koncernsektion,5
+2979,Kaupunginhallituksen sosiaali- ja terveysjaosto,Social- och hälsovårdssektion,5
+100,Kaupunkisuunnittelu- ja kiinteistötoimi,Stadsplanerings- och fastighetsväsendet,7
+100ES1,Kaupunkisuunnittelu- ja kiinteistötointa johtava apulaiskaupunginjohtaja,Biträdande stadsdirektör för stadsplanerings- och fastighetsväsendet,12
+10400,Rakennuslautakunta,Byggnadsnämnden,5
+10401,Rakennusvalvontavirasto,Byggnadstillsynsverket,8
+10401VH1,Virastopäällikkö,Verkschef,12
+10402,Virastopäällikkö,Verkschefen,10
+11010,Kaupunginjohtaja,Stadsdirektören,7
+11010VH1,Kaupunginjohtaja,Stadsdirektören,12
+11010VH1J,Kaupunginjohtaja/J,Stadsdirektören/D,12
+11010VH1V,Kaupunginjohtaja/V,Stadsdirektören/V,12
+11100,Pelastuslautakunta,Räddningsnämnden,5
+11101,Pelastuslaitos,Räddningsverket,8
+11101VH1,Pelastuskomentaja,Räddningskommendör,12
+11102,Pelastuskomentaja,Räddningskommendören,10
+111100,Hallinto-osasto/Pel,Förvaltningsavdelningen/Pel,9
+111100VH1,Hallintopäällikkö,Förvaltningschef,12
+111200,Tekninen osasto,Tekniska avdelningen,9
+111200VH1,Tekninen päällikkö,Teknisk chef,12
+111300,Riskienhallinta osasto,Riskhanteringsavdelningen,9
+111300VH1,Riskienhallintapäällikkö,Riskhanteringschef,12
+111400,Operatiivinen osasto,Operativa avdelningen,9
+111400VH1,Pelastusjohtaja,Räddningsdirektör,12
+11500,Keskusvaalilautakunta,Centralvalnämnden,5
+12800,Ympäristölautakunta,Miljönämnden,5
+12801,Ympäristökeskus,Miljöcentralen,8
+12801VH1,Ympäristöjohtaja,Miljödirektör,12
+12802,Puheenjohtaja,Ordföranden,10
+12803,Ympäristöjohtaja,Miljödirektören,10
+168000,Työterveysasemat,Företagshälsovårdsstationerna,9
+169000,Tukipalvelut,Stödtjänster,9
+200,Rakennus- ja ympäristötoimi,Byggnads- och miljöväsendet,7
+200ES1,Rakennus- ja ympäristötointa johtava apulaiskaupunginjohtaja,Biträdande stadsdirektör för byggnads- och miljöväsendet,12
+300,Sivistys- ja henkilöstötoimi,Bildnings- och personalväsendet,7
+300ES1,Sivistys- ja henkilöstötointa johtava apulaiskaupunginjohtaja,Biträdande stadsdirektör för bildnings- och personalväsendet,12
+400,Sosiaali- ja terveystoimi,Social- och hälsovårdsväsendet,7
+40000,Opetusvirasto,Utbildningsverket,8
+40000VH1,Opetustoimen johtaja,Utbildningsdirektör,12
+40000VH2,Taloussuunnittelupäällikkö,Ekonomiplaneringschef,12
+40000VH3,Viestintäpäällikkö,Informationschef,12
+40001,Opetustoimen johtaja,Utbildningsdirektören,10
+400902,Hallinto- ja kehittämiskeskus/Opev,Förvaltnings- och utvecklingscentralen,9
+400902VH1,Kehittämisjohtaja,Utvecklingsdirektör,12
+400902VH2,Henkilöstöpäällikkö,Personalchef,12
+400902VH3,Hallintolakimies,Personaljurist,12
+400902VH4,Mediakeskuksen johtaja,Direktör för mediecentralen,12
+400902VH5,Talousjohtaja,Ekonomidirektör,12
+400902VH6,Tietohallintopäällikkö,Datachef,12
+400902VH7,Tilapalvelupäällikkö,Chef för lokaltjänsten,12
+400902VH8,Hankintapäällikkö,Inköpschef,12
+4009211,Perusopetuslinja,Linjen för grundläggande utbildning,9
+4009211VH1,Linjanjohtaja,Linjedirektör,12
+4009211VH2,Opetuspäällikkö,Undervisningschef,12
+4009211VH3,Oppilashuollon päällikkö,Elevvårdschef,12
+4009211VH4,Erityissuunnittelija,Specialplanerare,12
+4009211VH5,"Aluepäällikkö, A1",,12
+4009211VH6,"Aluepäällikkö, A2",,12
+4009211VH7,"Aluepäällikkö, A3",NULL,12
+4009211VH8,"Aluepäällikkö, A4",,12
+4009212,Nuoriso- ja aikuiskoulutuslinja,Linjen för ungdoms- och vuxenutbildning,9
+4009212N01,"Rehtori, Stadin ammattiopisto","Rektor, Stadin ammattiopisto",12
+4009212N02,"Talouspäällikkö, Stadin ammattiopisto","Ekonomichef, Stadin ammattiopisto",12
+4009212N03,"Toimialarehtori, Hyvinvointi","Branschrektor, Välmående",12
+4009212N04,"Toimialarehtori, Palvelu ja viestintä","Branschrektor, Service och kommunikation",12
+4009212N05,"Toimialarehtori, Tekniikka ja logistiikka","Branschrektor, Teknik och logistik",12
+4009212N06,"Toimialarehtori, Tekniikka ja asennus","Branschrektor, Teknik och installation",12
+4009212N07,"Apulaisrehtori, Hyte","Biträdande rektor, Hyte",12
+4009212N08,"Apulaisrehtori, Sote","Biträdande rektor, Sote",12
+4009212N09,"Apulaisrehtori, Palvelu","Biträdande rektor, Service",12
+4009212N10,"Apulaisrehtori, Viestintä","Biträdande rektor, Kommunikation",12
+4009212N11,"Apulaisrehtori, Tekniikka","Biträdande rektor, Teknik",12
+4009212N12,"Apulaisrehtori, Logistiikka","Biträdande rektor, Logistik",12
+4009212N13,"Apulaisrehtori, Tekniikka ja asennus","Biträdande rektor, teknik och installation",12
+4009212N14,"Toimialarehtori, Stadin aikuisopisto","Branschrektor, Stadin aikuisopisto",12
+4009212N15,Stadin aikuisopiston oppisopimusjohtaja,"Läroavtalsdirektör, Stadin aikuisopisto",12
+4009212VH1,Linjanjohtaja,Linjedirektör,12
+4009212VH2,Työpajaesimies,Verkstadschef (Ungdomsverkstäderna),12
+4009213,Ruotsinkielinen päivähoito- ja koulutuslinja,Linjen för svensk dagvård och utbildning,9
+4009213VH1,Linjanjohtaja,Linjedirektör,12
+4009213VH2,Opetuspäällikkö,Undervisningschef,12
+4009213VH3,Talouspäällikkö,Ekonomichef,12
+4009213VH4,Ohjauspalveluiden päällikkö,Utbildningskonsult,12
+4009213VH5,Päivähoidon päällikkö,Dagvårdschef,12
+4009213VH6,Erityissuunnittelija,Specialplanerare,12
+400ES1,Sosiaali- ja terveystointa johtava apulaiskaupunginjohtaja,Biträdande stadsdirektör för social- och hälsovårdsväsendet,12
+40200,Opetuslautakunta,Utbildningsnämnden,5
+40204,Opetuslautakunnan suomenkielinen jaosto,Utbildningsnämndens finska sektion,4
+41000,Opetuslautakunnan ruotsinkielinen jaosto,Utbildningsnämndens svenska sektion,4
+45100,Suomenkielisen työväenopiston jk,Finska arbetarinstitutets direktion,5
+45101,Suomenkielinen työväenopisto,Finska arbetarinstitutet,8
+45101VH1,Johtava rehtori,Ledande rektor,12
+45101VH2,Apulaisrehtori,Biträdande rektor,12
+45101VH3,Aluerehtori eteläinen alueopisto,"Områdesrektor, södra områdesinstitutet",12
+45101VH4,Aluerehtori itäinen alueopisto,"Områdesrektor, östra områdesinstitutet",12
+45101VH5,Aluerehtori keskinen alueopisto,"Områdesrektor, mellersta områdesinstitutet",12
+45101VH6,Aluerehtori koillinen alueopisto,"Områdesrektor, nordöstra områdesinstitutet",12
+45101VH7,Aluerehtori läntinen alueopisto,"Områdesrektor, västra områdesinstitutet",12
+45101VH8,Aluerehtori pohjoinen alueopisto,"Områdesrektor, norra områdesinstitutet",12
+45102,Johtava rehtori,Ledande rektorn,10
+45200,Ruotsinkielisen työväenopiston jk,Direktionen för svenska arbetarinstitutet,5
+45201,Ruotsinkielinen työväenopisto,Svenska arbetarinstitutet,8
+45201VH1,Rehtori,Rektor,12
+45202,Rehtori,Rektor,10
+45203,Apulaisrehtori,Biträdande Rektor,10
+45204,Talouspäällikkö,Ekonomichef,10
+45400,Kaupunginkirjasto,Stadsbiblioteket,8
+45400VH1,Kirjastotoimen johtaja,Biblioteksdirektör,12
+45401,Puheenjohtaja,Ordföranden,10
+45402,Kirjastotoimen johtaja,Biblioteksdirektören,10
+46100,Kulttuuri- ja kirjastolautakunta,Kultur- och biblioteksnämnden,5
+46101,Kulttuurikeskus,Kulturcentralen,8
+46101ES1,Kulttuurijohtaja,Kulturdirektören,10
+46101VH1,Kulttuurijohtaja,Kulturdirektör,12
+46102,Taidemuseo,Konstmuseet,8
+46102VH1,Museonjohtaja,Direktör för museet,12
+46102VH2,Hallintopäällikkö,Förvaltningschef,12
+46102VH3,Intendentti/kokoelmat,Intendent/samlingar,12
+46102VH4,Intendentti/näyttelyt,Intendent/utställningar,12
+46103,Taidemuseon johtaja,Direktören för konstmuseet,10
+46104,Kaupunginorkesteri,Stadsorkestern,8
+46104VH1,Intendentti,Intendent,12
+46104VH2,Hallintopäällikkö,Administrationschef,12
+46104VH3,Viestintäpäällikkö,Kommunikationschef,12
+46105,Intendentti,Intendenten,10
+46106,Esinekokoelmat-yksikkö,Samlingar,9
+46107,Kuvakokoelmat-yksikkö,Bildsamlingar,9
+46108,Kulttuuriympäristöyksikkö,Kulturmiljö,9
+46108VH1,Yksikön päällikkö,Enhetschef,12
+46109,Yleisöpalvelut-yksikkö,Kundservice,9
+46110,Hallintoyksikkö,Förvaltning,9
+46111,Kaupunginmuseo,Stadsmuseet,8
+46111VH1,Museonjohtaja,Museidirektör,12
+46112,Taidemuseon johtokunta,Direktionen för konstmuseet,5
+46113,Kaupunginmuseon johtokunta,Direktionen för stadsmuseet,5
+46114,Kaupunginorkesterin johtokunta,Direktionen för stadsorkestern,5
+46115,Museonjohtaja,Museidirektör,10
+46116,Hallintopäällikkö,Förvaltningschef,12
+46300,Eläintarhan johtokunta,Direktionen för djurgården,5
+46301,Korkeasaaren eläintarha,Högholmens djurgård,8
+46301VH1,Eläintarhan johtaja,Djurgårdsdirektör,12
+46301VH2,Intendentti,Intendent,12
+46301VH3,Hallintopäällikkö,Förvaltningschef,12
+46302,Eläintarhan johtaja,Djurgårdsdirektören,10
+46500,Nuorisolautakunta,Ungdomsnämnden,5
+46501,Nuorisoasiainkeskus,Ungdomscentralen,8
+46501VH1,Nuorisotoimenjohtaja,Ungdomsdirektör,12
+46502,Nuorisotoimenjohtaja,Ungdomsdirektören,10
+47100,Liikuntalautakunta,Idrottsnämnden,5
+47101,Liikuntavirasto,Idrottsverket,8
+47101VH1,Liikuntajohtaja,Idrottsdirektör,12
+471120,Liikuntalaitososasto,Avdelningen för idrottsanläggningar,9
+471120VH1,Osastopäällikkö,Avdelningschef,12
+471120VH2,Laitospäällikkö,Idrottsanläggningschef,12
+471130,Ulkoliikuntaosasto,Avdelningen för utomhusidrott,9
+471130VH1,Osastopäällikkö,Avdelningschef,12
+471130VH2,Kenttäpäällikkö,Sportplanschef,12
+471140,Merellinen osasto,Havsavdelningen,9
+471140VH1,Osastopäällikkö,Avdelningschef,12
+471140VH2,Venesatamapäällikkö,Båthamnschef,12
+471150,Hallinto-osasto,Förvaltningsavdelningen,9
+471150VH1,Osastopäällikkö,Avdelningschef,12
+471150VH2,Lakimies,Jurist,12
+471160,Liikunnanohjausosasto,Instruerad motion,9
+471160VH1,Osastopäällikkö,Avdelningschef,12
+471160VH2,Liikuntapalvelupäällikkö,Motionstjänstchef,12
+471170,Liikuntajohtaja,Idrottsdirektören,10
+471180,Puheenjohtaja,Ordföranden,10
+500,Puheenjohtaja,Ordförande,7
+51100,Kaupunkisuunnittelulautakunta,Stadsplaneringsnämnden,5
+51101,Kaupunkisuunnitteluvirasto,Stadsplaneringskontoret,8
+511011,Hallinto-osasto/Ksv,Förvaltningsavdelningen,9
+511011VH1,Hallintopäällikkö,Förvaltningschef,12
+51101VH1,Virastopäällikkö,Verkschef,12
+51102,Puheenjohtaja,Ordföranden,10
+511020,Asemakaavaosasto,Detaljplaneavdelningen,9
+511020VH1,Asemakaavapäällikkö,Stadsplanechef,12
+511040,Liikennesuunnitteluosasto,Trafikplaneringsavdelningen,9
+511040VH1,Liikennesuunnittelupäällikkö,Trafikplaneringschef,12
+511040VH1Y,Liikennesuunnittelupäällikkö/y,Trafikplaneringschef/a,12
+511050,Yleissuunnitteluosasto,Översiktsplaneringsavdelningen,9
+511050VH1,Yleiskaavapäällikkö,Generalplanechef,12
+52000,Rakennusvirasto,Byggnadskontoret,8
+52000VH1,Kaupungininsinööri,Stadsingenjör,12
+52001,Kaupungininsinööri,Stadsingenjören,10
+52100,Yleisten töiden lautakunta,Nämnden för allmänna arbeten,5
+521082,Hallinto-osasto/HKR,Förvaltningsavdelningen,9
+521082VH1,Osastopäällikkö,Avdelningschef,12
+521082VH2,Henkilöstöpäällikkö,Personalchef,12
+521082VH3,Talouspäällikkö,Ekonomichef,12
+521082VH4,Viestintäpäällikkö,Kommunikationschef,12
+521092,Katu- ja puisto-osasto,Gatu- och parkavdelningen,9
+521092VH1,Osastopäällikkö,Avdelningschef,12
+521092VH4,Toimistopäällikkö KIT,Byråchef KIT,12
+521092VH5,Toimistopäällikkö KYT,Byråchef KYT,12
+521092VH6,Toimistopäällikkö KPP,Byråchef KPP,12
+521092VH7,Alueidenkäyttöpäällikkö,Chef för områdesanvändningen,12
+521092VH8,Toimistopäällikkö KOT,Byråchef KOT,12
+521112,HKR-Rakennuttaja,HSB-Byggherre,9
+521112VH1,Tulosryhmän johtaja,Resultatgruppsdirektör,12
+521112VH2,Toimistopäällikkö RKT,Byråchef RKT,12
+521112VH3,Toimistopäällikkö RAT 1,Byråchef RAT 1,12
+521112VH4,Toimistopäällikkö RAT 2,Byråchef RAT 2,12
+521112VH5,Toimistopäällikkö RTT,Byråchef RTT,12
+521122,Arkkitehtuuriosasto,Arkitekturavdelningen,9
+521122VH1,Kaupunginarkkitehti,Stadsarkitekt,12
+521122VH2,Toimistopäällikkö AST,Byråchef AST,12
+521132,Palveluosasto,Serviceavdelningen,9
+521132VH1,Osastopäällikkö,Avdelningschef,12
+521132VH2,Toimistopäällikkö PAK,Byråchef PAK,12
+521132VH3,Alueidenkäyttöpäällikkö,Chef för områdesanvändningen,12
+521132VH4,Kunnallinen pysäköinninvalvoja,Kommunal parkeringsövervakare,12
+521132VH5,Palveluosaston lakimies,Serviceavdelningens jurist,12
+52120,Teknisen palvelun lautakunta,Nämnden för tekniska tjänster,5
+53000,Rakentamispalvelu (Stara),Byggtjänsten (Stara),8
+53000ES1,Puheenjohtaja,Ordföranden,10
+53000ES2,Stara,Stara,10
+53000VH1,Toimitusjohtaja,Verkställande direktör,12
+531112,Hallinto-osasto/Stara,Förvaltning/Stara,9
+531112VH1,Yksikönjohtaja,Enhetsdirektör,12
+531122,Geopalvelu,Geotjänster,9
+531122VH1,Yksikönjohtaja,Enhetsdirektör,12
+531132,Rakennustekniikka,Byggteknik,9
+531132VH1,Yksikönjohtaja,Enhetsdirektör,12
+531142,Kaupunkitekniikan ylläpito,Stadstekniskt underhåll,9
+531142VH1,Yksikönjohtaja,Enhetsdirektör,12
+531162,Kaupunkitekniikan rakentaminen,Stadstekniskt byggande,9
+531162VH1,Yksikönjohtaja,Enhetsdirektör,12
+531172,Logistiikka,Logistik,9
+531172VH1,Yksikönjohtaja,Enhetsdirektör,12
+531182,Ympäristönhoito,Miljövård,9
+531182VH1,Yksikönjohtaja,Enhetsdirektör,12
+533013,Verkkokirjasto- ja hallintopalvelut,Nätbiblioteks- och förvaltningstjänster,9
+533013VH1,Kirjastotoimen apulaisjohtaja,Biträdande biblioteksdirektör,12
+533013VH2,Talouspäällikkö,Ekonomichef,12
+533013VH3,Kehittämispäällikkö,Utvecklingschef,12
+533020,Kirjasto- ja asiakaspalvelut,Biblioteks- och användartjänster,9
+533020VH1,Kirjastotoimen apulaisjohtaja,Biträdande biblioteksdirektör,12
+533021,Sisältöpalvelut,Innehållstjänster,9
+533021VH1,Kirjastotoimen apulaisjohtaja,Biträdande biblioteksdirektör,12
+551190,Yhteispalvelut,Samtjänster,9
+551190VH1,Yhteispalvelupäällikkö,Samtjänstchef,12
+558100,Kulttuuripolitiikka,Kulturpolitik,9
+558100VH1,Osastopäällikkö,Avdelningschef,12
+559100,Kulttuuripalvelut,Kulturtjänster,9
+559100VH1,Osastopäällikkö,Avdelningschef,12
+60011,Asuntotuotantotoimikunta,Bostadsproduktionskommittén,5
+60014,Asuntolautakunta,Bostadsnämnden,5
+60100,Kiinteistölautakunta,Fastighetsnämnden,5
+601001,Hallintopalvelujen osasto,Avdelningen för förvaltningstjänster,9
+601001VH1,Osastopäällikkö,Avdelningschef,12
+601001VH2,Talouspäällikkö,Ekonomichef,12
+60111,Kiinteistövirasto,Fastighetskontoret,8
+601111,Hallinto-osasto/Kv,Förvaltningsavdelningen/Kv,9
+601111VH1,Osastopäällikkö,Avdelningschef,12
+60111ES1,Asunto-osaston osastopäällikkö,NULL,10
+60111VH1,Virastopäällikkö,Verkschef,12
+60112,Virastopäällikkö,Verkschefen,10
+601120,Kiinteistöjen kehittämisyksikkö,Fastighetsutvecklingsenheten,9
+601120VH1,Kiinteistöjen kehittämispäällikkö,Fastighetsutvecklingschef,12
+601130,Geotekninen osasto,Geotekniska avdelningen,9
+601130VH1,Osastopäällikkö,Avdelningschef,12
+601140,Tonttiosasto,Tomtavdelningen,9
+601140VH1,Osastopäällikkö,Avdelningschef,12
+601140VH2,Apulaisosastopäällikkö,Biträdande avdelningschef,12
+601140VH3,Maanhankintatoimiston toimistopäällikkö,"Byråchef, markförvärvsbyrån",12
+601140VH4,Palvelutoimiston toimistopäällikkö,"Byråchef, servicebyrån",12
+601140VH5,Elinkeinotoimiston toimistopäällikkö,"Byråchef, näringsbyrån",12
+601140VH6,Elinkeinotoimiston jaospäällikkö,"Sektionschef, näringsbyrån",12
+601140VH7,Maanluovutustoimiston toimistopäällikkö,"Byråchef, marköverlåtelsebyrån",12
+601170,Asunto-osasto,Bostadsavdelningen,9
+601170VH1,Osastopäällikkö,Avdelningschef,12
+601170VH2,Apulaisosastopäällikkö,Biträdande avdelningschef,12
+601170VH3,Toimistopäällikkö,Byråchef,12
+601170VH4,Peruskorjausinsinööri,Ingenjör för grundreparationer,12
+601220,Kaupunkimittausosasto,Stadsmätningsavdelningen,9
+601220VH1,Kaupungingeodeetti,Stadsgeodet,12
+60151,Tilakeskus,Lokalcentralen,9
+60151VH1,Tilakeskuksen päällikkö,Lokalcentralschef,12
+60151VH10,Alueiden kollinen ja itä jaospäällikkö,Sektionschef för nordostliga och östra områdena,12
+60151VH11,Toimitilapäällikkö,Lokalchef,12
+60151VH12,Vuokrauspäällikkö/asuntovuokraus,Hyrningschef/bostadsuthyrning,12
+60151VH13,Vuokrauspäällikkö/ulkoinen vuokraus,Hyrningschef/extern uthyrning,12
+60151VH2,Hallintopäällikkö,Förvaltningschef,12
+60151VH3,Hankepäällikkö,Projektchef,12
+60151VH4,Hankesuunnittelupäällikkö,Projektplaneringschef,12
+60151VH5,Rakennuspäällikkö,Byggnadschef,12
+60151VH6,Kiinteistöpäällikkö,Fastighetschef,12
+60151VH7,Tekninen päällikkö,Teknisk chef,12
+60151VH8,Alueiden etelä ja länsi jaospäällikkö,Sektionschef för södra och västra områdena,12
+60151VH9,"Alueiden keskinen, pohjoinen ja kaakkoinen jaospäällikkö","Sektionschef för mellersta, norra och sydöstra områdena",12
+602001,Alueellisten palvelujen osasto,Avdelningen för lokala tjänster,9
+602001VH1,Osastopäällikkö,Avdelningschef,12
+60201,Asuntotuotantotoimisto,Bostadsproduktionsbyrån,8
+602010,Hallinto- ja talousyksikkö,Förvaltning och ekonomi,9
+60201VH1,Toimitusjohtaja,Verkställande direktör,12
+60202,Toimitusjohtaja,Verkställande direktören,10
+603001,Keskitettyjen palvelujen osasto,Avdelningen för centraliserade tjänster,9
+603001VH1,Osastopäällikkö,Avdelningschef,12
+603001VH2,Kohdennetun nuorisotyön toimiston toimistopäällikkö,Byråchef vid byrån för inriktat ungdomsarbete,12
+603001VH3,Kulttuurisen nuorisotyön toimiston toimistopäällikkö,Byråchef vid byrån för kulturellt ungdomsarbete,12
+603001VH4,Nuorten kansalaistoiminnan toimiston toimistopäällikkö,Byråcher vid byrån för samhällsaktivitet bland unga,12
+611100,Kehittämisyksikkö,Utvecklingsenheten,9
+611100VH1,Suunnittelupäällikkö,Planeringschef,12
+7002,Toimitusjohtaja,Verkställande direktören,10
+71000,Helsingin Energian johtokunta,Direktionen för Helsingfors Energi,5
+71001,Helsingin Energia -liikelaitos,Affärsverket Helsingfors Energi,8
+710010,Hallintoyksikkö,Förvaltningsenheten,9
+710010VH1,Hallintopäällikkö,Förvaltningschef,12
+71001VH1,Toimitusjohtaja,Verkställande direktör,12
+710020,Ympäristövalvontayksikkö,Miljöövervakningsenheten,9
+710020VH1,Ympäristöpäällikkö,Miljöchef,12
+710030,Ympäristöterveysyksikkö,Miljöhygiensenheten,9
+710030VH1,Ympäristöterveyspäällikkö,Miljöhygienschef,12
+710030VH2,Terveysinsinööri,Hälsoingenjör,12
+710030VH3,Terveystarkastaja 1,Hälsoinspektör 1,12
+710030VH4,Terveystarkastaja 2,Hälsoinspektör 2,12
+710030VH5,Terveystarkastaja 3,Hälsoinspektör 3,12
+710030VH6,Terveystarkastaja 4,Hälsoinspektör 4,12
+710070,Ympäristönsuojelu- ja tutkimusyksikkö,Miljöskydds- och forskningsenheten,9
+710070VH1,Ympäristöpäällikkö,Miljöchef,12
+71900,Taloushallintopalvelu-liikelaitoksen jk,Direktionen för affärsverket ekonomiförvaltningstjänsten,5
+73000,Palmia-liikelaitos,Affärsverket Palmia,8
+730003,Rakennuttamisyksikkö,Byggherreverksamhet,9
+730006,Hankesuunnittelu,Projektplanering,9
+73000VH1,Toimitusjohtaja,Verkställande direktör,12
+73001,Toimitusjohtaja,Verkställande direktören,10
+730020,Talous- ja hallintopalvelut,Ekonomi och administration,9
+730020VH1,Yksikönjohtaja,Enhetsdirektör,12
+730030,Kiinteistöpalvelut,Fastighetstjänster,9
+730030VH1,Yksikönjohtaja,Enhetsdirektör,12
+730032,Turvapalvelut,Säkerhetstjänster,9
+730032VH1,Yksikönjohtaja,Enhetsdirektör,12
+730045,Catering-palvelut,Cateringtjänster,9
+730045VH1,Yksikönjohtaja,Enhetsdirektör,12
+730046,Asiakas- ja kehittämisyksikkö,Kund- och utvecklingsenheten,9
+730046VH1,Yksikönjohtaja,Enhetsdirektör,12
+730053,Siivouspalvelut,Städtjänster,9
+730053VH1,Yksikönjohtaja,Enhetsdirektör,12
+74000,Helsingin Satama -liikelaitoksen jk,Direktionen för affärsverket Helsingfors Hamn,5
+74001,Helsingin Satama -liikelaitos,Affärsverket Helsingfors Hamn,8
+740011,Yleinen osasto,Allmänna avdelningen,9
+740011VH1,Hallintopäällikkö,Förvaltningschef,12
+740011VH2,Rakennuslakimies/1,Byggnadsjurist/1,12
+740011VH3,Rakennuslakimies/2,Byggnadsjurist/2,12
+740011VH4,Rakennuslakimies/3,Byggnadsjurist/3,12
+740011VH5,Rakennuslakimies/4,Byggnadsjurist/4,12
+74001VH1,Satamajohtaja,Hamndirektör,12
+74002,Satamajohtaja,Hamndirektören,10
+740021,Kaupunkikuvaosasto,Stadsbildsavdelningen,9
+740021VH1,Yliarkkitehti,Överarkitekt,12
+740021VH2,Lupayksikön päällikkö,"Enhetschef, tillståndsenheten",12
+740021VH3,Kaupunkitilayksikön päällikkö,"Enhetschef, stadsrumsenheten",12
+740031,Rakennustekninen osasto,Byggnadstekniska avdelningen,9
+740031VH1,Yli-insinööri,Överingenjör,12
+740031VH2,Rakenneyksikön päällikkö,"Enhetschef, konstruktionsenheten",12
+740031VH3,Talotekniikkayksikön päällikkö,"Enhetschef, enheten för husteknik",12
+742000,Markkinointi ja Viestintä,Marknadsföring och Kommunikation,9
+743000,Hallinto ja talous/HelSa,Förvaltnings- och ekonomiavdelningen/HelSa,9
+743000VH1,Talousjohtaja,Ekonomidirektör,12
+745000,Matkustajasatamat,Passagerarhamnarna,9
+745000VH1,"Matkustajasatamat, johtaja","Passagerarhamnarna, direktör",12
+747000,Tekniset palvelut,Tekniska tjänster,9
+747000VH1,Tekninen johtaja,Teknisk direktör,12
+749000,Vuosaaren satama,Nordsjö hamn,9
+749000VH1,"Vuosaaren satama, johtaja","Nordsjö hamn, direktör",12
+75000,Liikennelaitos -liikelaitoksen johtokunta (HKL),Direktionen för affärsverket trafikverket,5
+75001,Liikennelaitos -liikelaitos (HKL),Affärsverket trafikverket,8
+75001VH1,Toimitusjohtaja,Verkställande direktör,12
+75002,Toimitusjohtaja,Verkställande direktören,10
+750100,Hallinto- ja talousyksikkö/HKL,Administrations- och ekonomienheten,9
+750100VH1,Hallintojohtaja,Förvaltningsdirektör,12
+750100VH2,Hankintapäällikkö,Anskaffningschef,12
+750100VH3,Asiamies,Ombudsman,12
+750300,HKL-Infrapalvelut,HST-Infraservice,9
+750300VH1,Yksikön johtaja,Enhetschef,12
+751400,HKL-Raitioliikenne,HST-Spårvägstrafik,9
+751400VH1,Yksikön johtaja,Enhetschef,12
+752600,HKL-Metroliikenne,HST-Metrotrafik,9
+752600VH1,Metroliikennejohtaja,Metrotrafikdirektör,12
+760060,Puhelin- ja hyvinvointipalvelut,Telefon- och välbefinnandetjänster,9
+77200,Tukkutori,Partitorget,8
+77200ES1,Tukkutori,Partitorget,10
+77200VH1,Toimitusjohtaja,Verkställande direktör,12
+77200VH2,Yrityspalveluyksikön päällikkö,Chef för företagstjänstenheten,12
+77200VH3,Teknisen palveluyksikön päällikkö,Chef för tekniska enheten,12
+77200VH4,Asiakaspalvelupäällikkö,Chef för kundtjänsten,12
+77301,Palmia-liikelaitoksen jk,Direktionen för affärsverket Palmia,5
+77500,Hankintakeskus,Anskaffningscentralen,8
+77500ES1,Hankintakeskus,Anskaffningscentralen,10
+77500VH1,Hankintajohtaja,Anskaffningsdirektör,12
+775200,Hallintopalvelut,Förvaltningstjänster,9
+775200VH1,Hankintapäällikkö,Anskaffningschef,12
+775320,Tuotantopalvelut,Produktionstjänster,9
+775410,Hankinta- ja kilpailuttamispalvelut,Upphandlings- och konkurrensutsättningstjänster,9
+81000,Sosiaali- ja terveyslautakunta,Social- och hälsovårdsnämnden,5
+811000,Sosiaali- ja terveysvirasto,Social- och hälsovårdsverket,8
+811100,Virastopäällikkö,Verkschefen,12
+811200,Virastopäällikkö,Verkschefen,10
+811300,Perhe- ja sosiaalipalvelut,Familje- och socialtjänster,9
+811310,Osastopäällikkö,Avdelningschef,12
+811320,Perhepalvelujen johtaja,Chef för familjetjänster,12
+811330,Lastensuojelun johtaja,Chef för barnskydd,12
+811340,Nuorten palvelujen ja aikuissosiaalityön johtaja,Chef för tjänster för unga och vuxensocialarbete,12
+811350,Vammaistyön johtaja,Chef för handikapparbete,12
+811360,Perhe- ja sosiaalipalvelujen johtajalääkäri,Chef för familje- och socialtjänster,12
+811400,Terveys- ja päihdepalvelut,Hälsovårds- och missbrukartjänster,9
+811410,Osastopäällikkö,Avdelningschef,12
+811420,Terveysasemien johtajalääkäri,Chef för hälsostationerna,12
+811430,Päivystystoimintojen johtajalääkäri,Chefsläkare för jourfunktioner,12
+811440,Psykiatria- ja päihdepalvelujen johtaja,Chef för psykiatri- och missbrukartjänster,12
+811450,Johtajahammaslääkäri,Chefstandläkare,12
+811500,"Sairaala-, kuntoutus- ja hoivapalvelut","Sjukhus-, rehabiliterings- och omsorgstjänster",9
+811510,Osastopäällikkö,Avdelningschef,12
+811520,Arviointitoiminnan johtaja,Chef för bedömningsverksamhet,12
+811530,Etelän palvelualueen johtaja,Chef för södra serviceområdet,12
+811540,Idän palvelualueen johtaja,Chef för östra serviceområdet,12
+811550,Lännen palvelualueen johtaja,Chef för västra serviceområdet,12
+811560,Pohjoisen palvelualueen johtaja,Chef för norra serviceområdet,12
+811570,Kaupunginsairaalan johtajalääkäri,Chefsläkare för stadssjukhuset,12
+811580,Kuntoutuksen johtajalääkäri,Chefsläkare för rehabilitering,12
+811600,Henkilöstö- ja kehittämispalvelut,Personal- och utvecklingstjänster,9
+811610,Osastopäällikkö,Avdelningschef,12
+811620,Henkilöstöpäällikkö,Personalchef,12
+811630,Hallintopäällikkö,Förvaltningschef,12
+811640,Johtava lakimies,Ledande jurist,12
+811700,Talous- ja tukipalvelut,Ekonomi- och stödtjänster,9
+811710,Osastopäällikkö,Avdelningschef,12
+811720,Talous- ja strategiapäällikkö,Ekonomi- och strategichef,12
+811730,Asiakasmaksupäällikkö,Chef för klientavgifter,12
+811740,Hankintapäällikkö,Upphandlingschef,12
+811750,Palvelupäällikkö,Servicechef,12
+811800,Tietohallinto- ja viestintäpalvelut,Informationsförvaltnings- och kommunikationstjänster,9
+811810,Osastopäällikkö,Avdelningschef,12
+811900,Puheenjohtaja,Ordförande,12
+82000,Ensimmäinen jaosto,Första sektionen,4
+83000,Toinen jaosto,Andra sektionen,4
+84000,Kolmas jaosto,Tredje sektionen,4
+85000,Varhaiskasvatuslautakunta,Barnomsorgsnämnden,5
+851000,Varhaiskasvatusvirasto,Barnomsorgsverket,8
+851100,Varhaiskasvatusjohtaja,Barnomsorgsdirektören,12
+851200,Varhaiskasvatusjohtaja,Barnomsorgsdirektören,10
+851201,Varhaiskasvatuksen kehittämispäällikkö,Utvecklingschefen för barnomsorgen,12
+851202,Varhaiskasvatusalueen päällikkö1,Chefen för barnomsorgsområden1,12
+851203,Varhaiskasvatusalueen päällikkö2,Chefen för barnomsorgsområden2,12
+851204,Varhaiskasvatusalueen päällikkö3,Chefen för barnomsorgsområden3,12
+851205,Varhaiskasvatusalueen päällikkö5,Chefen för barnomsorgsområden5,12
+851206,Varhaiskasvatusalueen päällikkö7,Chefen för barnomsorgsområden7,12
+851207,Varhaiskasvatusalueen päällikkö9,Chefen för barnomsorgsområden9,12
+851208,Varhaiskasvatusalueen päällikkö10,Chefen för barnomsorgsområden10,12
+851209,Varhaiskasvatusalueen päällikkö12,Chefen för barnomsorgsområden12,12
+851210,Varhaiskasvatusalueen päällikkö13,Chefen för barnomsorgsområden13,12
+851211,Varhaiskasvatusalueen päällikkö14,Chefen för barnomsorgsområden14,12
+851212,Varhaiskasvatusalueen päällikkö16,Chefen för barnomsorgsområden16,12
+851213,Varhaiskasvatusalueen päällikkö17,Chefen för barnomsorgsområden17,12
+851214,Varhaiskasvatusalueen päällikkö19,Chefen för barnomsorgsområden19,12
+851215,Leikkipuistotoiminnan päällikkö,Chefen för lekparksverksamheten,12
+851216,Puheenjohtaja,Ordförande,12
+900,Puheenjohtaja,Ordföranden,11
+900002,Yrityspalveluyksikkö,Företagstjänstenheten,9
+900004,Kauppahalli- ja toripalveluyksikkö,Enheten för saluhalls- och torgtjänster,9
+900006,Tekninen palveluyksikkö,Tekniska enheten,9
+900VH1,Puheenjohtaja,Ordförande,12

@@ -1,0 +1,583 @@
+00,Hallintoasiat
+00 00,Hallintoasioiden ohjaus
+00 00 00,"Perustaminen, lakkauttaminen, yhdistäminen"
+00 00 01,Vaalien järjestäminen
+00 00 02,Luottamus- ja toimielinten kokoonpano ja toiminta
+00 00 03,Valtuuston aloitetoiminta
+00 01,"Toiminnan suunnittelu, järjestäminen, toteuttaminen, kehittäminen, seuranta"
+00 01 00,Hallinnon järjestäminen
+00 01 01,Toiminnan suunnittelu ja seuranta
+00 01 02,Toiminnan arviointi- ja kehittämismenettelyt
+00 01 03,Riskien hallinta ja sisäinen valvonta
+00 01 04,"Ohjelma-, hanke-, projektitoiminta"
+00 01 04 00,Hanke- ja projektitoiminta
+00 01 04 01,Sisäinen kehittäminen
+00 01 05,Konserni- ja omistajaohjaus
+00 01 06,Kotimainen yhteistyö
+00 02,Päätöksenteko ja johtaminen
+00 02 00,Kaupunginvaltuuston päätöksenteko
+00 02 01,Kaupunginhallituksen päätöksenteko
+00 02 02,Kaupunginhallituksen konsernijaoston päätöksenteko
+00 02 03,Lautakuntien päätöksenteko
+00 02 04,Lautakuntien jaostojen päätöksenteko
+00 02 05,Johtokuntien päätöksenteko
+00 02 06,Viranhaltijoiden päätöksenteko
+00 02 07,Johtoryhmätyöskentely
+00 02 08,Kuuluttaminen ja ilmoittaminen
+00 03,Tarkastustoimi
+00 03 00,Hallinnon ja talouden tarkastus
+00 03 01,Sisäinen tarkastus
+00 04,Viestintä ja edustaminen
+00 04 00,Viestinnän ja tiedottamisen järjestäminen ja toteuttaminen
+00 04 01,Julkaisutoiminta
+00 04 02,Mediaseuranta
+00 04 03,Edustaminen
+00 04 04,Tunnustukset ja palkinnot
+00 04 05,Markkinointi
+01,Henkilöstöasiat
+01 00,Henkilöstöasioiden ohjaus
+01 00 00,Työnantaja- ja henkilöstöpolitiikka
+01 00 00 00,Henkilöstöpolitiikka
+01 00 00 03,Tasa-arvo
+01 00 00 04,Henkilöstötoimikunta
+01 00 01,Yleiset virka- ja työehtosopimusasiat
+01 00 01 00,Virka- ja työehtosopimukset
+01 00 01 01,Järjestöneuvottelukunnan toiminta
+01 00 01 02,Paikalliset neuvottelut
+01 00 01 03,Työriidat ja niiden sovittelu
+01 00 01 04,Työmatkojen korvaaminen liikennehenkilöstön työnseisauksen aikana
+01 00 02,Henkilöstösuunnittelu ja raportointi
+01 00 02 00,Henkilöstösuunnittelu
+01 00 02 01,Henkilöstöraportointi
+01 01,Palvelussuhde
+01 01 00,Palvelussuhdeasiat
+01 01 01,Rekrytointi ja palvelussuhteeseen valitseminen
+01 01 01 00,Täyttölupa
+01 01 01 01,Työ- ja virkasuhteen täyttäminen
+01 01 01 02,Siviilipalvelusmiehen valitseminen
+01 01 01 03,Vuokratyövoiman hankinta
+01 01 01 04,Työharjoittelu
+01 01 02,Palvelussuhteen aloittaminen
+01 01 02 00,Työ- ja virkasuhteen aloittaminen
+01 01 02 01,Siviilipalvelussuhteen aloittaminen
+01 01 02 02,Harjoittelusuhteen aloittaminen
+01 01 03,Palvelussuhteen hoitaminen
+01 01 03 00,Yleiset palvelussuhdeasiat
+01 01 03 01,"Sitoumukset, henkilöstöetuudet ja käyttöoikeudet"
+01 01 03 02,Työajan määräytyminen
+01 01 03 03,Työsuorituksen arviointi ja kehityskeskustelu
+01 01 03 04,Lomat ja vapaat
+01 01 03 05,Sairaus ja työtapaturma
+01 01 03 06,Huomionosoitukset henkilöstölle
+01 01 03 07,Palvelussuhderikkomukset ja virheen korjaaminen
+01 01 03 08,Uudelleensijoitus ja työkokeilu
+01 01 03 09,Osa-aikaeläkkeelle siirtyminen
+01 01 04,Palvelussuhteen päättyminen
+01 01 04 00,Irtisanoutuminen ja eroaminen
+01 01 04 01,Irtisanominen
+01 01 04 02,Työsuhteen purku
+01 01 04 03,Eläkkeelle siirtyminen
+01 02,"Palkan, palkkioiden ja korvausten määräytyminen"
+01 02 00,"Palkan, palkkioiden ja korvausten määräytyminen"
+01 02 00 00,"Palkan, palkkioiden ja palkanlisien perusteet"
+01 02 00 01,Palkan ja palkkioiden laskentaa koskevat ilmoitukset
+01 02 00 02,Palkanlaskenta
+01 02 01,"Palkan, palkkioiden ja korvausten maksaminen, luontoisedut"
+01 02 01 00,Palkkakirjanpito
+01 02 01 01,Palkka-ajon tulosteet
+01 02 01 02,Työeläketilitykset
+01 02 01 03,Kunnalliseen henkilörekisteriin ilmoitettavat tiedot
+01 02 01 04,Palkka- ja palkkiotilitykset
+01 02 01 05,Vuositilitys verottajalle
+01 02 01 06,Työmatkaseteli
+01 02 01 07,Muut luontaisedut
+01 02 01 08,"Muut palkan, palkkioiden ja korvausten maksamiseen"
+01 02 02,Matkustus
+01 02 02 00,Virkamatka
+01 02 02 01,Auton käyttö
+01 02 02 02,Työmatkakorvaukset lakon aikana
+01 02 03,Henkilöstön palkitseminen
+01 02 03 00,Henkilöstön palkitseminen
+01 02 03 01,Tulospalkkio
+01 02 03 02,Aloitetoiminta
+01 02 03 03,Stipendit ja tunnustukset
+01 02 03 04,Kunnia- ja ansiomerkit
+01 03,Osaamisen kehittäminen
+01 03 00,Henkilöstön koulutus ja kehittäminen
+01 03 00 00,Koulutuksen ja kehittämisen suunnittelu
+01 03 00 01,Perehdyttäminen
+01 03 00 02,Henkilöstökoulutuksen järjestäminen
+01 03 00 03,Koulutukseen hakeminen
+01 03 00 04,Oppisopimuskoulutus
+01 04,Työhyvinvoinnin edistäminen
+01 04 00,Yhteistoiminta-asiat
+01 04 00 00,Yhteistoimintasopimukset
+01 04 00 01,Yhteistoiminnan organisointi
+01 04 00 02,Yhteistoimintakokoukset
+01 04 01,Työsuojelu ja työturvallisuus
+01 04 01 00,Työsuojelutoiminnan järjestäminen
+01 04 01 01,Työsuojeluvaltuutetun valinta
+01 04 01 02,Työsuojelutoimikunnan valinta
+01 04 01 03,Työsuojelutoimikunnan toiminta
+01 04 01 04,Työturvallisuuden valvonta
+01 04 01 05,Työsuojeluviranomaisen toiminta
+01 04 02,Työterveyshuolto
+01 04 02 00,Työterveyshuollon järjestäminen
+01 04 02 01,Työpaikkaselvitykset
+01 04 02 02,Kuntoremontti
+01 04 02 03,Kuntoutus
+01 04 03,Henkilöstöruokailu
+01 04 04,Virkistystoiminta
+01 04 04 00,Henkilökunnan virkistystoiminta
+01 04 04 01,Henkilökuntakerhon toiminta
+01 04 05,Työhyvinvointi
+01 05,Henkilöstökassatoiminta
+01 05 00,Henkilöstökassatoiminnan ohjaus
+01 05 01,Jäsentilien hoito
+01 05 02,Henkilökuntakerhojen jäsentilien hoito
+02,"Talousasiat, verotus ja omaisuuden hallinta"
+02 00,Talousasioiden ohjaus
+02 01,Talouspolitiikka
+02 02,"Talouden suunnittelu, toteuttaminen ja seuranta"
+02 02 00,Talousarvion valmistelu ja talousarviomäärärahat
+02 02 01,Talouden seuranta
+02 02 02,Määräraha-asiat
+02 03,Verotus
+02 03 00,Valtion verotus
+02 03 01,Kunnallisverotus
+02 03 01 00,Kunnallisveron määräytyminen
+02 03 01 01,Vapautus kunnallisverosta ja verohuojennus
+02 03 02,Kunnallinen verottaminen
+02 03 02 00,Kiinteistöverotus
+02 03 02 01,Yhteisöverotus
+02 03 02 02,Koiraverotus
+02 03 02 03,Kaupunki veronmaksajana
+02 04,Tullitoiminta
+02 04 00,Ulkomaankauppailmoitukset tullille (Intrastat)
+02 05,Rahoitus ja varainhallinta
+02 05 00,Maksuperusteiden määrääminen ja määräytyminen
+02 05 01,Tuet ja avustukset
+02 05 01 00,Kunnan myöntämät avustukset
+02 05 01 01,Kunnan itselleen hakemat avustukset
+02 05 01 02,Valtionosuudet
+02 05 01 03,Kuntien yhdistymisavustukset
+02 05 01 04,Sponsorointi
+02 05 01 05,Avustusten myöntäminen rahastoista
+02 05 02,Hankerahoitus
+02 05 03,Antolainaus
+02 05 03 00,Lainojen myöntäminen
+02 05 03 01,Takaukset ja vakuudet
+02 05 03 02,"Lainojen myöntäminen, yksityishenkilöt"
+02 05 04,Ottolainaus
+02 05 05,Sijoitustoiminta
+02 06,Kirjanpito ja maksuliikenne
+02 06 00,Pankkipalveluiden hallinta
+02 06 01,Kirjanpito
+02 06 01 00,Kirjanpidon hallinta
+02 06 01 03,"Käyttöomaisuuskirjanpito, konsernitase"
+02 06 02,Maksuliikenne
+02 06 03,Laskutus
+02 06 04,Ostolaskut
+02 06 05,Kassatoiminnot
+02 06 06,Perintä ja maksukyvyttömyysasiat
+02 06 07,Maksuvapautus- ja lykkäysasiat
+02 07,Omaisuuden hallinta
+02 07 00,Kiinteän omaisuuden hallinta
+02 07 01,Irtaimen ja käyttöomaisuuden hallinta
+02 07 02,Perintö- ja lahjoitusasiat
+02 08,Hankintatoimi ja logistiikka
+02 08 00,Hankinnan ja logistiikan ohjaus
+02 08 01,Tuotteiden ja tavaroiden hankinta
+02 08 01 00,Kilpailutus
+02 08 01 01,Hankinta ilman kilpailutusta
+02 08 02,Palveluiden hankinta
+02 08 02 00,Kilpailutus
+02 08 02 01,Hankinta ilman kilpailutusta
+02 08 03,Rakennusurakoiden hankinta
+02 08 03 00,Kilpailutus
+02 08 03 01,Hankinta ilman kilpailutusta
+02 09,Omien palvelujen ja tuotteiden myynti
+02 09 00,Palvelumyynti
+02 09 01,Tuote- ja tavaramyynti
+03,Lainsäädäntö ja lainsäädännön soveltaminen
+03 00,Lait ja asetukset
+03 00 00,Lakien ja asetusten säätäminen
+03 00 01,Lainsäädännön soveltaminen
+03 01,"Oikeudellisten etujen ja laillisuuden valvonta, korvausasiat"
+03 01 00,Vahingonkorvausasiat
+03 01 01,Oikeudellisten etujen valvonta
+03 01 02,Laillisuusvalvonta
+04,Kansainvälinen toiminta ja maahanmuuttopolitiikka
+04 00,Kansainvälisten asioiden ohjaus
+04 00 00,Kansainvälisten asioiden ohjaus
+04 01,Ulkoasiainhallinta (valtion)
+04 02,Kehityspolitiikka (valtion)
+04 03,Kansainväliseen toimintaan osallistuminen
+04 03 00,Kansainväliset organisaatiot
+04 03 01,Kansainväliseen yhteistoimintaan osallistuminen
+04 04,Maahanmuuttopolitiikka
+04 04 00,Maahanmuutto – ja maahanmuuttajapalveluiden kehittäminen
+04 04 01,Työperusteinen maahanmuutto
+04 04 02,Humanitaarinen maahanmuutto
+05,Sosiaalitoimi
+05 00,"Sosiaalitoimen kehittäminen, ohjaus ja valvonta"
+05 00 00,Sosiaalitoimen kehittäminen ja suunnittelu
+05 00 01,Sosiaalitoimen ohjaus ja valvonta
+05 00 02,Sosiaaliasiamiestoiminta
+05 01,Lasten päivähoito
+05 01 00,Lasten päivähoidon kehittäminen ja ohjaus
+05 01 01,Yksilöhuollon muutoksenhaku (lasten päivähoito)
+05 01 02,Päiväkotihoito
+05 01 03,Kerhot
+05 01 04,Leikkipuistot
+05 01 05,Perhepäivähoito
+05 01 06,Esiopetus
+05 01 07,Lasten kotihoidontuki
+05 01 08,Yksityinen päivähoito
+05 02,Lastensuojelu ja perheiden palvelut
+05 02 00,Lastensuojelun kehittäminen ja ohjaus
+05 02 01,Yksilöhuollon muutoksenhaku (lastensuojelu ja perheiden palvelut)
+05 02 02,Avohuolto
+05 02 03,Perhehoito
+05 02 04,Laitoshuolto
+05 02 05,Jälkihuolto
+05 02 06,Lomatoiminta
+05 02 07,"Isyyden selvittäminen, huolto- ja tapaamisoikeusasiat"
+05 02 08,Elatusturva-asiat
+05 02 09,Adoptioasiat
+05 02 10,Perheneuvonta
+05 02 11,Lapsiperheiden kotipalvelu
+05 02 12,Ensi- ja turvakodit
+05 02 13,Rikostensovittelu
+05 03,Vammaisten palvelut
+05 03 00,Vammaisten palvelujen kehittäminen ja ohjaus
+05 03 01,Yksilöhuollon muutoksenhaku (vammaisten palvelut)
+05 03 02,Vammaispalvelu
+05 03 03,Kehitysvammahuolto
+05 04,Vanhusten palvelut
+05 04 00,Vanhusten palvelujen kehittäminen ja ohjaus
+05 04 01,Yksilöhuollon muutoksenhaku (vanhusten palvelut)
+05 04 02,Asumispalvelut
+05 04 03,Laitospalvelut
+05 04 04,Yksityinen vanhusten palvelutoiminta
+05 04 05,Vanhusten päivätoiminta
+05 05,Päihdehuolto
+05 05 00,Päihdehuollon palvelujen kehittäminen ja ohjaus
+05 05 01,Yksilöhuollon muutoksenhaku (päihdehuolto)
+05 05 02,Avopalvelut
+05 05 03,Asumispalvelut
+05 05 04,Laitospalvelut
+05 06,"Toimeentulo, maahanmuutto ja sosiaalinen kuntoutus"
+05 06 00,Toiminnan kehittäminen ja ohjaus
+05 06 01,"Yksilöhuollon muutoksenhaku (toimeentulo, maahanmuutto ja sosiaalinen kuntoutus)"
+05 06 02,Toimeentulotukiasiat
+05 06 03,Sosiaalinen luototus
+05 06 04,Talous- ja velkaneuvonta
+05 06 05,Maahanmuuttajien palvelut
+05 06 06,Sosiaalinen työhön kuntoutus ja työllistämispalvelut
+05 07,Asunnottomuus ja tuettu asuminen
+05 07 00,Toiminnan kehittäminen ja ohjaus
+05 07 01,Yksilöhuollon muutoksenhaku (asunnottomuus ja tuettu asuminen)
+05 07 02,Asunnottomien palvelut
+05 07 03,Tuettu asuminen
+05 08,Omaishoito ja kuljetuspalvelut
+05 08 00,Toiminnan kehittäminen ja ohjaus
+05 08 01,Yksilöhuollon muutoksenhaku (omaishoito ja kuljetuspalvelut)
+05 08 02,Omaishoidontuki
+05 08 03,Kuljetuspalvelut ja -tuki
+06,Terveydenhuolto
+06 00,Palveluprosessin hallinta
+06 00 00,Hoidon järjestäminen
+06 00 01,Perustietojen ylläpito
+06 00 02,Potilasasiakirjojen käytön ja luovutuksen hallinta
+06 01,Ennaltaehkäisevä terveydenhoito
+06 01 00,Terveysneuvonta
+06 01 01,Seulonta
+06 01 02,Terveyden edistäminen
+06 02,Ensihoito ja sairaankuljetus
+06 02 00,Ensihoidon potilasasiakirjat (ensihoitokertomukset)
+06 02 01,Potilaan tutkimus ja hoito ensihoidossa
+06 02 02,Sairaankuljetukset
+06 03,Potilaan hoito
+06 03 00,Potilasasiakirjat
+06 03 01,Potilaan hoito ja kohtelu
+06 03 02,Varsinainen hoitotoiminta
+06 04,Terveydenhoidolliset ja sairaanhoidolliset palvelut
+06 04 00,Kuvantaminen
+06 04 01,Laboratoriotoiminta
+06 04 02,Muut terveydenhoidolliset ja sairaanhoidolliset palvelut
+06 05,Vainajaan liittyvät terveydenhuollon tehtävät
+06 05 00,Vainajan käsittely
+06 06,Viranomaisyhteistyö ja potilaan hoitoon liittyvä yhteistyö
+06 06 00,Organisaatioiden välinen tiedonvaihto
+06 06 01,Virka-aputehtävät
+06 07,Tukipalvelut
+06 07 00,Välinehuolto ja hoitotarvikepalvelu
+06 07 01,Apuvälinepalvelut
+06 07 02,Apteekkitoiminta ja lääkehuolto
+06 07 03,Lääkintätekniikka ja terveydenhuollon laitteet
+06 07 04,Laitoshuolto
+06 07 05,Ruokahuolto
+07,Tiedon hallinta
+07 00,Tiedonhallinnan ohjaus
+07 00 00,Tiedonhallinnan kehittäminen ja ohjaus
+07 00 01,Tietoturva ja tietosuoja
+07 00 02,Tietojärjestelmä- ja rekisteriselosteet
+07 00 03,Rekisteritietojen tarkistus ja tiedonsaantipyynnöt
+07 01,Tiedon hallinta ja tietopalvelu
+07 01 00,Sähköinen asiointi
+07 01 01,Asiakirjahallinto ja arkistotoimi
+07 01 02,Tietopalvelu
+07 01 03,Tilastotoiminta ja raportointi
+07 01 04,Lokitietopyynnöt ja korjauspyynnöt
+07 02,Tietojärjestelmien kehittäminen ja ylläpito
+07 02 00,"Tietojärjestelmäpalvelujen ohjaus, suunnittelu ja käyttöönotto"
+07 02 01,Tietojärjestelmien käyttäjäoikeuksien hallinta
+07 02 02,Tietojärjestelmien suunnittelu ja käyttö
+08,Liikenne
+08 00,Liikenteen suunnittelu ja kehittäminen
+08 00 00,"Liikennepolitiikan suunnittelu, kehittäminen, ohjaus ja ylläpito"
+08 00 01,Liikenneväylien suunnittelu
+08 00 02,Raideliikenteen suunnittelu
+08 00 03,Linja-autoliikenteen suunnittelu
+08 00 04,Kävelyn ja pyöräilyn suunnittelu
+08 00 05,"Taksi-, vesi- ja lentoliikenteen suunnittelu"
+08 00 06,Tavaraliikenteen suunnittelu
+08 00 07,Siltojen ja tunnelien suunnittelu
+08 00 08,Muiden liikenteen rakenteiden suunnittelu
+08 01,Liikennemerkit ja liikenteen ohjaus
+08 01 00,Liikennevalot
+08 01 01,Nopeuden hallinta
+08 01 02,Jalankulun ja pyöräilyn merkinnät
+08 01 03,Pysäköinti
+08 01 04,Ajorajoitukset ja erityiskatujen merkinnät
+08 01 05,Opastus
+08 01 06,Julkinen liikenne
+08 01 07,Muut liikennemerkit ja liikenteen ohjaus
+08 02,Liikennepalvelut
+08 02 00,Joukkoliikenteen suunnittelu ja tuottaminen
+08 02 01,Joukkoliikenteen rakentaminen
+08 02 02,Joukkoliikennettä palvelevat laitteet
+08 02 03,Joukkoliikenteen palvelutaso
+08 02 04,Kuljetusten järjestäminen ja ohjaaminen
+08 02 05,Satamatoiminta ja aluspalvelut
+08 02 05 00,Satamatoiminnan ohjaus ja kehittäminen
+08 02 05 01,Alusliikenne ja aluspalvelut
+08 02 05 02,Tavarasatamatoiminta
+08 02 05 03,Matkustajasatamatoiminta
+08 02 06,Varikkotoiminta ja asemat
+08 03,Liikenteen valvonta
+08 03 00,Joukkoliikennevalvonta
+08 03 01,Pysäköinnin valvonta
+08 03 01 00,Pysäköinnin valvonta
+08 03 01 01,Maksullisen pysäköinnin järjestäminen
+08 03 01 02,"Ajoneuvojen siirto, varastointi, luovutus ja romutus (tienpitoviranomainen)"
+08 03 02,Nopeuden valvonta
+09,Turvallisuus ja yleinen järjestys
+09 00,Turvallisuuden ja yleisen järjestyksen ohjaus
+09 00 00,Turvallisuuden suunnittelu
+09 01,Maanpuolustus (valtion)
+09 02,Poliisi- ja järjestystoimi (valtion)
+09 03,"Pakkokeinot, rangaistukset ja kriminaalipolitiikka (valtion)"
+09 04,Rajavalvonta (valtion)
+09 05,Pelastustoimi
+09 05 00,Onnettomuuksien ennaltaehkäisy
+09 05 01,Pelastustoiminta
+09 06,Väestönsuojelu ja poikkeusoloihin varautuminen
+09 06 00,Valmiussuunnittelu
+09 06 01,Väestönsuojelu
+09 07,Yleisen järjestyksen valvonta
+09 07 00,Yleisen järjestyksen valvonnan ohjaus
+10,"Maankäyttö, rakentaminen ja asuminen"
+10 00,"Maankäytön, rakentamisen ja asumisen ohjaus"
+10 00 00,Maapolitiikan hoito
+10 01,"Maan, kiinteistöjen ja huonetilojen hallinta"
+10 01 00,Maan ja kiinteistöjen hankinta
+10 01 01,Maan ja kiinteistöjen luovutus
+10 01 01 00,Tonttien varaaminen
+10 01 01 01,Rakennettujen ja rakentamattomien kiinteistöjen myynti ja
+10 01 01 02,"Lyhyt- ja pitkäaikaiset tonttivuokraukset, maanalaisten rakennuspaikkojen vuokraukset"
+10 01 01 03,Yleisten alueiden ja muiden alueiden vuokraus
+10 01 01 04,Alueiden tilapäinen käyttö ja tilapäinen vuokraus
+10 01 01 05,"Pysyvien käyttöoikeuksien luovuttaminen, rasitesopimukset"
+10 01 01 06,"Rakenteiden, laitteiden ja johtojen sijoittaminen (pysyvä"
+10 01 02,Kaupungin sisäiset vuokraukset
+10 01 03,Rakennusten ja huonetilojen myynti ja ulosvuokraus
+10 01 04,Rakennusten ja huonetilojen osto ja sisäänvuokraus
+10 02,Maanmittaus ja maaperätutkimus
+10 02 00,"Kiinteistönmuodostus, tonttijaot, katukorvaukset"
+10 02 01,Maa- ja kallioperätutkimukset
+10 02 02,Maastomittaukset ja paikkatietojen hallinta
+10 02 03,Karttojen laatiminen ja ylläpito
+10 02 04,Osoitenumeroasiat
+10 03,Kaavoitus
+10 03 00,Maakuntakaavoitus
+10 03 01,Kaavoituksen kuntayhteistyö
+10 03 02,Yleissuunnittelu
+10 03 02 00,Yleiskaavoitus
+10 03 02 01,Yleissuunnitelmat ja yleisselvitykset
+10 03 03,Asemakaavoitus
+10 03 04,Rantakaavoitus
+10 03 05,"Rakennuskiellot, toimenpidekiellot ja -rajoitukset"
+10 03 06,Kaavoitusta tukevat suunnitelmat
+10 03 07,Nimistöasiat
+10 03 08,"Rakentamistapaohjeet, lähiympäristön suunnitteluohjeet"
+10 03 09,Suunnittelu- ja arkkitehtuurikilpailut
+10 03 10,"Alueiden, rakennusten, kulttuurihistoriallisten kohteiden ja säilytettävien"
+10 04,Rakennusvalvonta
+10 04 00,Rakentamisen ja rakennusvalvonnan ohjaus
+10 04 01,Poikkeamismenettely
+10 04 02,Suunnittelutarveratkaisu
+10 04 03,Rakennuslupa
+10 04 04,Toimenpidelupa
+10 04 05,Purkaminen
+10 04 06,Maisematyölupa
+10 04 07,Aloittamisoikeus
+10 04 08,"Z-lausunto, toimenpiteen vähäisyyden arviointi ja muu vastaava menettely"
+10 04 09,Rakennusrasite ja kiinteistöjen yhteisjärjestely
+10 04 10,Rakennetun ympäristön jatkuva valvonta
+10 05,"Alueiden ja rakennusten toteutussuunnittelu, rakentaminen ja ylläpito"
+10 05 00,Maa-alueiden rakentamiskelpoiseksi saattaminen
+10 05 01,"Alueiden suunnittelun, rakentamisen ja ylläpidon ohjaus ja kehittäminen"
+10 05 02,"Alueiden kohdesuunnittelu, uudisrakentaminen ja peruskorjaus"
+10 05 03,Alueiden ylläpito
+10 06,"Rakennusten ja rakennelmien toteutussuunnittelu, rakentaminen ja ylläpito"
+10 06 00,Rakennusten ja rakennelmien suunnittelu ja totetutus
+10 06 01,Rakennusten ja rakennelmien ylläpito
+10 07,Asuminen
+10 07 00,Asuntotuotannon ohjaus ja kehittäminen
+10 07 01,Asunnonvälitys
+10 07 02,Valvonta ja lainat
+10 07 03,Korjausrahoitus
+10 07 04,Asuntopolitiikka
+11,Ympäristöasiat
+11 00,Ympäristöasioiden ohjaus
+11 00 00,Ympäristöpolitiikka
+11 00 01,Ympäristönsuojelun suunnittelu ja kehittäminen
+11 00 02,Ympäristön tilan yleinen seuranta
+11 00 03,Kunnalliset yleiset määräykset ja valvontaohjelmat
+11 01,Ympäristön- ja luonnonsuojelu
+11 01 00,Ympäristönsuojelu
+11 01 00 00,Ympäristölupa
+11 01 00 01,Kemikaalisäiliöiden jättäminen maaperään
+11 01 00 02,Meluilmoitus
+11 01 00 03,Ilmoitus koeluontoisesta toiminnasta
+11 01 00 04,Ilmoitus poikkeuksellisesta tilanteesta
+11 01 00 05,Ilmoitus tietojärjestelmään
+11 01 00 06,Ilmoitus koskien maaperän puhdistamista
+11 01 00 07,Toimenpidepyyntö
+11 01 01,Vesiensuojelu ja vesirakentamisen valvonta
+11 01 02,Vesiliikenteen valvonta
+11 01 03,Maastoliikenteen valvonta
+11 01 04,Luonnonsuojelu
+11 01 05,Ympäristövaikutusten arviointi
+11 01 06,Jätehuollon valvonta ja jätteen synnyn ehkäisy
+11 01 06 00,Toimenpidepyyntö
+11 01 06 01,Huvivenesataman jätehuoltosuunnitelma ja tietojärjestelmään merkitseminen
+11 01 06 02,Jätehuollon valvonta ja jätteen synnyn ehkäisy
+11 01 07,Vesihuollon valvonta
+11 01 08,Hallintopakkomenettely
+11 02,Ympäristöterveydenhuolto
+11 02 00,Elintarvikevalvonta
+11 02 01,Kulutustavaroiden- ja palveluiden turvallisuuden valvonta
+11 02 02,Terveydensuojelu (ympäristöterveys)
+11 02 02 00,Toimenpidepyyntö
+11 02 02 01,Ilmoitus
+11 02 02 02,Asunnontarkastus
+11 02 03,Kemikaaliasiat
+11 02 04,Tupakkavalvonta ja nikotiinivalmisteiden valvonta
+11 02 05,Eläinsuojelu
+11 02 06,Eläinlääkintähuolto
+11 03,Maisema- ja kulttuuriympäristön suojelu ja hoito
+11 03 00,Maisema- ja kulttuuriympäristön suojelun ja hoidon ohjaus
+11 03 01,Muinaismuistojen vaaliminen ja hallinta
+11 03 02,Kunnan maisema- ja kulttuurikohteiden suojelu ja hoito
+12,Opetus- ja sivistystoimi
+12 00,Opetus- ja sivistystoimen ohjaus
+12 00 00,Koulutuspoliittinen ohjaus
+12 00 01,Koulutuksen ja opetuksen suunnittelu
+12 00 02,Kokeilu- ja kehittämistoiminta (ks. Yleishallinto 00.01.03)
+12 01,Oppilas- ja opiskelija-asiat
+12 01 00,"Oppilasvalinnat ja oppilaaksi otto, opiskelijavalinnat ja opiskelijaksi otto"
+12 01 01,Opetuksen ja koulutuksen järjestäminen
+12 01 02,Oppilaan arviointi
+12 01 03,"Oppilashuolto, oppilaiden hyvinvointi"
+12 01 04,Kodin ja koulun välinen yhteistyö
+12 01 05,Palkitseminen ja stipendit
+12 01 06,Opiskelijavaihto
+12 01 07,Oppilaskuntatoiminta
+12 01 08,Harrastus- ja kerhotoiminta
+12 02,Kulttuuripalvelut ja kirjastopalvelut
+12 02 00,Kulttuuritapahtumat
+12 02 01,Kulttuurilaitostoiminta
+12 02 02,Kirjastopalvelut
+12 02 02 00,"Kirjasto- ja lainauspalveluiden järjestäminen, keskuskirjastotoiminta"
+12 02 02 01,Käyttöoikeudet
+12 02 02 02,Kirjastojen ja yleisöpalveluyksiköiden aukioloajat ja kirjastoauton pysähdyspaikat
+12 02 03,Museotoiminta
+12 02 03 00,Kokoelmanhallinta
+12 02 03 01,Konservointi
+12 02 03 02,Valokuvaus ja dokumentointi
+12 02 03 03,Yleisöpalvelu ja museopedagogiikka
+12 02 04,Näyttelytoiminta
+12 02 05,Musiikki- ja orkesteritoiminta
+12 02 06,"Teatteri-, baletti- ja oopperatoiminta"
+12 02 07,Kotiseututyö
+12 03,Liikuntatoimi
+12 03 00,"Liikuntatoimen ohjaus, suunnittelu ja valvonta"
+12 03 01,Liikuntalaitostoiminta
+12 03 02,Ulkoliikuntatoiminta
+12 03 03,Merellinen toiminta
+12 03 04,Liikunnanohjaustoiminta
+12 03 05,Liikuntatoimen varaustoiminta
+12 04,Lapsi- ja nuorisoasioiden palvelut
+12 04 00,Lapsi- ja nuorisopalveluiden kehittäminen ja ohjaus
+12 04 01,Lapsi- ja nuorisotyö
+12 04 02,Lasten ja nuorten vapaa-ajan toiminta
+12 05,Maailmankatsomuksellisten yhteisöjen toiminta
+12 05 00,Maailmankatsomuksellisten yhteisöjen toiminta
+12 06,Eläintarha- ja kotieläinpuistotoiminta
+12 06 00,Eläintarha- ja kotieläinpuistotoiminnan kehittäminen ja ohjaus
+12 06 01,"Eläinten hankinta, kuljetus ja rekisteröinti"
+12 06 02,Eläinten hyvinvointi
+12 06 03,Ympäristökasvatus
+13,Tutkimus- ja kehittämistoiminta
+13 00,Tutkimus- ja kehittämistoiminnan ohjaus
+13 00 00,Tutkimus- ja kehittämistoiminnan ohjaus
+13 00 01,Tutkimus- ja kehittämistoiminnan arviointi
+13 00 02,"Tutkimustoiminnan edistäminen (apurahat, palkinnot)"
+13 01,"Tutkimus- ja kehittämistoiminnan suunnittelu, järjestäminen ja toteuttaminen"
+13 01 00,Tutkimus- ja kehittämistoiminnan suunnittelu ja seuranta
+13 01 01,Projektimuotoinen tutkimus- ja kehittämistoiminta
+13 01 02,Jatkuva tutkimus- ja kehittämistoiminta
+13 01 03,Tutkimusaineistojen hallinta
+13 02,Tutkimuseettinen toiminta
+13 02 00,Tutkimuseettisen toiminnan ohjaus
+13 02 01,Tutkimusluvat
+14,Elinkeino- ja työvoimapalvelut
+14 00,Elinkeino- ja työvoimapalvelujen ohjaus
+14 00 00,Kunnan elinkeino- ja työvoimapolitiikka
+14 00 01,Yhteistyö elinkeinoelämän ja yritysten kanssa
+14 00 02,Yritystoiminnan kehittäminen
+14 01,Yritystoiminnan edistäminen
+14 01 00,Matkailun edistäminen
+14 02,Maaseudun elinkeinotoiminta
+14 02 00,Maatalous
+14 02 01,Metsätalous
+14 02 02,Kalatalous
+14 02 03,Metsästys ja riistatalous
+14 03,Energiantuotanto
+14 03 00,Energiapolitiikka
+14 03 01,Energiantuotanto ja polttoaineet
+14 03 02,"Sähkön myynti, siirto ja jakelu"
+14 03 03,Lämmitys ja jäähdytys
+14 03 04,Energiansäästö ja energianeuvonta
+14 03 05,Energiaan liittyvät ympäristöasiat
+14 03 06,Energiahuoltoalueiden maisemointi ja kunnossapito
+14 04,Vesi- ja jätehuollon järjestäminen ja toteuttaminen
+14 04 00,Vesihuollon järjestäminen
+14 04 01,Jätevesihuollon järjestäminen
+14 04 02,Jätehuollon järjestäminen
+14 05,Työvoimapalvelut
+14 05 00,Työvoimapalveluiden suunnittelu ja kehittäminen
+14 05 01,Työvoimapalveluiden tuottaminen

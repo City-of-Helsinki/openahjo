@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import re
+import csv
 import logging
 import datetime
 from optparse import make_option
@@ -21,6 +23,38 @@ class Command(BaseCommand):
         make_option('--cached', dest='cached', action='store_true', help='cache HTTP requests'),
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
     )
+
+    def store_item(self, meeting, info):
+        try:
+            item = Item.objects.get(register_id=info['register_id'])
+        except Item.DoesNotExist:
+            item = Item(register_id=info['register_id'])
+
+        item.subject = info['subject']
+        s = info['category']
+        m = re.match(r"[\d\s]+", s)
+        cat_id = s[0:m.end()].strip()
+        category = Category.objects.get(origin_id=cat_id)
+        item.category = category
+        item.save()
+
+        try:
+            agenda_item = AgendaItem.objects.get(item=item, meeting=meeting)
+        except AgendaItem.DoesNotExist:
+            agenda_item = AgendaItem(item=item, meeting=meeting)
+        agenda_item.index = info['number']
+        agenda_item.save()
+
+        for idx, p in enumerate(info['content']):
+            args = {'agenda_item': agenda_item, 'index': idx}
+            try:
+                section = ContentSection.objects.get(**args)
+            except ContentSection.DoesNotExist:
+                section = ContentSection(**args)
+            section.type = p[0]
+            section.text = '\n'.join(p[1])
+            section.save()
+        print item.subject
 
     def import_doc(self, info):
         origin_id = info['origin_id']
@@ -55,7 +89,78 @@ class Command(BaseCommand):
         doc.last_modified_time = info['last_modified']
         doc.save()
 
+        committee = Committee.objects.get(origin_id=adoc.committee_id)
+        year = doc.date.year
+        try:
+            meeting = Meeting.objects.get(committee=committee, number=info['meeting_nr'], year=year)
+        except Meeting.DoesNotExist:
+            meeting = Meeting(committee=committee, number=info['meeting_nr'], year=year)
+        meeting.date = doc.date
+        if doc.type == 'minutes':
+            meeting.minutes = True
+        meeting.save()
+
+        for item in adoc.items:
+            self.store_item(meeting, item)
+
+    def import_categories(self):
+        if Category.objects.count():
+            return
+        f = open(os.path.join(self.data_path, 'categories.csv'), 'r')
+        reader = csv.reader(f)
+        for row in reader:
+            (cat_id, cat_name) = row
+            classes = cat_id.split(' ')
+            if len(classes) == 1:
+                parent = None
+            else:
+                parent_id = ' '.join(classes[0:-1])
+                parent = Category.objects.get(origin_id=parent_id)
+            defaults = {'parent': parent, 'name': cat_name}
+            cat, c = Category.objects.get_or_create(origin_id=cat_id, defaults=defaults)
+            print "%-15s %s" % (cat_id, cat_name)
+
+    def import_committees(self):
+        ORG_TYPES = {
+            1: 'Valtuusto',
+            10: 'Esittelijä',
+            11: 'Esittelijä_toimiala',
+            12: 'Viranhaltija',
+            13: 'Kaupunki',
+            2: 'Hallitus',
+            3: 'Johtajisto',
+            4: 'Jaosto',
+            5: 'Lautakunta',
+            6: 'Yleinen',
+            7: 'Toimiala',
+            8: 'Virasto',
+            9: 'Osasto',
+        }
+
+        if Committee.objects.count():
+            return
+        f = open(os.path.join(self.data_path, 'organisaatiokoodit.csv'), 'r')
+        reader = csv.reader(f)
+        # skip header
+        reader.next()
+        for row in reader:
+            (org_id, org_name, org_name_swe, org_type) = row
+            if len(org_id) == 3:
+                org_id = '00' + org_id
+            elif len(org_id) == 4:
+                org_id = '0' + org_id
+            org_type = int(org_type)
+            # Only choose the political committees
+            if org_type not in (1, 2, 3, 4, 5):
+                continue
+            defaults = {'name': org_name}
+            comm, c = Committee.objects.get_or_create(origin_id=org_id, defaults=defaults)
+            print "%10s %55s %15s" % (org_id, org_name, ORG_TYPES[int(org_type)])
+
     def handle(self, **options):
+        self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
+        self.import_committees()
+        self.import_categories()
         self.scanner = AhjoScanner()
         doc_list = self.scanner.scan_documents(cached=options['cached'])
         media_dir = settings.MEDIA_ROOT

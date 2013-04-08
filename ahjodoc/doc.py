@@ -60,13 +60,8 @@ class AhjoDocument(object):
         self.publish_time = datetime.strptime(time_str, '%Y-%m-%d %H:%M')
         self.publish_time.replace(tzinfo=local_timezone)
 
-    SECTION_TYPES = {
-        'paatosehdotus': 'draft resolution',
-        'tiivistelma': 'summary',
-        'esittelija': 'presenter',
-        'paatos': 'decision',
-        'kasittely': 'hearing',
-    }
+        committee_el = self.xml_root.xpath('./YlatunnisteSektio/Paattaja')[0]
+        self.committee_id = committee_el.attrib['PaattajaId']
 
     def parse_text_section(self, section_el):
         children = section_el.getchildren()
@@ -89,25 +84,37 @@ class AhjoDocument(object):
                         assert not pch.getchildren()
                         tail = pch.tail.strip()
                         assert not tail
-                        content.append(clean_text(text))
+                        content.append(u'<p>%s</p>' % clean_text(text))
                 elif p.tag == 'Otsikko':
-                    content.append('<h3>%s</h3>' % clean_text(p.text))
+                    content.append(u'<h3>%s</h3>' % clean_text(p.text))
                 elif p.tag == 'Henkilotietoa':
-                    content.append('<span class="redacted-personal-information">*****</span>')
+                    content.append(u'<span class="redacted-personal-information">*****</span>')
                 elif p.tag == 'XHTML':
                     html_str = ''
                     for pch in p.getchildren():
-                        el = html.fromstring(etree.tostring(pch))
-                        for attr in el.attrib:
+                        html_el = html.fromstring(etree.tostring(pch))
+                        etree.strip_tags(html_el, 'font', 'span')
+                        for child_el in html_el.getiterator():
+                            if 'style' in child_el.attrib:
+                                del child_el.attrib['style']
+                        for attr in html_el.attrib:
                             if attr.startswith('xmlns'):
-                                del el.attrib[attr]
-                        s = etree.tostring(el, encoding='utf8', method='html')
-                        html_str += clean_text(s)
+                                del html_el.attrib[attr]
+                        s = etree.tostring(html_el, encoding='utf8', method='html')
+                        html_str += clean_text(s.decode('utf8'))
                     content.append(html_str)
+        return content
 
+    SECTION_TYPES = {
+        'paatosehdotus': 'draft resolution',
+        'tiivistelma': 'summary',
+        'esittelija': 'presenter',
+        'paatos': 'resolution',
+        'kasittely': 'hearing',
+    }
     def parse_item_content(self, info, item_el):
         section_el_list = item_el.xpath('./SisaltoSektioToisto/SisaltoSektio')
-        print info
+        content = []
         for section_el in section_el_list:
             if 'sisaltosektioTyyppi' in section_el.attrib:
                 s = section_el.attrib['sisaltosektioTyyppi']
@@ -130,8 +137,10 @@ class AhjoDocument(object):
                 # If it's an empty content section, skip it.
                 continue
             paras = self.parse_text_section(text_section)
+            content.append((section_type, paras))
+        info['content'] = content
 
-    def parse_item(self, item_el):
+    def parse_item(self, index, item_el):
         info = {}
         desc_el = item_el.find('KuvailutiedotOpenDocument')
         lang_id = desc_el.find('Kieli').attrib['KieliID']
@@ -145,14 +154,11 @@ class AhjoDocument(object):
 
         info['subject'] = desc_el.find('Otsikko').text.strip()
         if self.type == 'minutes':
-            item_nr = desc_el.find('Pykala')
+            item_nr = int(desc_el.find('Pykala').text)
         else:
-            # FIXME
-            item_nr = None
-        if type(item_nr) != type(None):
-            item_nr = item_nr.text.strip()
+            item_nr = index
         info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
-        info['item_nr'] = item_nr
+        info['number'] = item_nr
         info['category'] = desc_el.find('Tehtavaluokka').text.strip()
         self.parse_item_content(info, item_el)
         self.items.append(info)
@@ -174,8 +180,8 @@ class AhjoDocument(object):
             item_container = 'Esitykset'
         self.items = []
         item_els = self.xml_root.xpath('./%s/Asiakirja' % item_container)
-        for item_el in item_els:
-            self.parse_item(item_el)
+        for idx, item_el in enumerate(item_els):
+            self.parse_item(idx, item_el)
 
     def output_cleaned_xml(self, out_file):
         s = etree.tostring(self.xml_root, encoding='utf8')

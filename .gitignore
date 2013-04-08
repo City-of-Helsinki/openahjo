@@ -1,7 +1,6 @@
 *~
 *.pyc
 .cache
-data/
 *.sqlite
 config.yml
 local_settings.py
