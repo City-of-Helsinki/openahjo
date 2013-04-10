@@ -24,7 +24,7 @@ class Command(BaseCommand):
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
     )
 
-    def store_item(self, meeting, info):
+    def store_item(self, meeting, info, is_minutes):
         try:
             item = Item.objects.get(register_id=info['register_id'])
         except Item.DoesNotExist:
@@ -40,9 +40,14 @@ class Command(BaseCommand):
 
         try:
             agenda_item = AgendaItem.objects.get(item=item, meeting=meeting)
+            if not is_minutes:
+                # Do not allow items from agenda documents to replace
+                # ones from meeting minutes.
+                return
         except AgendaItem.DoesNotExist:
             agenda_item = AgendaItem(item=item, meeting=meeting)
         agenda_item.index = info['number']
+        agenda_item.from_minutes = is_minutes
         agenda_item.save()
 
         for idx, p in enumerate(info['content']):
@@ -101,7 +106,7 @@ class Command(BaseCommand):
         meeting.save()
 
         for item in adoc.items:
-            self.store_item(meeting, item)
+            self.store_item(meeting, item, doc.type == 'minutes')
 
     def import_categories(self):
         if Category.objects.count():

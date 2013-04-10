@@ -65,6 +65,10 @@ class AgendaItemResource(ModelResource):
     class Meta:
         queryset = AgendaItem.objects.all().select_related('item')
         resource_name = 'agenda_item'
+        filtering = {
+            'meeting': ALL_WITH_RELATIONS,
+            'item': ALL_WITH_RELATIONS
+        }
 
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,

@@ -6,3 +6,5 @@ psycopg2
 Django
 django-tastypie
 pytz
+django_compressor
+BeautifulSoup

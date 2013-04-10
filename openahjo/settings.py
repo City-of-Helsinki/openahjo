@@ -83,7 +83,7 @@ STATICFILES_DIRS = (
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-#    'django.contrib.staticfiles.finders.DefaultStorageFinder',
+    'compressor.finders.CompressorFinder',
 )
 
 # Make this unique, and don't share it with anybody.
@@ -129,7 +129,9 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'tastypie',
+    'compressor',
     'ahjodoc',
+    'demo',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -160,6 +162,13 @@ LOGGING = {
         },
     }
 }
+
+COMPRESS_ENABLED = True
+COMPRESS_PRECOMPILERS = (
+    ('text/less', 'lessc {infile} {outfile}'),
+    ('text/coffeescript', 'coffee --compile --stdio'),
+)
+COMPRESS_JS_FILTERS = []
 
 # These live under MEDIA_ROOT
 AHJO_XML_PATH = 'xml'
