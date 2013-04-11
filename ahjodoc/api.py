@@ -41,8 +41,15 @@ class MeetingResource(ModelResource):
         }
 
 class ItemResource(ModelResource):
+    category = fields.ToOneField(CategoryResource, 'category')
+
+    def dehydrate(self, bundle):
+        obj = bundle.obj
+        bundle.data['category_origin_id'] = obj.category.origin_id
+        bundle.data['category_name'] = obj.category.name
+        return bundle
     class Meta:
-        queryset = Item.objects.all()
+        queryset = Item.objects.all().select_related('category')
         resource_name = 'item'
         filtering = {
             'register_id': ALL
