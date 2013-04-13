@@ -8,3 +8,4 @@ django-tastypie
 pytz
 django_compressor
 BeautifulSoup
+django-cors-headers
