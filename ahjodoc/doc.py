@@ -162,6 +162,11 @@ class AhjoDocument(object):
         info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
         info['number'] = item_nr
         info['category'] = desc_el.find('Tehtavaluokka').text.strip()
+        kw_list = []
+        for kw_el in desc_el.findall('Asiasanat'):
+            kw_list.append(clean_text(kw_el.text))
+        info['keywords'] = kw_list
+
         self.parse_item_content(info, item_el)
         self.items.append(info)
 

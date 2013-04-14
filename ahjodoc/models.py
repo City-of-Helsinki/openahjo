@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.db import models
+from django.contrib.gis.db import models
 
 class Committee(models.Model):
     name = models.CharField(max_length=100)
@@ -41,10 +41,18 @@ class Item(models.Model):
     subject = models.CharField(max_length=500)
     category = models.ForeignKey(Category, db_index=True)
 
+class ItemGeometry(models.Model):
+    item = models.ForeignKey(Item)
+    name = models.CharField(max_length=100)
+    geometry = models.GeometryField()    
+
+    objects = models.GeoManager()
+
 class AgendaItem(models.Model):
     meeting = models.ForeignKey(Meeting, db_index=True)
     item = models.ForeignKey(Item, db_index=True)
     index = models.PositiveIntegerField()
+    from_minutes = models.BooleanField()
 
     class Meta:
         unique_together = (('meeting', 'item'), ('meeting', 'index'))

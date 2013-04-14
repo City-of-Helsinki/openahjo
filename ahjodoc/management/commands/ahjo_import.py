@@ -13,6 +13,7 @@ from django.conf import settings
 from ahjodoc.scanner import AhjoScanner
 from ahjodoc.doc import AhjoDocument
 from ahjodoc.models import *
+from ahjodoc.geo import AhjoGeocoder
 
 #parser.add_argument('--config', dest='config', action='store', help='config file location (YAML format)')
 #parser.add_argument()
@@ -23,6 +24,27 @@ class Command(BaseCommand):
         make_option('--cached', dest='cached', action='store_true', help='cache HTTP requests'),
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
     )
+
+    def geocode_item(self, item, info):
+        if not self.geocoder:
+            return
+        # Attempt to geocode first from subject and keywords.
+        # If no matches are found, attempt to geocode from content text.
+        text_list = []
+        text_list.append(info['subject'])
+        for kw in info['keywords']:
+            text_list.append(kw)
+        markers = self.geocoder.geocode_from_text_list(text_list)
+        if not markers:
+            pass
+        if markers:
+            for m in markers:
+                try:
+                    igeom = ItemGeometry.objects.get(item=item, name=m['name'])
+                except ItemGeometry.DoesNotExist:
+                    igeom = ItemGeometry(item=item, name=m['name'])
+                igeom.geometry = m['location']
+                igeom.save()
 
     def store_item(self, meeting, info, is_minutes):
         try:
@@ -37,6 +59,8 @@ class Command(BaseCommand):
         category = Category.objects.get(origin_id=cat_id)
         item.category = category
         item.save()
+
+        self.geocode_item(item, info)
 
         try:
             agenda_item = AgendaItem.objects.get(item=item, meeting=meeting)
@@ -164,6 +188,16 @@ class Command(BaseCommand):
 
     def handle(self, **options):
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
+        addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
+        if os.path.isfile(addr_fname):
+            addr_f = open(addr_fname, 'r')
+            self.geocoder = AhjoGeocoder()
+            self.geocoder.load_address_database(addr_f)
+            addr_f.close()
+        else:
+            print "Address database not found; geocoder not available."
+            self.geocoder = None
+
         self.import_committees()
         self.import_categories()
         self.scanner = AhjoScanner()
@@ -186,3 +220,8 @@ class Command(BaseCommand):
         else:
             for info in doc_list:
                 self.import_doc(info)
+
+        if self.geocoder and self.geocoder.no_match_addresses:
+            print "No coordinate match found for addresses:"
+            for adr in self.geocoder.no_match_addresses:
+                print adr
