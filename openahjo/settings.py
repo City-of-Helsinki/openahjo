@@ -133,7 +133,7 @@ INSTALLED_APPS = (
     'tastypie',
     'compressor',
     'ahjodoc',
-    'demo',
+    'ui',
 )
 
 # A sample logging configuration. The only tangible logging

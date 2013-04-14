@@ -37,11 +37,35 @@ show_meeting = (meeting, $parent) ->
         $parent.after $list
         $list.slideDown()
 
-$.getJSON '/v1/meeting/', (data) ->
+###$.getJSON '/v1/meeting/', (data) ->
     $list = $('#meeting-list')
     for obj in data.objects
       do (obj) ->
-        $el = $('<button class="btn btn-block">' + obj.committee_name + ' ' + obj.number + '/' + obj.year + '</button>')
+        $el = $('<button class="btn btn-primary btn-block">' + obj.committee_name + ' ' + obj.number + '/' + obj.year + '</button>')
         $list.append $el
         $el.click (ev) ->
             show_meeting obj, $el
+###
+
+map = L.map('map').setView [60.170833, 24.9375], 12
+L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
+    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+    maxZoom: 18
+    #key: '8831a03368004097ba8ddc389ec30633'
+    key: 'BC9A493B41014CAABB98F0471D759707'
+    style: 998
+).addTo(map);
+
+$.getJSON '/v1/item/', {limit: 1000}, (data) ->
+    for item in data.objects
+        if not item.geometries.length
+            continue
+        for geom in item.geometries
+            coords = geom.coordinates
+            marker = L.marker [coords[1], coords[0]]
+            marker.bindPopup "<b>#{geom.name}</b><br>#{item.subject}"
+            marker.addTo map
+            console.log coords
+        console.log item
+
+console.log "here"
