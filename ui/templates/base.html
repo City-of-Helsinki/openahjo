@@ -61,6 +61,7 @@
 
         <script>
             L.Icon.Default.imagePath = '{% static "img/" %}';
+            API_PREFIX = '{{ API_PREFIX }}';
         </script>
         {% compress js %}
         <script src="{% static "js/main.coffee" %}" type="text/coffeescript"></script>

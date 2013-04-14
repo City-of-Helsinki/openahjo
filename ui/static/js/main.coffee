@@ -56,7 +56,7 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
     style: 998
 ).addTo(map);
 
-$.getJSON '/v1/item/', {limit: 1000}, (data) ->
+$.getJSON API_PREFIX + 'v1/item/', {limit: 1000}, (data) ->
     for item in data.objects
         if not item.geometries.length
             continue
