@@ -1,6 +1,9 @@
+import json
+
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
 
 class MeetingDocumentResource(ModelResource):
@@ -47,12 +50,28 @@ class ItemResource(ModelResource):
         obj = bundle.obj
         bundle.data['category_origin_id'] = obj.category.origin_id
         bundle.data['category_name'] = obj.category.name
+        geometries = []
+        for geom in obj.itemgeometry_set.all():
+            d = json.loads(geom.geometry.geojson)
+            d['name'] = geom.name
+            geometries.append(d)
+        bundle.data['geometries'] = geometries
         return bundle
     class Meta:
         queryset = Item.objects.all().select_related('category')
         resource_name = 'item'
         filtering = {
             'register_id': ALL
+        }
+
+class ItemGeometryResource(ModelResource):
+    item = fields.ToOneField(ItemResource, 'item')
+    
+    class Meta:
+        queryset = ItemGeometry.objects.all()
+        resource_name = 'item_geometry'
+        filtering = {
+            'item': ALL_WITH_RELATIONS
         }
     
 class AgendaItemResource(ModelResource):
