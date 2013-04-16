@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.gis.db import models
+from django.utils.text import slugify
 
 class Committee(models.Model):
     name = models.CharField(max_length=100)
@@ -38,8 +39,16 @@ class Category(models.Model):
 
 class Item(models.Model):
     register_id = models.CharField(max_length=20, db_index=True, unique=True)
+    slug = models.CharField(max_length=50, db_index=True, unique=True)
     subject = models.CharField(max_length=500)
     category = models.ForeignKey(Category, db_index=True)
+
+    def save(self, *args, **kwargs):
+        if not self.pk and not self.slug:
+            self.slug = slugify(unicode(self.register_id))
+        return super(Item, self).save(*args, **kwargs)
+    def __unicode__(self):
+        return "%s: %s" % (self.register_id, self.subject)
 
 class ItemGeometry(models.Model):
     item = models.ForeignKey(Item)
