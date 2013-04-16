@@ -49,7 +49,6 @@ class AhjoGeocoder(object):
                 continue
             num = int(m.groups()[0])
 
-            print "\t%s %d" % (street_name, num)
             pnt = self.geocode_address(street_name, num)
             if pnt:
                 points[pnt['name']] = pnt
