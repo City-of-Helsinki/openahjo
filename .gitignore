@@ -4,5 +4,5 @@
 *.sqlite
 config.yml
 local_settings.py
-static/
+static/CACHE
 media/

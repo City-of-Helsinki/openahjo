@@ -1,3 +1,5 @@
+GEOCODER_BASE = "http://dev.hel.fi/geocoder/v1/"
+
 TRANSLATIONS = {
     "draft resolution": "Päätösesitys"
     "presenter": "Esittelijä"
@@ -55,17 +57,63 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
     key: 'BC9A493B41014CAABB98F0471D759707'
     style: 998
 ).addTo(map);
+window.my_map = map
 
-$.getJSON API_PREFIX + 'v1/item/', {limit: 1000}, (data) ->
-    for item in data.objects
-        if not item.geometries.length
-            continue
-        for geom in item.geometries
-            coords = geom.coordinates
-            marker = L.marker [coords[1], coords[0]]
-            marker.bindPopup "<b>#{geom.name}</b><br>#{item.subject}"
-            marker.addTo map
-            console.log coords
-        console.log item
+active_borders = null
 
-console.log "here"
+markers = []
+refresh_items = (bounds) ->
+    params = {limit: 1000}
+    if bounds
+        params['bbox'] = bounds.toBBoxString()
+    for m in markers
+        map.removeLayer m
+    $.getJSON API_PREFIX + 'v1/item/', params, (data) ->
+        for item in data.objects
+            if not item.geometries.length
+                continue
+            for geom in item.geometries
+                coords = geom.coordinates
+                ll = new L.LatLng coords[1], coords[0]
+                if active_borders
+                    if not leafletPip.pointInLayer(ll, active_borders).length
+                        continue
+                marker = L.marker ll
+                marker.bindPopup "<b>#{geom.name}</b><br><a href='#'>#{item.subject}</a>"
+                marker.addTo map
+                markers.push marker
+
+input_district_map = null
+$("#district-input").typeahead(
+    source: (query, process_cb) ->
+        $.getJSON(GEOCODER_BASE + 'district/', {input: query}, (data) ->
+            objs = data.objects
+            ret = []
+            input_addr_map = []
+            for obj in objs
+                ret.push(obj.name)
+            input_district_map = objs
+            process_cb(ret)
+        )
+)
+
+$("#district-input").on 'change', ->
+    match_obj = null
+    for obj in input_district_map
+        if obj.name == $(this).val()
+            match_obj = obj
+            break
+    if not match_obj
+        return
+    if active_borders
+        map.removeLayer active_borders
+    borders = L.geoJson match_obj.borders,
+        style:
+            weight: 2
+    borders.bindPopup match_obj.name
+    borders.addTo map
+    active_borders = borders
+    map.fitBounds borders.getBounds()
+    refresh_items active_borders.getBounds()
+
+refresh_items()

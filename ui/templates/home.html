@@ -1,7 +1,27 @@
 {% extends "base.html" %}
 
 {% block content %}
+<div class="hero-unit">
+    <h1 style="font-size: 48px">Helsingin avoin päätöksenteko</h1>
+    <p>Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset. Mitä naapurustossasi tapahtuu? Kuka päättää, mitä päätetään ja millä perusteella?</p>
+</div>
 
-<div id="map" style="height: 600px"></div>
+<div class="row">
+    <div class="span3">
+        <label>Kaupunginosa</label>
+        <input id="district-input" type="text" placeholder="Syötä kaupunginosa...">
+    </div>
+    <div class="span3">
+        <label>Tehtäväluokka</label>
+        <input type="text" placeholder="Syötä tehtäväluokka...">
+    </div>
+    <div class="span3">
+        <label>Hakusana</label>
+        <input type="text" placeholder="Syötä hakusana...">
+    </div>
+</div>
 
+<div style="margin-top: 10px; margin-bottom: 40px" class="row">
+    <div class="span9" id="map" style="height: 300px"></div>
+</div>
 {% endblock %}

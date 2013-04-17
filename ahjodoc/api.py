@@ -1,7 +1,8 @@
 import json
-
+from django.contrib.gis.geos import Polygon
 from tastypie import fields
 from tastypie.resources import ModelResource
+from tastypie.exceptions import InvalidFilterError
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
@@ -43,8 +44,33 @@ class MeetingResource(ModelResource):
             'committee': ALL_WITH_RELATIONS
         }
 
+def build_bbox_filter(bbox_val, field_name):
+    points = bbox_val.split(',')
+    if len(points) != 4:
+        raise InvalidFilterError("bbox must be in format 'left,bottom,right,top'")
+    try:
+        points = [float(p) for p in points]
+    except ValueError:
+        raise InvalidFilterError("bbox values must be floating point")
+    poly = Polygon.from_bbox(points)
+    return {"%s__within" % field_name: poly}
+
 class ItemResource(ModelResource):
     category = fields.ToOneField(CategoryResource, 'category')
+
+    def apply_filters(self, request, applicable_filters):
+        ret = super(ItemResource, self).apply_filters(request, applicable_filters)
+        if 'itemgeometry__in' in applicable_filters:
+            ret = ret.distinct()
+        return ret
+
+    def build_filters(self, filters=None):
+        orm_filters = super(ItemResource, self).build_filters(filters)
+        if filters and 'bbox' in filters:
+            bbox_filter = build_bbox_filter(filters['bbox'], 'geometry')
+            geom_list = ItemGeometry.objects.filter(**bbox_filter)
+            orm_filters['itemgeometry__in'] = geom_list
+        return orm_filters
 
     def dehydrate(self, bundle):
         obj = bundle.obj
@@ -66,7 +92,7 @@ class ItemResource(ModelResource):
 
 class ItemGeometryResource(ModelResource):
     item = fields.ToOneField(ItemResource, 'item')
-    
+
     class Meta:
         queryset = ItemGeometry.objects.all()
         resource_name = 'item_geometry'
