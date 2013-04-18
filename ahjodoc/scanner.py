@@ -20,7 +20,7 @@ class AhjoScanner(object):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-    def scan_dir(self, path):
+    def scan_dir(self, path, committee_id):
         r = requests.get(URL_BASE + path)
         if r.status_code != 200:
             raise Exception("Failed to read directory '%s'" % path)
@@ -33,7 +33,7 @@ class AhjoScanner(object):
                 continue
             fname = link.split('/')[-1]
             fname = fname.replace('.zip', '')
-            FIELD_NAMES = ("org", "date", "committee", "meeting_nr", "doc_type", "language")
+            FIELD_NAMES = ("org", "date", "committee", "meeting_nr", "doc_type_id", "language")
             fields = fname.split('%20')
             info = {}
             if len(fields) == len(FIELD_NAMES) - 1:
@@ -42,13 +42,18 @@ class AhjoScanner(object):
             for idx, f in enumerate(FIELD_NAMES):
                 info[f] = fields[idx]
             info['meeting_nr'] = int(info['meeting_nr'])
+            info['committee_id'] = committee_id
             # Skip Swedish documents
             if info['language'] != 'Su':
                 continue
+
+            DOC_TYPES = {'Pk': 'minutes', 'El': 'agenda'}
+            info['doc_type'] = DOC_TYPES[info['doc_type_id']]
+
             # Fetch timestamp from directory listing
             ts_text = link_el.getprevious().tail.split('    ')[0].strip()
             time = datetime.strptime(ts_text, "%m/%d/%Y %I:%M %p")
-            time.replace(tzinfo=local_timezone)
+            time = time.replace(tzinfo=local_timezone)
             info['last_modified'] = time
 
             info['url'] = URL_BASE + link
@@ -71,13 +76,14 @@ class AhjoScanner(object):
             link = link_el.attrib['href']
             if not link.startswith('/files'):
                 continue
-            dir_list = self.scan_dir(link)
+            committee_id = link_el.text.split('_')[-1].strip()
+            dir_list = self.scan_dir(link, committee_id)
             info_list = info_list + dir_list
         self.doc_list = info_list
         return info_list
 
     def generate_doc_id(self, info):
-        s = "%s_%s_%d_%s" % (info['org'], info['committee'], info['meeting_nr'], info['doc_type'])
+        s = "%s_%s_%d_%s" % (info['org'], info['committee'], info['meeting_nr'], info['doc_type_id'])
         return s
 
     def download_document(self, info):

@@ -6,7 +6,7 @@ import logging
 from pytz import timezone
 from datetime import datetime
 
-local_timezone = timezone('Europe/Helsinki')
+local_timezone = timezone('EET')
 
 class ParseError(Exception):
     pass
@@ -57,8 +57,7 @@ class AhjoDocument(object):
         date = desc_info.find('JulkaisuEsilletulopaiva').text
         time = desc_info.find('JulkaisuEsilletuloklo').text
         time_str = "%s %s" % (date, time)
-        self.publish_time = datetime.strptime(time_str, '%Y-%m-%d %H:%M')
-        self.publish_time.replace(tzinfo=local_timezone)
+        self.publish_time = datetime.strptime(time_str, '%Y-%m-%d %H:%M').replace(tzinfo=local_timezone)
 
         committee_el = self.xml_root.xpath('./YlatunnisteSektio/Paattaja')[0]
         self.committee_id = committee_el.attrib['PaattajaId']

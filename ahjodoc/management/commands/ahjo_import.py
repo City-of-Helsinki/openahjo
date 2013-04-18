@@ -23,6 +23,7 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--cached', dest='cached', action='store_true', help='cache HTTP requests'),
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
+        make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
     )
 
     def geocode_item(self, item, info):
@@ -46,7 +47,7 @@ class Command(BaseCommand):
                 igeom.geometry = m['location']
                 igeom.save()
 
-    def store_item(self, meeting, info, is_minutes):
+    def store_item(self, meeting, meeting_doc, info):
         try:
             item = Item.objects.get(register_id=info['register_id'])
         except Item.DoesNotExist:
@@ -64,14 +65,11 @@ class Command(BaseCommand):
 
         try:
             agenda_item = AgendaItem.objects.get(item=item, meeting=meeting)
-            if not is_minutes:
-                # Do not allow items from agenda documents to replace
-                # ones from meeting minutes.
-                return
         except AgendaItem.DoesNotExist:
             agenda_item = AgendaItem(item=item, meeting=meeting)
         agenda_item.index = info['number']
-        agenda_item.from_minutes = is_minutes
+        agenda_item.from_minutes = meeting_doc.type == 'minutes'
+        agenda_item.last_modified_time = meeting_doc.last_modified_time
         agenda_item.save()
 
         for idx, p in enumerate(info['content']):
@@ -89,13 +87,33 @@ class Command(BaseCommand):
         origin_id = info['origin_id']
         try:
             doc = MeetingDocument.objects.get(origin_id=origin_id)
+            if not self.full_update and doc.last_modified_time >= info['last_modified']:
+                self.logger.info("Skipping up-to-date document")
+                return
         except MeetingDocument.DoesNotExist:
             print "Adding new document %s" % origin_id
             doc = MeetingDocument(origin_id=origin_id)
+
+        d = [int(x) for x in info['date'].split('-')]
+        doc_date = datetime.date(*d)
+
+        committee = Committee.objects.get(origin_id=info['committee_id'])
+        args = {'committee': committee, 'number': info['meeting_nr'],
+                'year': doc_date.year}
+        try:
+            meeting = Meeting.objects.get(**args)
+        except Meeting.DoesNotExist:
+            meeting = Meeting(**args)
+            meeting.minutes = False
+            meeting.date = info['date']
+            meeting.save()
+
+        doc.meeting = meeting
         doc.organisation = info['org']
         doc.committee = info['committee']
-        d = [int(x) for x in info['date'].split('-')]
-        doc.date = datetime.date(*d)
+        doc.date = doc_date
+        if str(meeting.date) != str(doc.date):
+            raise Exception("Date mismatch between doc and meeting (%s vs. %s)" % (meeting.date, doc.date))
         doc.meeting_nr = info['meeting_nr']
         doc.origin_url = info['url']
 
@@ -108,9 +126,9 @@ class Command(BaseCommand):
         xmlf = open(os.path.join(self.xml_path, fname), 'w')
         doc.type = adoc.type
         if doc.type == 'agenda':
-            assert info['doc_type'] == 'El'
+            assert info['doc_type'] == 'agenda'
         elif doc.type == 'minutes':
-            assert info['doc_type'] == 'Pk'
+            assert info['doc_type'] == 'minutes'
         adoc.output_cleaned_xml(xmlf)
         xmlf.close()
         doc.xml_file = os.path.join(settings.AHJO_XML_PATH, fname)
@@ -118,19 +136,19 @@ class Command(BaseCommand):
         doc.last_modified_time = info['last_modified']
         doc.save()
 
-        committee = Committee.objects.get(origin_id=adoc.committee_id)
-        year = doc.date.year
-        try:
-            meeting = Meeting.objects.get(committee=committee, number=info['meeting_nr'], year=year)
-        except Meeting.DoesNotExist:
-            meeting = Meeting(committee=committee, number=info['meeting_nr'], year=year)
-        meeting.date = doc.date
-        if doc.type == 'minutes':
-            meeting.minutes = True
-        meeting.save()
+        if info['committee_id'] != adoc.committee_id:
+            raise Exception("Committee id mismatch (%s vs. %s)" % (info['committee_id'], adoc.committee_id))
+
+        if meeting.minutes and info['doc_type'] == 'agenda':
+            self.logger.info("Skipping agenda doc because minutes already exists")
+            return
 
         for item in adoc.items:
-            self.store_item(meeting, item, doc.type == 'minutes')
+            self.store_item(meeting, doc, item)
+
+        if doc.type == 'minutes':
+            meeting.minutes = True
+            meeting.save()
 
     def import_categories(self):
         if Category.objects.count():
@@ -187,6 +205,8 @@ class Command(BaseCommand):
             print "%10s %55s %15s" % (org_id, org_name, ORG_TYPES[int(org_type)])
 
     def handle(self, **options):
+        self.logger = logging.getLogger(__name__)
+        self.full_update = options['full_update']
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
         addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
         if os.path.isfile(addr_fname):
@@ -223,5 +243,5 @@ class Command(BaseCommand):
 
         if self.geocoder and self.geocoder.no_match_addresses:
             print "No coordinate match found for addresses:"
-            for adr in self.geocoder.no_match_addresses:
+            for adr in set(self.geocoder.no_match_addresses):
                 print adr

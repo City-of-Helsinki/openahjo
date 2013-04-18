@@ -19,14 +19,12 @@ class Meeting(models.Model):
         unique_together = (('committee', 'date'), ('committee', 'year', 'number'))
 
 class MeetingDocument(models.Model):
-    origin_id = models.CharField(max_length=50)
+    meeting = models.ForeignKey(Meeting)
+    origin_id = models.CharField(max_length=50, unique=True)
     # Either 'agenda' or 'minutes'
     type = models.CharField(max_length=20)
     organisation = models.CharField(max_length=20)
-    # FIXME: refer to Meeting instead
-    committee = models.CharField(max_length=20)
-    date = models.DateField()
-    meeting_nr = models.PositiveIntegerField()
+
     last_modified_time = models.DateTimeField()
     publish_time = models.DateTimeField()
     origin_url = models.URLField()
@@ -62,6 +60,7 @@ class AgendaItem(models.Model):
     item = models.ForeignKey(Item, db_index=True)
     index = models.PositiveIntegerField()
     from_minutes = models.BooleanField()
+    last_modified_time = models.DateTimeField(db_index=True)
 
     class Meta:
         unique_together = (('meeting', 'item'), ('meeting', 'index'))

@@ -7,18 +7,6 @@ from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
 
-class MeetingDocumentResource(ModelResource):
-    class Meta:
-        queryset = MeetingDocument.objects.order_by('-last_modified_time')
-        resource_name = 'meeting_document'
-        filtering = {
-            'type': ALL,
-            'committee': ALL,
-            'publish_time': ALL,
-            'meeting_nr': ALL,
-            'date': ALL
-        }
-
 class CommitteeResource(ModelResource):
     class Meta:
         queryset = Committee.objects.all()
@@ -42,6 +30,18 @@ class MeetingResource(ModelResource):
         resource_name = 'meeting'
         filtering = {
             'committee': ALL_WITH_RELATIONS
+        }
+
+class MeetingDocumentResource(ModelResource):
+    meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
+    class Meta:
+        queryset = MeetingDocument.objects.order_by('-last_modified_time')
+        resource_name = 'meeting_document'
+        filtering = {
+            'type': ALL,
+            'meeting': ALL_WITH_RELATIONS,
+            'publish_time': ALL,
+            'date': ALL
         }
 
 def build_bbox_filter(bbox_val, field_name):
@@ -121,6 +121,7 @@ class AgendaItemResource(ModelResource):
             'meeting': ALL_WITH_RELATIONS,
             'item': ALL_WITH_RELATIONS
         }
+        ordering = ('last_modified_time',)
 
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,
