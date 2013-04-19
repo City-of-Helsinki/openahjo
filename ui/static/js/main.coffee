@@ -1,5 +1,3 @@
-GEOCODER_BASE = "http://dev.hel.fi/geocoder/v1/"
-
 TRANSLATIONS = {
     "draft resolution": "Päätösesitys"
     "presenter": "Esittelijä"
@@ -86,7 +84,7 @@ refresh_items = (bounds) ->
 input_district_map = null
 $("#district-input").typeahead(
     source: (query, process_cb) ->
-        $.getJSON(GEOCODER_BASE + 'district/', {input: query}, (data) ->
+        $.getJSON(GEOCODER_API_URL + 'v1/district/', {input: query}, (data) ->
             objs = data.objects
             ret = []
             input_addr_map = []

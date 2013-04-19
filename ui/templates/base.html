@@ -17,6 +17,13 @@
         {% compress css %}
         <link rel="stylesheet" href="{% static "css/main.less" %}" type="text/less">
         {% endcompress %}
+
+        <script>
+            API_PREFIX = '{{ API_PREFIX }}';
+            GEOCODER_API_URL = '{{ GEOCODER_API_URL }}';
+            DEBUG = {{ DEBUG }};
+        </script>
+
         {% compress js %}
         <script src="{% static "js/vendor/underscore.min.js" %}"></script>
         <script src="{% static "js/vendor/backbone.min.js" %}"></script>
@@ -63,8 +70,8 @@
 
         <script>
             L.Icon.Default.imagePath = '{% static "img/" %}';
-            API_PREFIX = '{{ API_PREFIX }}';
         </script>
+
         {% compress js %}
         <script src="{% static "js/main.coffee" %}" type="text/coffeescript"></script>
         {% endcompress %}
