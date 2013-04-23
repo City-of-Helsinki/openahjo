@@ -11,7 +11,7 @@ from django import db
 from django.conf import settings
 
 from ahjodoc.scanner import AhjoScanner
-from ahjodoc.doc import AhjoDocument
+from ahjodoc.doc import AhjoDocument, ParseError
 from ahjodoc.models import *
 from ahjodoc.geo import AhjoGeocoder
 
@@ -25,6 +25,10 @@ class Command(BaseCommand):
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
     )
+
+    def __init__(self):
+        self.failed_import_list = []
+        return super(Command, self).__init__()
 
     def geocode_item(self, item, info):
         if not self.geocoder:
@@ -119,7 +123,12 @@ class Command(BaseCommand):
 
         adoc = AhjoDocument()
         zipf = self.scanner.download_document(info)
-        adoc.import_from_zip(zipf)
+        try:
+            adoc.import_from_zip(zipf)
+        except ParseError as e:
+            self.logger.error("Error importing document %s" % origin_id, exc_info=e)
+            self.failed_import_list.append(origin_id)
+            return
         zipf.close()
         fname = info['origin_id'] + '.xml'
         print "Storing cleaned XML to %s" % fname
@@ -245,3 +254,7 @@ class Command(BaseCommand):
             print "No coordinate match found for addresses:"
             for adr in set(self.geocoder.no_match_addresses):
                 print adr
+        if self.failed_import_list:
+            print "Importing failed for following documents:"
+            for doc in self.failed_import_list:
+                print doc

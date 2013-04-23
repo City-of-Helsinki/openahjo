@@ -31,6 +31,8 @@
         <script src="{% static "js/vendor/bootstrap.min.js" %}"></script>
         <script src="{% static "js/vendor/modernizr-2.6.2.min.js" %}"></script>
         <script src="{% static "js/vendor/console.min.js" %}"></script>
+        <script src="{% static "js/vendor/ICanHaz.min.js" %}"></script>
+        <script src="{% static "js/vendor/moment.min.js" %}"></script>
         {% endcompress %}
         {% compress js %}
         <script src="{% static "js/vendor/leaflet.js" %}"></script>
@@ -71,9 +73,5 @@
         <script>
             L.Icon.Default.imagePath = '{% static "img/" %}';
         </script>
-
-        {% compress js %}
-        <script src="{% static "js/main.coffee" %}" type="text/coffeescript"></script>
-        {% endcompress %}
     </body>
 </html>

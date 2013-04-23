@@ -43,6 +43,7 @@ class MeetingDocumentResource(ModelResource):
             'publish_time': ALL,
             'date': ALL
         }
+        ordering = ('date', 'publish_time')
 
 def build_bbox_filter(bbox_val, field_name):
     points = bbox_val.split(',')
@@ -87,7 +88,8 @@ class ItemResource(ModelResource):
         queryset = Item.objects.all().select_related('category')
         resource_name = 'item'
         filtering = {
-            'register_id': ALL
+            'register_id': ALL,
+            'slug': ALL,
         }
 
 class ItemGeometryResource(ModelResource):
@@ -101,7 +103,7 @@ class ItemGeometryResource(ModelResource):
         }
     
 class AgendaItemResource(ModelResource):
-    meeting = fields.ToOneField(MeetingResource, 'meeting')
+    meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
     item = fields.ToOneField(ItemResource, 'item', full=True)
 
     def dehydrate(self, bundle):
@@ -121,7 +123,7 @@ class AgendaItemResource(ModelResource):
             'meeting': ALL_WITH_RELATIONS,
             'item': ALL_WITH_RELATIONS
         }
-        ordering = ('last_modified_time',)
+        ordering = ('last_modified_time', 'meeting')
 
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,

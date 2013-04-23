@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load compress static %}
 
 {% block content %}
 <div class="hero-unit">
@@ -24,4 +25,12 @@
 <div style="margin-top: 10px; margin-bottom: 40px" class="row">
     <div class="span9" id="map" style="height: 300px"></div>
 </div>
+
+<script>
+    window.active_item_id = {{item.id}};
+</script>
+{% compress js %}
+<script src="{% static "js/home.coffee" %}" type="text/coffeescript"></script>
+{% endcompress %}
+
 {% endblock %}

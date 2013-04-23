@@ -1,3 +1,4 @@
+###
 TRANSLATIONS = {
     "draft resolution": "Päätösesitys"
     "presenter": "Esittelijä"
@@ -37,7 +38,7 @@ show_meeting = (meeting, $parent) ->
         $parent.after $list
         $list.slideDown()
 
-###$.getJSON '/v1/meeting/', (data) ->
+$.getJSON '/v1/meeting/', (data) ->
     $list = $('#meeting-list')
     for obj in data.objects
       do (obj) ->
@@ -51,7 +52,6 @@ map = L.map('map').setView [60.170833, 24.9375], 12
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
     maxZoom: 18
-    #key: '8831a03368004097ba8ddc389ec30633'
     key: 'BC9A493B41014CAABB98F0471D759707'
     style: 998
 ).addTo(map);
@@ -77,7 +77,8 @@ refresh_items = (bounds) ->
                     if not leafletPip.pointInLayer(ll, active_borders).length
                         continue
                 marker = L.marker ll
-                marker.bindPopup "<b>#{geom.name}</b><br><a href='#'>#{item.subject}</a>"
+                link = "#{API_PREFIX}item/#{item.slug}/" 
+                marker.bindPopup "<b>#{geom.name}</b><br><a href='#{link}'>#{item.subject}</a>"
                 marker.addTo map
                 markers.push marker
 

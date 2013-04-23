@@ -65,8 +65,6 @@ class AhjoScanner(object):
         if cached:
             requests_cache.install_cache()
         r = requests.get(URL_BASE + '/files/')
-        if cached:
-            requests_cache.uninstall_cache()
         if r.status_code != 200:
             raise Exception("Directory read failed")
         root = html.fromstring(r.content)
@@ -80,6 +78,8 @@ class AhjoScanner(object):
             dir_list = self.scan_dir(link, committee_id)
             info_list = info_list + dir_list
         self.doc_list = info_list
+        if cached:
+            requests_cache.uninstall_cache()
         return info_list
 
     def generate_doc_id(self, info):

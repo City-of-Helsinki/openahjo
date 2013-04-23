@@ -1,5 +1,50 @@
 {% extends "base.html" %}
-
+{% load i18n compress static %}
 {% block content %}
+
+<div id="item-details" class="container-fluid">
+</div>
+
+{% verbatim %}
+<script id="item_template" type="text/html">
+    <div class="row-fluid item-details">
+        <div class="span3">
+            <ul class="nav nav-list" id="meeting-list">
+                <li class="nav-header">Käsittelyhistoria</li>
+                {{#item.past_list}}
+                <li {{#is_active}}class="active"{{/is_active}}><a class="meeting-link" data-agenda-item-id="{{id}}" href="#"><div class="committee">{{meeting.committee_name}}</div><div class="date">{{meeting.date_str}}</div></a></li>
+                {{/item.past_list}}
+                <li class="nav-header">Tulevat käsittelyt</li>
+                {{#item.future_list}}
+                <li {{#is_active}}class="active"{{/is_active}}><a href="#">{{meeting.date_str}}<br/>{{meeting.committee_name}}</a></li>
+                {{/item.future_list}}
+            </ul>
+        </div>
+        <div class="span6">
+            <h1 class="subject">{{item.subject}}</h1>
+            <hr />
+            {{#content}}
+            <h2>{{type_str}}</h2>
+            {{{text}}}
+            {{/content}}
+        </div>
+        <div class="span3">
+            <dl>
+                <dt>Käsittelypäivä</dt>
+                <dd>{{meeting.date_str}}</dd>
+            </dl>
+        </div>
+    </div>
+</script>
+{% endverbatim %}
+
+
+<script>
+    window.active_item_id = {{item.id}};
+</script>
+
+{% compress js %}
+<script src="{% static "js/item.coffee" %}" type="text/coffeescript"></script>
+{% endcompress %}
 
 {% endblock %}

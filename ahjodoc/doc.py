@@ -197,7 +197,12 @@ class AhjoDocument(object):
         zipf = zipfile.ZipFile(in_file)
         name_list = zipf.namelist()
         xml_names = [x for x in name_list if x.endswith('.xml')]
-        if len(xml_names) != 1:
+        if len(xml_names) == 0:
+            # FIXME: Workaround for a silly bug
+            xml_names = [x for x in name_list if re.match(r'\w+\d+xml_', x)]
+            if len(xml_names) != 1:
+                raise ParseError("No XML file in Ahjo ZIP file")
+        if len(xml_names) > 1:
             raise ParseError("Too many XML files in Ahjo ZIP file")
         xml_file = zipf.open(xml_names[0])
         xml_s = xml_file.read()
