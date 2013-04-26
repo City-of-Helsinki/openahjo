@@ -6,6 +6,7 @@ from tastypie.exceptions import InvalidFilterError
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
+from django.utils.html import strip_tags
 
 class CommitteeResource(ModelResource):
     class Meta:
@@ -77,6 +78,18 @@ class ItemResource(ModelResource):
         obj = bundle.obj
         bundle.data['category_origin_id'] = obj.category.origin_id
         bundle.data['category_name'] = obj.category.name
+        content_filter = ContentSection.objects.filter(agenda_item__item=obj).order_by('-agenda_item__meeting__date')
+        content = content_filter.filter(type="summary")
+        if not content:
+            content = content_filter.filter(type="presenter")
+        if content:
+            text = content[0].text
+            idx = text.find('</p>')
+            if idx >= 0:
+                text = text[0:idx+4]
+            if len(text) > 500:
+                text = text[0:1000]
+            bundle.data['summary'] = strip_tags(text)
         geometries = []
         for geom in obj.itemgeometry_set.all():
             d = json.loads(geom.geometry.geojson)

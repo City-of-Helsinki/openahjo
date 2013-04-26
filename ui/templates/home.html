@@ -2,9 +2,13 @@
 {% load compress static %}
 
 {% block content %}
-<div class="hero-unit">
-    <h1 style="font-size: 48px">Helsingin avoin päätöksenteko</h1>
-    <p>Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset. Mitä naapurustossasi tapahtuu? Kuka päättää, mitä päätetään ja millä perusteella?</p>
+<div class="row">
+    <div class="">
+        <div class="hero-unit">
+            <h1 style="font-size: 48px">Helsingin avoin päätöksenteko</h1>
+            <p>Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset. Mitä naapurustossasi tapahtuu? Kuka päättää, mitä päätetään ja millä perusteella?</p>
+        </div>
+    </div>
 </div>
 
 <div class="row">
@@ -14,11 +18,11 @@
     </div>
     <div class="span3">
         <label>Tehtäväluokka</label>
-        <input type="text" placeholder="Syötä tehtäväluokka...">
+        <input type="text" placeholder="Syötä tehtäväluokka..." disabled>
     </div>
     <div class="span3">
         <label>Hakusana</label>
-        <input type="text" placeholder="Syötä hakusana...">
+        <input type="text" placeholder="Syötä hakusana..." disabled>
     </div>
 </div>
 
@@ -26,6 +30,22 @@
     <div class="span9" id="map" style="height: 300px"></div>
 </div>
 
+<div class="row">
+    <div class="span9">
+        <ul class="unstyled" id="item-list"></ul>
+    </div>
+</div>
+
+{% verbatim %}
+<script id="item-list-template" type="text/x-handlebars-template">
+    <li>
+        <a href="{{details_uri}}"><h3 class="subject">{{subject}}</h3></a>
+        {{#if summary}}
+        <p class="summary">{{summary}}</p>
+        {{/if}}
+    </li>
+</script>
+{% endverbatim %}
 {% compress js %}
 <script src="{% static "js/home.coffee" %}" type="text/coffeescript"></script>
 {% endcompress %}

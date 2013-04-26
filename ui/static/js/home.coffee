@@ -59,28 +59,41 @@ window.my_map = map
 
 active_borders = null
 
+items = []
+item_template = Handlebars.compile $("#item-list-template").html()
+
 markers = []
 refresh_items = (bounds) ->
     params = {limit: 1000}
     if bounds
         params['bbox'] = bounds.toBBoxString()
-    for m in markers
-        map.removeLayer m
+    list_el = $("#item-list")
     $.getJSON API_PREFIX + 'v1/item/', params, (data) ->
+        items = []
+        list_el.empty()
+        for m in markers
+            map.removeLayer m
+        markers = []
         for item in data.objects
             if not item.geometries.length
                 continue
+            item.details_uri = "#{API_PREFIX}item/#{item.slug}/"
             for geom in item.geometries
                 coords = geom.coordinates
                 ll = new L.LatLng coords[1], coords[0]
                 if active_borders
                     if not leafletPip.pointInLayer(ll, active_borders).length
                         continue
+                item.in_bounds = true
                 marker = L.marker ll
-                link = "#{API_PREFIX}item/#{item.slug}/" 
-                marker.bindPopup "<b>#{geom.name}</b><br><a href='#{link}'>#{item.subject}</a>"
+                marker.bindPopup "<b>#{geom.name}</b><br><a href='#{item.details_uri}'>#{item.subject}</a>"
                 marker.addTo map
                 markers.push marker
+            if not item.in_bounds
+                continue
+            item_html = item_template item
+            items.push item
+            list_el.append $($.trim(item_html))
 
 input_district_map = null
 $("#district-input").typeahead(
@@ -115,4 +128,7 @@ $("#district-input").on 'change', ->
     map.fitBounds borders.getBounds()
     refresh_items active_borders.getBounds()
 
-refresh_items()
+map.on 'moveend', (ev) ->
+    refresh_items map.getBounds()
+
+refresh_items map.getBounds()
