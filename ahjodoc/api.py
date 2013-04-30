@@ -1,12 +1,14 @@
 import json
+import urlparse
 from django.contrib.gis.geos import Polygon
+from django.utils.html import strip_tags
+from django.conf import settings
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.exceptions import InvalidFilterError
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
-from django.utils.html import strip_tags
 
 class CommitteeResource(ModelResource):
     class Meta:
@@ -38,9 +40,18 @@ class MeetingResource(ModelResource):
 
 class MeetingDocumentResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
+    xml_uri = fields.CharField()
+
+    def dehydrate_xml_uri(self, bundle):
+        uri = bundle.obj.xml_file.url
+        if bundle.request:
+            uri = bundle.request.build_absolute_uri(uri)
+        return uri
+
     class Meta:
         queryset = MeetingDocument.objects.order_by('-last_modified_time')
         resource_name = 'meeting_document'
+        excludes = ['xml_file']
         filtering = {
             'type': ALL,
             'meeting': ALL_WITH_RELATIONS,
@@ -121,6 +132,7 @@ class ItemGeometryResource(ModelResource):
 class AgendaItemResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
     item = fields.ToOneField(ItemResource, 'item', full=True)
+    attachments = fields.ToManyField('ahjodoc.api.AttachmentResource', 'attachment_set', full=True, null=True)
 
     def dehydrate(self, bundle):
         obj = bundle.obj
@@ -129,7 +141,7 @@ class AgendaItemResource(ModelResource):
         for cs in cs_list:
             d = {'type': cs.type, 'text': cs.text}
             content.append(d)
-        bundle.data['content'] = content
+        bundle.data['content'] = content            
         return bundle
 
     class Meta:
@@ -141,7 +153,29 @@ class AgendaItemResource(ModelResource):
         }
         ordering = ('last_modified_time', 'meeting')
 
+class AttachmentResource(ModelResource):
+    agenda_item = fields.ToOneField(AgendaItemResource, 'agenda_item')
+    file_uri = fields.CharField(null=True)
+
+    def dehydrate_file_uri(self, bundle):
+        if not bundle.obj.file:
+            return None
+        uri = bundle.obj.file.url
+        if bundle.request:
+            uri = bundle.request.build_absolute_uri(uri)
+        return uri
+
+    class Meta:
+        queryset = Attachment.objects.all()
+        resource_name = 'attachment'
+        excludes = ['file']
+        filtering = {
+            'agenda_item': ALL_WITH_RELATIONS,
+            'hash': ALL,
+            'number': ALL,
+        }
+
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,
-    MeetingResource, ItemResource, AgendaItemResource
+    MeetingResource, ItemResource, AgendaItemResource, AttachmentResource
 ]

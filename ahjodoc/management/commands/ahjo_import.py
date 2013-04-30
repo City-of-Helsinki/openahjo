@@ -51,13 +51,14 @@ class Command(BaseCommand):
                 igeom.geometry = m['location']
                 igeom.save()
 
-    def store_item(self, meeting, meeting_doc, info):
+    def store_item(self, meeting, meeting_doc, info, adoc):
         try:
             item = Item.objects.get(register_id=info['register_id'])
         except Item.DoesNotExist:
             item = Item(register_id=info['register_id'])
 
         item.subject = info['subject']
+        print item.subject
         s = info['category']
         m = re.match(r"[\d\s]+", s)
         cat_id = s[0:m.end()].strip()
@@ -85,7 +86,26 @@ class Command(BaseCommand):
             section.type = p[0]
             section.text = '\n'.join(p[1])
             section.save()
-        print item.subject
+
+        for att in info['attachments']:
+            args = {'agenda_item': agenda_item, 'number': att['number']}
+            try:
+                obj = Attachment.objects.get(**args)
+            except Attachment.DoesNotExist:
+                obj = Attachment(**args)
+            if not att['public']:
+                obj.public = False
+                obj.file = None
+                obj.hash = None
+                obj.save()
+                continue
+            adoc.extract_zip_attachment(att, self.attachment_path)
+            obj.public = True
+            obj.file = os.path.join(settings.AHJO_ATTACHMENT_PATH, att['file'])
+            obj.file_type = att['type']
+            obj.hash = att['hash']
+            obj.name = att['name']
+            obj.save()
 
     def import_doc(self, info):
         origin_id = info['origin_id']
@@ -129,7 +149,7 @@ class Command(BaseCommand):
             self.logger.error("Error importing document %s" % origin_id, exc_info=e)
             self.failed_import_list.append(origin_id)
             return
-        zipf.close()
+
         fname = info['origin_id'] + '.xml'
         print "Storing cleaned XML to %s" % fname
         xmlf = open(os.path.join(self.xml_path, fname), 'w')
@@ -153,7 +173,7 @@ class Command(BaseCommand):
             return
 
         for item in adoc.items:
-            self.store_item(meeting, doc, item)
+            self.store_item(meeting, doc, item, adoc)
 
         if doc.type == 'minutes':
             meeting.minutes = True
@@ -234,10 +254,16 @@ class Command(BaseCommand):
         media_dir = settings.MEDIA_ROOT
         self.scanner.doc_store_path = os.path.join(media_dir, settings.AHJO_ZIP_PATH)
         self.xml_path = os.path.join(media_dir, settings.AHJO_XML_PATH)
+        self.attachment_path = os.path.join(media_dir, settings.AHJO_ATTACHMENT_PATH)
         try:
             os.makedirs(self.xml_path)
         except OSError:
             pass
+        try:
+            os.makedirs(self.attachment_path)
+        except OSError:
+            pass
+
         if options['meeting_id']:
             for info in doc_list:
                 if info['origin_id'] == options['meeting_id']:

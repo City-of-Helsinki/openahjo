@@ -40,6 +40,18 @@
             {{#if item.geometries}}
             <div class="map"></div>
             {{/if}}
+            {{#if attachments}}
+            <h5>Liitteet</h5>
+            <ol class="attachment-list">
+                {{#each attachments}}
+                {{#if public}}
+                <li value={{number}}><a href="{{file_uri}}">{{name}}</a></li>
+                {{else}}
+                <li value={{number}} class="non-public muted">Ei-julkinen</li>
+                {{/if}}
+                {{/each}}
+            </ol>
+            {{/if}}
         </div>
     </div>
 </script>

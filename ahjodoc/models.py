@@ -69,6 +69,19 @@ class AgendaItem(models.Model):
     class Meta:
         unique_together = (('meeting', 'item'), ('meeting', 'index'))
 
+class Attachment(models.Model):
+    agenda_item = models.ForeignKey(AgendaItem, db_index=True)
+    number = models.PositiveIntegerField()
+    name = models.CharField(max_length=250, null=True)
+    public = models.BooleanField()
+    file = models.FileField(upload_to=settings.AHJO_ATTACHMENT_PATH, null=True)
+    hash = models.CharField(max_length=50, null=True)
+    file_type = models.CharField(max_length=10, null=True)
+
+    class Meta:
+        unique_together = (('agenda_item', 'number'),)
+        ordering = ('agenda_item', 'number')
+
 class ContentSection(models.Model):
     # Either draft resolution, summary, presenter, resolution or hearing
     type = models.CharField(max_length=20)

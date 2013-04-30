@@ -179,6 +179,7 @@ COMPRESS_JS_FILTERS = []
 # These live under MEDIA_ROOT
 AHJO_XML_PATH = 'xml'
 AHJO_ZIP_PATH = 'zip'
+AHJO_ATTACHMENT_PATH = 'att'
 
 # Use WGS84 coordinate system internally.
 PROJECTION_SRID = 4326

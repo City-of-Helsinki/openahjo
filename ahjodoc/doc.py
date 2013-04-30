@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
+import os
 import re
+import hashlib
 from lxml import etree, html, objectify
 import zipfile
 import logging
+import tempfile
 from pytz import timezone
 from datetime import datetime
 
@@ -17,6 +20,8 @@ def clean_text(text):
     return re.sub(r'\s\s+', ' ', text, re.U).strip()
 
 class AhjoDocument(object):
+    ATTACHMENT_EXTS = ('pdf', 'xls', 'ppt')
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         pass
@@ -141,6 +146,26 @@ class AhjoDocument(object):
             content.append((section_type, paras))
         info['content'] = content
 
+    def parse_item_attachments(self, info, item_el):
+        att_el_list = item_el.xpath('./LiitteetOptio/Liitteet/LiitteetToisto')
+        att_list = []
+        for att_el in att_el_list:
+            d = {'number': int(att_el.find('Liitenumero').text)}
+            id_el = att_el.find('LiitteetId')
+            att_list.append(d)
+            if id_el == None:
+                d['public'] = False
+                continue
+            else:
+                d['public'] = True
+            d['id'] = att_el.find('LiitteetId').text
+            d['name'] = att_el.find('Liiteteksti').text
+            for ext in self.ATTACHMENT_EXTS:
+                if d['name'].endswith('.' + ext):
+                    d['name'] = d['name'][:-(1+len(ext))]
+                    break
+        info['attachments'] = att_list
+
     def parse_item(self, index, item_el):
         info = {}
         desc_el = item_el.find('KuvailutiedotOpenDocument')
@@ -167,6 +192,7 @@ class AhjoDocument(object):
         info['keywords'] = kw_list
 
         self.parse_item_content(info, item_el)
+        self.parse_item_attachments(info, item_el)
         self.items.append(info)
 
     def parse_from_xml(self, xml_str):
@@ -208,3 +234,55 @@ class AhjoDocument(object):
         xml_s = xml_file.read()
         xml_file.close()
         self.parse_from_xml(xml_s)
+        self.zip_file = zipf
+
+    def extract_zip_attachment(self, att, out_path):
+        BLOCK_SIZE = 1*1024*1024
+
+        name_list = self.zip_file.namelist()
+        names = [x for x in name_list if att['id'] in x]
+        if len(names) != 1:
+            raise ParseError("Attachment %s not found in ZIP file" % att['id'])
+        zip_info = self.zip_file.getinfo(names[0])
+
+        att_file = self.zip_file.open(names[0])
+        sha1 = hashlib.new('sha1')
+        self.logger.info("Hashing attachment '%s'" % att['name'])
+        while True:
+            block = att_file.read(BLOCK_SIZE)
+            if not block:
+                break
+            sha1.update(block)
+        att['hash'] = sha1.hexdigest()
+        att_file.close()
+
+        ext = names[0].split('.')[-1].lower()
+        if ext not in self.ATTACHMENT_EXTS:
+            # Workaround for an ugly bug
+            for e in self.ATTACHMENT_EXTS:
+                arr = ext.split('_')
+                if len(arr) >= 2 and ext.split('_')[-2].endswith(e):
+                    ext = e
+                    break
+
+            if ext not in self.ATTACHMENT_EXTS:
+                raise ParseError("Unknown attachment type (%s)" % ext)
+        att['type'] = ext
+        f_name = '%s.%s' % (att['hash'], ext)
+        att['file'] = f_name
+        f_path = os.path.join(out_path, f_name)
+        if os.path.exists(f_path):
+            if os.path.getsize(f_path) != zip_info.file_size:
+                raise ParseError("Size mismatch with attachment '%s': %d vs. %d" % (f_name, os.path.getsize(f_path), zip_info.file_size))
+            self.logger.info("Skipping existing attachment '%s'" % f_name)
+            return
+        self.logger.info("Extracting attachment '%s' to '%s'" % (att['name'], f_name))
+        att_file = self.zip_file.open(names[0])
+        out_file = open(f_path, 'w')
+        while True:
+            block = att_file.read(BLOCK_SIZE)
+            if not block:
+                break
+            out_file.write(block)
+        out_file.close()
+        att_file.close()
