@@ -96,7 +96,7 @@ refresh_items = (bounds) ->
             list_el.append $($.trim(item_html))
 
 input_district_map = null
-$("#district-input").typeahead(
+$(".district-input input").typeahead(
     source: (query, process_cb) ->
         $.getJSON(GEOCODER_API_URL + 'v1/district/', {input: query}, (data) ->
             objs = data.objects
@@ -109,7 +109,7 @@ $("#district-input").typeahead(
         )
 )
 
-$("#district-input").on 'change', ->
+$(".district-input input").on 'change', ->
     match_obj = null
     for obj in input_district_map
         if obj.name == $(this).val()
@@ -127,6 +127,16 @@ $("#district-input").on 'change', ->
     active_borders = borders
     map.fitBounds borders.getBounds()
     refresh_items active_borders.getBounds()
+    close_btn = $(".district-input .close")
+    close_btn.parent().show()
+
+$(".district-input .close").on 'click', (ev) ->
+    map.removeLayer active_borders
+    active_borders = null
+    refresh_items map.getBounds()
+    $(this).parent().hide()
+    $(".district-input input").val ''
+    ev.preventDefault()
 
 map.on 'moveend', (ev) ->
     refresh_items map.getBounds()

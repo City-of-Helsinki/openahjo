@@ -12,17 +12,26 @@
 </div>
 
 <div class="row">
-    <div class="span3">
-        <label>Kaupunginosa</label>
-        <input id="district-input" type="text" placeholder="Syötä kaupunginosa...">
+    <div class="span3 district-input">
+        <div class="input-append">
+            <label>Kaupunginosa</label>
+            <input type="text" placeholder="Syötä kaupunginosa...">
+            <span class="add-on" style="display: none"><a class="close" href="#">&times;</a></span>
+        </div>
     </div>
-    <div class="span3">
-        <label>Tehtäväluokka</label>
-        <input type="text" placeholder="Syötä tehtäväluokka..." disabled>
+    <div class="span3 category-input">
+        <div class="input-append">
+            <label>Tehtäväluokka</label>
+            <input type="text" placeholder="Syötä tehtäväluokka..." disabled>
+            <span class="add-on" style="display: none"><a class="close" href="#">&times;</a></span>
+        </div>
     </div>
-    <div class="span3">
-        <label>Hakusana</label>
-        <input type="text" placeholder="Syötä hakusana..." disabled>
+    <div class="span3 keyword-input">
+        <div class="input-append">
+            <label>Hakusana</label>
+            <input type="text" placeholder="Syötä hakusana..." disabled>
+            <span class="add-on" style="display: none"><a class="close" href="#">&times;</a></span>
+        </div>
     </div>
 </div>
 
@@ -35,7 +44,6 @@
         <ul class="unstyled" id="item-list"></ul>
     </div>
 </div>
-
 {% verbatim %}
 <script id="item-list-template" type="text/x-handlebars-template">
     <li>
