@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'corsheaders',
     'tastypie',
     'compressor',
+    'mptt',
     'ahjodoc',
     'ui',
 )

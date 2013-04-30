@@ -14,8 +14,11 @@ class CommitteeResource(ModelResource):
         resource_name = 'committee'
 
 class CategoryResource(ModelResource):
+    parent = fields.ToOneField('self', 'parent', null=True)
+
     class Meta:
         queryset = Category.objects.all()
+        excludes = ['lft', 'rght', 'tree_id']
         resource_name = 'category'
 
 class MeetingResource(ModelResource):
@@ -114,7 +117,7 @@ class ItemGeometryResource(ModelResource):
         filtering = {
             'item': ALL_WITH_RELATIONS
         }
-    
+
 class AgendaItemResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
     item = fields.ToOneField(ItemResource, 'item', full=True)

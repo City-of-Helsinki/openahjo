@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.utils.text import slugify
+from mptt.models import MPTTModel, TreeForeignKey
 
 class Committee(models.Model):
     name = models.CharField(max_length=100)
@@ -30,10 +31,13 @@ class MeetingDocument(models.Model):
     origin_url = models.URLField()
     xml_file = models.FileField(upload_to=settings.AHJO_XML_PATH)
 
-class Category(models.Model):
+class Category(MPTTModel):
     origin_id = models.CharField(max_length=20, unique=True)
     name = models.CharField(max_length=100)
-    parent = models.ForeignKey('self', null=True)
+    parent = TreeForeignKey('self', null=True, blank=True)
+
+    class MPTTMeta:
+        order_insertion_by = ['origin_id']
 
 class Item(models.Model):
     register_id = models.CharField(max_length=20, db_index=True, unique=True)
