@@ -3,6 +3,7 @@ import urlparse
 from django.contrib.gis.geos import Polygon
 from django.utils.html import strip_tags
 from django.conf import settings
+from django.db.models import Count, Sum
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.exceptions import InvalidFilterError
@@ -18,10 +19,38 @@ class CommitteeResource(ModelResource):
 class CategoryResource(ModelResource):
     parent = fields.ToOneField('self', 'parent', null=True)
 
+    def query_to_filters(self, query):
+        filters = {}
+        filters['name__icontains'] = query
+        return filters
+
+    def build_filters(self, filters=None):
+        orm_filters = super(CategoryResource, self).build_filters(filters)
+        if filters and 'input' in filters:
+            orm_filters.update(self.query_to_filters(filters['input']))
+        return orm_filters            
+
+    def apply_filters(self, request, filters):
+        qs = super(CategoryResource, self).apply_filters(request, filters)
+        issues = request.GET.get('issues', '')
+        if issues.lower() not in ('0', 'false'):
+            # Include only categories with associated issues
+            qs = qs.annotate(num_issues=Count('issue')).filter(num_issues__gt=0)
+        return qs
+    def dehydrate(self, bundle):
+        if getattr(bundle.obj, 'num_issues'):
+            bundle.data['num_issues'] = bundle.obj.num_issues
+        return bundle
+
     class Meta:
         queryset = Category.objects.all()
         excludes = ['lft', 'rght', 'tree_id']
         resource_name = 'category'
+        filtering = {
+            'level': ALL,
+            'name': ALL,
+            'origin_id': ALL,
+        }
 
 class MeetingResource(ModelResource):
     committee = fields.ToOneField(CommitteeResource, 'committee')
@@ -71,28 +100,28 @@ def build_bbox_filter(bbox_val, field_name):
     poly = Polygon.from_bbox(points)
     return {"%s__within" % field_name: poly}
 
-class ItemResource(ModelResource):
+class IssueResource(ModelResource):
     category = fields.ToOneField(CategoryResource, 'category')
 
     def apply_filters(self, request, applicable_filters):
-        ret = super(ItemResource, self).apply_filters(request, applicable_filters)
-        if 'itemgeometry__in' in applicable_filters:
+        ret = super(IssueResource, self).apply_filters(request, applicable_filters)
+        if 'issuegeometry__in' in applicable_filters:
             ret = ret.distinct()
         return ret
 
     def build_filters(self, filters=None):
-        orm_filters = super(ItemResource, self).build_filters(filters)
+        orm_filters = super(IssueResource, self).build_filters(filters)
         if filters and 'bbox' in filters:
             bbox_filter = build_bbox_filter(filters['bbox'], 'geometry')
-            geom_list = ItemGeometry.objects.filter(**bbox_filter)
-            orm_filters['itemgeometry__in'] = geom_list
+            geom_list = IssueGeometry.objects.filter(**bbox_filter)
+            orm_filters['issuegeometry__in'] = geom_list
         return orm_filters
 
     def dehydrate(self, bundle):
         obj = bundle.obj
         bundle.data['category_origin_id'] = obj.category.origin_id
         bundle.data['category_name'] = obj.category.name
-        content_filter = ContentSection.objects.filter(agenda_item__item=obj).order_by('-agenda_item__meeting__date')
+        content_filter = ContentSection.objects.filter(agenda_item__issue=obj).order_by('-agenda_item__meeting__date')
         content = content_filter.filter(type="summary")
         if not content:
             content = content_filter.filter(type="presenter")
@@ -105,33 +134,34 @@ class ItemResource(ModelResource):
                 text = text[0:1000]
             bundle.data['summary'] = strip_tags(text)
         geometries = []
-        for geom in obj.itemgeometry_set.all():
+        for geom in obj.issuegeometry_set.all():
             d = json.loads(geom.geometry.geojson)
             d['name'] = geom.name
             geometries.append(d)
         bundle.data['geometries'] = geometries
         return bundle
     class Meta:
-        queryset = Item.objects.all().select_related('category')
-        resource_name = 'item'
+        queryset = Issue.objects.all().select_related('category')
+        resource_name = 'issue'
         filtering = {
             'register_id': ALL,
             'slug': ALL,
+            'category': ALL_WITH_RELATIONS,
         }
 
-class ItemGeometryResource(ModelResource):
-    item = fields.ToOneField(ItemResource, 'item')
+class IssueGeometryResource(ModelResource):
+    issue = fields.ToOneField(IssueResource, 'issue')
 
     class Meta:
-        queryset = ItemGeometry.objects.all()
-        resource_name = 'item_geometry'
+        queryset = IssueGeometry.objects.all()
+        resource_name = 'issue_geometry'
         filtering = {
-            'item': ALL_WITH_RELATIONS
+            'issue': ALL_WITH_RELATIONS
         }
 
 class AgendaItemResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
-    item = fields.ToOneField(ItemResource, 'item', full=True)
+    issue = fields.ToOneField(IssueResource, 'issue', full=True)
     attachments = fields.ToManyField('ahjodoc.api.AttachmentResource', 'attachment_set', full=True, null=True)
 
     def dehydrate(self, bundle):
@@ -145,11 +175,11 @@ class AgendaItemResource(ModelResource):
         return bundle
 
     class Meta:
-        queryset = AgendaItem.objects.all().select_related('item')
+        queryset = AgendaItem.objects.all().select_related('issue')
         resource_name = 'agenda_item'
         filtering = {
             'meeting': ALL_WITH_RELATIONS,
-            'item': ALL_WITH_RELATIONS
+            'issue': ALL_WITH_RELATIONS
         }
         ordering = ('last_modified_time', 'meeting')
 
@@ -177,5 +207,5 @@ class AttachmentResource(ModelResource):
 
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,
-    MeetingResource, ItemResource, AgendaItemResource, AttachmentResource
+    MeetingResource, IssueResource, AgendaItemResource, AttachmentResource
 ]

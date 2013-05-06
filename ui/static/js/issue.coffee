@@ -7,7 +7,7 @@ TRANSLATIONS = {
 }
 
 active_agenda_item = null
-active_item = null
+active_issue = null
 agenda_item_list = []
 
 item_template = Handlebars.compile $("#item-template").html()
@@ -25,10 +25,10 @@ render_item = (agenda_item) ->
                     break
                 render_agenda_item ai
                 break
-    if agenda_item.item.geometries
+    if agenda_item.issue.geometries
         map = L.map($(".item-details .map")[0])
         markers = []
-        for geom in agenda_item.item.geometries
+        for geom in agenda_item.issue.geometries
             coords = geom.coordinates
             ll = new L.LatLng coords[1], coords[0]
             marker = L.marker ll
@@ -65,15 +65,15 @@ render_agenda_item = (active_ai) ->
             future_list.push ai
         else
             past_list.push ai
-    item = active_item
-    item.future_list = future_list
-    item.past_list = past_list
-    active_ai.item = item
+    issue = active_issue
+    issue.future_list = future_list
+    issue.past_list = past_list
+    active_ai.issue = issue
     render_item active_agenda_item
 
-item_id = window.active_item_id
-$.getJSON "#{API_PREFIX}v1/item/#{window.active_item_id}/", (item) ->
-    active_item = item
-    $.getJSON "#{API_PREFIX}v1/agenda_item/", {item: item_id, order_by: '-meeting__date'}, (data) ->
+issue_id = window.active_issue_id
+$.getJSON "#{API_PREFIX}v1/issue/#{issue_id}/", (issue) ->
+    active_issue = issue
+    $.getJSON "#{API_PREFIX}v1/agenda_item/", {issue: issue_id, order_by: '-meeting__date'}, (data) ->
         agenda_item_list = data.objects
         render_agenda_item agenda_item_list[0]

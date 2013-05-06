@@ -30,7 +30,7 @@ class Command(BaseCommand):
         self.failed_import_list = []
         return super(Command, self).__init__()
 
-    def geocode_item(self, item, info):
+    def geocode_issue(self, issue, info):
         if not self.geocoder:
             return
         # Attempt to geocode first from subject and keywords.
@@ -45,33 +45,33 @@ class Command(BaseCommand):
         if markers:
             for m in markers:
                 try:
-                    igeom = ItemGeometry.objects.get(item=item, name=m['name'])
-                except ItemGeometry.DoesNotExist:
-                    igeom = ItemGeometry(item=item, name=m['name'])
+                    igeom = IssueGeometry.objects.get(issue=issue, name=m['name'])
+                except IssueGeometry.DoesNotExist:
+                    igeom = IssueGeometry(issue=issue, name=m['name'])
                 igeom.geometry = m['location']
                 igeom.save()
 
-    def store_item(self, meeting, meeting_doc, info, adoc):
+    def store_issue(self, meeting, meeting_doc, info, adoc):
         try:
-            item = Item.objects.get(register_id=info['register_id'])
-        except Item.DoesNotExist:
-            item = Item(register_id=info['register_id'])
+            issue = Issue.objects.get(register_id=info['register_id'])
+        except Issue.DoesNotExist:
+            issue = Issue(register_id=info['register_id'])
 
-        item.subject = info['subject']
-        print item.subject
+        issue.subject = info['subject']
+        print issue.subject
         s = info['category']
         m = re.match(r"[\d\s]+", s)
         cat_id = s[0:m.end()].strip()
         category = Category.objects.get(origin_id=cat_id)
-        item.category = category
-        item.save()
+        issue.category = category
+        issue.save()
 
-        self.geocode_item(item, info)
+        self.geocode_issue(issue, info)
 
         try:
-            agenda_item = AgendaItem.objects.get(item=item, meeting=meeting)
+            agenda_item = AgendaItem.objects.get(issue=issue, meeting=meeting)
         except AgendaItem.DoesNotExist:
-            agenda_item = AgendaItem(item=item, meeting=meeting)
+            agenda_item = AgendaItem(issue=issue, meeting=meeting)
         agenda_item.index = info['number']
         agenda_item.from_minutes = meeting_doc.type == 'minutes'
         agenda_item.last_modified_time = meeting_doc.last_modified_time
@@ -172,8 +172,8 @@ class Command(BaseCommand):
             self.logger.info("Skipping agenda doc because minutes already exists")
             return
 
-        for item in adoc.items:
-            self.store_item(meeting, doc, item, adoc)
+        for issue in adoc.items:
+            self.store_issue(meeting, doc, issue, adoc)
 
         if doc.type == 'minutes':
             meeting.minutes = True

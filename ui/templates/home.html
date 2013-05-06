@@ -22,7 +22,7 @@
     <div class="span3 category-input">
         <div class="input-append">
             <label>Tehtäväluokka</label>
-            <input type="text" placeholder="Syötä tehtäväluokka..." disabled>
+            <input type="text" placeholder="Syötä tehtäväluokka...">
             <span class="add-on" style="display: none"><a class="close" href="#">&times;</a></span>
         </div>
     </div>
@@ -41,11 +41,11 @@
 
 <div class="row">
     <div class="span9">
-        <ul class="unstyled" id="item-list"></ul>
+        <ul class="unstyled" id="issue-list"></ul>
     </div>
 </div>
 {% verbatim %}
-<script id="item-list-template" type="text/x-handlebars-template">
+<script id="issue-list-template" type="text/x-handlebars-template">
     <li>
         <a href="{{details_uri}}"><h3 class="subject">{{subject}}</h3></a>
         {{#if summary}}

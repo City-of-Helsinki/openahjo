@@ -11,8 +11,11 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width">
 
-        <link rel="stylesheet" href="{% static "css/bootstrap.cerulean.min.css" %}">
-        <link rel="stylesheet" href="{% static "css/bootstrap-responsive.min.css" %}">
+        {% compress css %}
+        <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/bootstrap.less" %}">
+        <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/responsive.less" %}">
+        {% endcompress %}
+        <link href='http://fonts.googleapis.com/css?family=Telex' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{% static "css/leaflet.css" %}">
         {% compress css %}
         <link rel="stylesheet" href="{% static "css/main.less" %}" type="text/less">
@@ -38,6 +41,7 @@
         <script src="{% static "js/vendor/leaflet.js" %}"></script>
         <script src="{% static "js/vendor/leaflet-pip.min.js" %}"></script>
         {% endcompress %}
+        <script src="{% static "js/vendor/typeahead.min.js" %}"></script>
     </head>
     <body>
         <div class="navbar navbar-inverse">

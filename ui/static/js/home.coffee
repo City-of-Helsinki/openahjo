@@ -58,87 +58,131 @@ L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
 window.my_map = map
 
 active_borders = null
+active_category = null
 
-items = []
-item_template = Handlebars.compile $("#item-list-template").html()
+issues = []
+issue_template = Handlebars.compile $("#issue-list-template").html()
 
 markers = []
-refresh_items = (bounds) ->
+refresh_issues = ->
     params = {limit: 1000}
-    if bounds
+
+    if active_borders
+        bounds = active_borders.getBounds()
+    else if not active_category?
+        # If no other filters set, use map bounds as default.
+        bounds = map.getBounds()
+    else
+        bounds = null
+    if bounds?
         params['bbox'] = bounds.toBBoxString()
-    list_el = $("#item-list")
-    $.getJSON API_PREFIX + 'v1/item/', params, (data) ->
-        items = []
+
+    if active_category?
+        params['category'] = active_category
+
+    list_el = $("#issue-list")
+    $.getJSON API_PREFIX + 'v1/issue/', params, (data) ->
+        issues = []
         list_el.empty()
         for m in markers
             map.removeLayer m
         markers = []
-        for item in data.objects
-            if not item.geometries.length
-                continue
-            item.details_uri = "#{API_PREFIX}item/#{item.slug}/"
-            for geom in item.geometries
+        for issue in data.objects
+            #if not issue.geometries.length
+            #    continue
+            issue.details_uri = "#{API_PREFIX}issue/#{issue.slug}/"
+            for geom in issue.geometries
                 coords = geom.coordinates
                 ll = new L.LatLng coords[1], coords[0]
                 if active_borders
                     if not leafletPip.pointInLayer(ll, active_borders).length
                         continue
-                item.in_bounds = true
+                issue.in_bounds = true
                 marker = L.marker ll
-                marker.bindPopup "<b>#{geom.name}</b><br><a href='#{item.details_uri}'>#{item.subject}</a>"
+                marker.bindPopup "<b>#{geom.name}</b><br><a href='#{issue.details_uri}'>#{issue.subject}</a>"
                 marker.addTo map
                 markers.push marker
-            if not item.in_bounds
+            if active_borders? and not issue.in_bounds
                 continue
-            item_html = item_template item
-            items.push item
-            list_el.append $($.trim(item_html))
+            issue_html = issue_template issue
+            issues.push issue
+            list_el.append $($.trim(issue_html))
 
 input_district_map = null
-$(".district-input input").typeahead(
-    source: (query, process_cb) ->
-        $.getJSON(GEOCODER_API_URL + 'v1/district/', {input: query}, (data) ->
-            objs = data.objects
-            ret = []
-            input_addr_map = []
-            for obj in objs
-                ret.push(obj.name)
-            input_district_map = objs
-            process_cb(ret)
-        )
-)
 
-$(".district-input input").on 'change', ->
-    match_obj = null
-    for obj in input_district_map
-        if obj.name == $(this).val()
-            match_obj = obj
-            break
-    if not match_obj
-        return
+$(".district-input input").typeahead
+    limit: 5
+    remote:
+        url: GEOCODER_API_URL + 'v1/district/?limit=5&input=%QUERY'
+        filter: (data) ->
+            objs = data.objects
+            datums = []
+            for obj in objs
+                d = {value: obj.name, id: obj.id, borders: obj.borders, name: obj.name}
+                datums.push d
+            input_district_map = objs
+            return datums
+
+$(".district-input input").on 'typeahead:selected', (ev, datum) ->
     if active_borders
         map.removeLayer active_borders
-    borders = L.geoJson match_obj.borders,
+    borders = L.geoJson datum.borders,
         style:
             weight: 2
-    borders.bindPopup match_obj.name
+    borders.bindPopup datum.name
     borders.addTo map
     active_borders = borders
     map.fitBounds borders.getBounds()
-    refresh_items active_borders.getBounds()
+    refresh_issues()
     close_btn = $(".district-input .close")
     close_btn.parent().show()
 
 $(".district-input .close").on 'click', (ev) ->
     map.removeLayer active_borders
     active_borders = null
-    refresh_items map.getBounds()
+    refresh_issues()
     $(this).parent().hide()
     $(".district-input input").val ''
     ev.preventDefault()
 
 map.on 'moveend', (ev) ->
-    refresh_items map.getBounds()
+    refresh_issues()
 
-refresh_items map.getBounds()
+input_category_list = null
+###
+$(".category-input input").typeahead
+    source: (query, process_cb) ->
+        $.getJSON(API_PREFIX + 'v1/category/', {input: query, issues: 1}, (data) ->
+            objs = data.objects
+            ret = []
+            for obj in objs
+                ret.push "#{obj.name} (#{obj.num_issues})"
+            input_category_list = objs
+            process_cb ret
+        )
+###
+
+category_suggestion_template = Handlebars.compile """
+{{value}} <strong>({{num_issues}})</strong>
+"""
+$(".category-input input").typeahead
+    template: category_suggestion_template
+    limit: 10
+    remote:
+        url: API_PREFIX + 'v1/category/?issues=1&limit=10&input=%QUERY'
+        filter: (data) ->
+            objs = data.objects
+            datums = []
+            for obj in objs
+                d = {value: obj.name, num_issues: obj.num_issues, id: obj.id}
+                datums.push d
+            return datums
+
+$(".category-input input").on 'typeahead:selected', (ev, datum) ->
+    active_category = datum.id
+    refresh_issues()
+$(".category-input input").on 'typeahead:autocompleted', (ev, datum) ->
+    active_category = datum.id
+    refresh_issues()
+
+refresh_issues()

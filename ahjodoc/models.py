@@ -13,7 +13,7 @@ class Meeting(models.Model):
     date = models.DateField(db_index=True)
     number = models.PositiveIntegerField(help_text='Meeting number for the committee')
     year = models.PositiveIntegerField()
-    items = models.ManyToManyField('Item', through='AgendaItem')
+    issues = models.ManyToManyField('Issue', through='AgendaItem')
     minutes = models.BooleanField(help_text='Minutes document available')
 
     class Meta:
@@ -33,13 +33,13 @@ class MeetingDocument(models.Model):
 
 class Category(MPTTModel):
     origin_id = models.CharField(max_length=20, unique=True)
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100, db_index=True)
     parent = TreeForeignKey('self', null=True, blank=True)
 
     class MPTTMeta:
         order_insertion_by = ['origin_id']
 
-class Item(models.Model):
+class Issue(models.Model):
     register_id = models.CharField(max_length=20, db_index=True, unique=True)
     slug = models.CharField(max_length=50, db_index=True, unique=True)
     subject = models.CharField(max_length=500)
@@ -48,12 +48,12 @@ class Item(models.Model):
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
             self.slug = slugify(unicode(self.register_id))
-        return super(Item, self).save(*args, **kwargs)
+        return super(Issue, self).save(*args, **kwargs)
     def __unicode__(self):
         return "%s: %s" % (self.register_id, self.subject)
 
-class ItemGeometry(models.Model):
-    item = models.ForeignKey(Item)
+class IssueGeometry(models.Model):
+    issue = models.ForeignKey(Issue)
     name = models.CharField(max_length=100)
     geometry = models.GeometryField()    
 
@@ -61,13 +61,13 @@ class ItemGeometry(models.Model):
 
 class AgendaItem(models.Model):
     meeting = models.ForeignKey(Meeting, db_index=True)
-    item = models.ForeignKey(Item, db_index=True)
+    issue = models.ForeignKey(Issue, db_index=True)
     index = models.PositiveIntegerField()
     from_minutes = models.BooleanField()
     last_modified_time = models.DateTimeField(db_index=True)
 
     class Meta:
-        unique_together = (('meeting', 'item'), ('meeting', 'index'))
+        unique_together = (('meeting', 'issue'), ('meeting', 'index'))
 
 class Attachment(models.Model):
     agenda_item = models.ForeignKey(AgendaItem, db_index=True)

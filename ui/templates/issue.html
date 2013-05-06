@@ -10,22 +10,22 @@
     <div class="row-fluid item-details">
         <div class="span3">
             <ul class="nav nav-list" id="meeting-list">
-                {{#if item.past_list}}
+                {{#if issue.past_list}}
                 <li class="nav-header">Käsittelyhistoria</li>
                 {{/if}}
-                {{#each item.past_list}}
+                {{#each issue.past_list}}
                 <li {{#is_active}}class="active"{{/is_active}}><a class="meeting-link" data-agenda-item-id="{{id}}" href="#"><div class="committee">{{meeting.committee_name}}</div><div class="date">{{meeting.date_str}}/{{meeting.number}}</div></a></li>
                 {{/each}}
-                {{#if item.future_list}}
+                {{#if issue.future_list}}
                 <li class="nav-header">Tulevat käsittelyt</li>
                 {{/if}}
-                {{#each item.future_list}}
+                {{#each issue.future_list}}
                 <li {{#is_active}}class="active"{{/is_active}}><a class="meeting-link" data-agenda-item-id="{{id}}" href="#"><div class="committee">{{meeting.committee_name}}</div><div class="date">{{meeting.date_str}}/{{meeting.number}}</div></a></li>
                 {{/each}}
             </ul>
         </div>
         <div class="span6">
-            <h1 class="subject">{{item.subject}}</h1>
+            <h1 class="subject">{{issue.subject}}</h1>
             <hr />
             {{#content}}
             <h2>{{type_str}}</h2>
@@ -35,9 +35,9 @@
         <div class="span3">
             <dl>
                 <dt>Diaarinumero</dt>
-                <dd>{{item.register_id}}</dd>
+                <dd>{{issue.register_id}}</dd>
             </dl>
-            {{#if item.geometries}}
+            {{#if issue.geometries}}
             <div class="map"></div>
             {{/if}}
             {{#if attachments}}
@@ -59,11 +59,11 @@
 
 
 <script>
-    window.active_item_id = {{item.id}};
+    window.active_issue_id = {{issue.id}};
 </script>
 
 {% compress js %}
-<script src="{% static "js/item.coffee" %}" type="text/coffeescript"></script>
+<script src="{% static "js/issue.coffee" %}" type="text/coffeescript"></script>
 {% endcompress %}
 
 {% endblock %}
