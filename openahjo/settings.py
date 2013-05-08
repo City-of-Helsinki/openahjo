@@ -130,6 +130,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'tastypie_swagger',
     'corsheaders',
     'tastypie',
     'compressor',
@@ -166,6 +167,8 @@ LOGGING = {
         },
     }
 }
+
+TASTYPIE_SWAGGER_API_MODULE = 'openahjo.urls.v1_api'
 
 CORS_ORIGIN_ALLOW_ALL = True
 

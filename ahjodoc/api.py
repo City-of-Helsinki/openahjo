@@ -15,6 +15,8 @@ class CommitteeResource(ModelResource):
     class Meta:
         queryset = Committee.objects.all()
         resource_name = 'committee'
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 class CategoryResource(ModelResource):
     parent = fields.ToOneField('self', 'parent', null=True)
@@ -51,6 +53,8 @@ class CategoryResource(ModelResource):
             'name': ALL,
             'origin_id': ALL,
         }
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 class MeetingResource(ModelResource):
     committee = fields.ToOneField(CommitteeResource, 'committee')
@@ -66,6 +70,8 @@ class MeetingResource(ModelResource):
         filtering = {
             'committee': ALL_WITH_RELATIONS
         }
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 class MeetingDocumentResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
@@ -88,6 +94,8 @@ class MeetingDocumentResource(ModelResource):
             'date': ALL
         }
         ordering = ('date', 'publish_time')
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 def build_bbox_filter(bbox_val, field_name):
     points = bbox_val.split(',')
@@ -148,6 +156,8 @@ class IssueResource(ModelResource):
             'slug': ALL,
             'category': ALL_WITH_RELATIONS,
         }
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 class IssueGeometryResource(ModelResource):
     issue = fields.ToOneField(IssueResource, 'issue')
@@ -182,6 +192,8 @@ class AgendaItemResource(ModelResource):
             'issue': ALL_WITH_RELATIONS
         }
         ordering = ('last_modified_time', 'meeting')
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 class AttachmentResource(ModelResource):
     agenda_item = fields.ToOneField(AgendaItemResource, 'agenda_item')
@@ -204,6 +216,8 @@ class AttachmentResource(ModelResource):
             'hash': ALL,
             'number': ALL,
         }
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
 
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,

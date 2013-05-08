@@ -24,7 +24,8 @@ base_urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(v1_api.urls)),
-    url(r'^', include('ui.urls'))
+    url(r'^', include('ui.urls')),
+    url(r'^doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),
 )
 
 prefix = getattr(settings, 'URL_PREFIX', '')

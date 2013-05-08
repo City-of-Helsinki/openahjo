@@ -36,6 +36,9 @@ class Category(MPTTModel):
     name = models.CharField(max_length=100, db_index=True)
     parent = TreeForeignKey('self', null=True, blank=True)
 
+    class Meta:
+        verbose_name_plural = 'categories'
+
     class MPTTMeta:
         order_insertion_by = ['origin_id']
 
