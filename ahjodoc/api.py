@@ -8,6 +8,7 @@ from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.exceptions import InvalidFilterError
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
+from tastypie.cache import SimpleCache
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
 
@@ -17,6 +18,7 @@ class CommitteeResource(ModelResource):
         resource_name = 'committee'
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=600)
 
 class CategoryResource(ModelResource):
     parent = fields.ToOneField('self', 'parent', null=True)
@@ -55,6 +57,7 @@ class CategoryResource(ModelResource):
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=600)
 
 class MeetingResource(ModelResource):
     committee = fields.ToOneField(CommitteeResource, 'committee')
@@ -72,6 +75,7 @@ class MeetingResource(ModelResource):
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=600)
 
 class MeetingDocumentResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
@@ -96,6 +100,7 @@ class MeetingDocumentResource(ModelResource):
         ordering = ('date', 'publish_time')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=600)
 
 def build_bbox_filter(bbox_val, field_name):
     points = bbox_val.split(',')
@@ -158,6 +163,7 @@ class IssueResource(ModelResource):
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=600)
 
 class IssueGeometryResource(ModelResource):
     issue = fields.ToOneField(IssueResource, 'issue')
@@ -168,6 +174,7 @@ class IssueGeometryResource(ModelResource):
         filtering = {
             'issue': ALL_WITH_RELATIONS
         }
+        cache = SimpleCache(timeout=600)
 
 class AgendaItemResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
@@ -196,6 +203,7 @@ class AgendaItemResource(ModelResource):
         ordering = ('last_modified_time', 'meeting')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=600)
 
 class AttachmentResource(ModelResource):
     agenda_item = fields.ToOneField(AgendaItemResource, 'agenda_item')
@@ -220,6 +228,7 @@ class AttachmentResource(ModelResource):
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=600)
 
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,
