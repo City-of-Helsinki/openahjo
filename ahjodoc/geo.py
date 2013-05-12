@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 import csv
 import os
 import re
@@ -36,6 +37,15 @@ class AhjoGeocoder(object):
     def geocode_from_text(self, text):
         if not isinstance(text, unicode):
             text = unicode(text)
+        STREET_SUFFIXES = ('katu', 'tie', 'kuja', 'polku', 'kaari', 'linja', 'raitti', 'rinne', 'penger', 'ranta', u'väylä')
+        for sfx in STREET_SUFFIXES:
+            m = re.search(r'([A-Z]\w+%s)\s+(\d+)' % sfx, text)
+            if not m:
+                continue
+            street_name = m.groups()[0].lower()
+            if not street_name in self.street_hash:
+                print "Street name not found: %s" % street_name
+                self.no_match_addresses.append('%s %s' % (m.groups()[0], m.groups()[1]))
         textl = text.lower()
         ret = [x for x in self.street_tree.findall_long(textl)]
         points = {}
