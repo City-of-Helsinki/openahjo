@@ -188,8 +188,10 @@ class AgendaItemResource(ModelResource):
         queryset = AgendaItem.objects.all().select_related('issue')
         resource_name = 'agenda_item'
         filtering = {
-            'meeting': ALL_WITH_RELATIONS,
-            'issue': ALL_WITH_RELATIONS
+            'meeting': ['exact', 'in'],
+            'issue': ['exact', 'in'],
+            'issue__category': ['exact', 'in'],
+            'last_modified_time': ['gt', 'gte', 'lt', 'lte'],
         }
         ordering = ('last_modified_time', 'meeting')
         list_allowed_methods = ['get']

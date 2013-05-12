@@ -4,37 +4,37 @@ from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 
 class Committee(models.Model):
-    name = models.CharField(max_length=100)
-    abbreviation = models.CharField(max_length=20, null=True)
-    origin_id = models.CharField(max_length=20, db_index=True)
+    name = models.CharField(max_length=100, help_text='Name of committee')
+    abbreviation = models.CharField(max_length=20, null=True, help_text='Official abbreviation')
+    origin_id = models.CharField(max_length=20, db_index=True, help_text='ID string in upstream system')
 
 class Meeting(models.Model):
-    committee = models.ForeignKey(Committee)
-    date = models.DateField(db_index=True)
+    committee = models.ForeignKey(Committee, help_text='Committee or other organization')
+    date = models.DateField(db_index=True, help_text='Date of the meeting')
     number = models.PositiveIntegerField(help_text='Meeting number for the committee')
-    year = models.PositiveIntegerField()
+    year = models.PositiveIntegerField(help_text='Year the meeting is held')
     issues = models.ManyToManyField('Issue', through='AgendaItem')
-    minutes = models.BooleanField(help_text='Minutes document available')
+    minutes = models.BooleanField(help_text='Meeting minutes document available')
 
     class Meta:
         unique_together = (('committee', 'date'), ('committee', 'year', 'number'))
 
 class MeetingDocument(models.Model):
     meeting = models.ForeignKey(Meeting)
-    origin_id = models.CharField(max_length=50, unique=True)
+    origin_id = models.CharField(max_length=50, unique=True, help_text='ID string in upstream system')
     # Either 'agenda' or 'minutes'
-    type = models.CharField(max_length=20)
+    type = models.CharField(max_length=20, help_text='Meeting document type (either \'agenda\' or \'minutes\')')
     organisation = models.CharField(max_length=20)
 
-    last_modified_time = models.DateTimeField()
-    publish_time = models.DateTimeField()
-    origin_url = models.URLField()
+    last_modified_time = models.DateTimeField(help_text='Time when the meeting information last changed')
+    publish_time = models.DateTimeField(help_text='Time when the meeting document was scheduled for publishing')
+    origin_url = models.URLField(help_text='Link to the upstream file')
     xml_file = models.FileField(upload_to=settings.AHJO_XML_PATH)
 
 class Category(MPTTModel):
-    origin_id = models.CharField(max_length=20, unique=True)
-    name = models.CharField(max_length=100, db_index=True)
-    parent = TreeForeignKey('self', null=True, blank=True)
+    origin_id = models.CharField(max_length=20, unique=True, help_text='ID string in upstream system')
+    name = models.CharField(max_length=100, db_index=True, help_text='Full category name')
+    parent = TreeForeignKey('self', null=True, blank=True, help_text='Parent category')
 
     class Meta:
         verbose_name_plural = 'categories'
@@ -43,10 +43,12 @@ class Category(MPTTModel):
         order_insertion_by = ['origin_id']
 
 class Issue(models.Model):
-    register_id = models.CharField(max_length=20, db_index=True, unique=True)
-    slug = models.CharField(max_length=50, db_index=True, unique=True)
-    subject = models.CharField(max_length=500)
-    category = models.ForeignKey(Category, db_index=True)
+    register_id = models.CharField(max_length=20, db_index=True, unique=True,
+                                   help_text='Issue archival ID')
+    slug = models.CharField(max_length=50, db_index=True, unique=True,
+                            help_text='Unique slug (generated from register_id)')
+    subject = models.CharField(max_length=500, help_text='One-line description for issue')
+    category = models.ForeignKey(Category, db_index=True, help_text='Issue category')
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
@@ -63,23 +65,23 @@ class IssueGeometry(models.Model):
     objects = models.GeoManager()
 
 class AgendaItem(models.Model):
-    meeting = models.ForeignKey(Meeting, db_index=True)
-    issue = models.ForeignKey(Issue, db_index=True)
-    index = models.PositiveIntegerField()
-    from_minutes = models.BooleanField()
-    last_modified_time = models.DateTimeField(db_index=True)
+    meeting = models.ForeignKey(Meeting, db_index=True, help_text='Meeting for the agenda item')
+    issue = models.ForeignKey(Issue, db_index=True, help_text='Issue for the item')
+    index = models.PositiveIntegerField(help_text='Item number on the agenda')
+    from_minutes = models.BooleanField(help_text='Do the contents come from the minutes document?')
+    last_modified_time = models.DateTimeField(db_index=True, help_text='Time of last modification')
 
     class Meta:
         unique_together = (('meeting', 'issue'), ('meeting', 'index'))
 
 class Attachment(models.Model):
     agenda_item = models.ForeignKey(AgendaItem, db_index=True)
-    number = models.PositiveIntegerField()
-    name = models.CharField(max_length=250, null=True)
-    public = models.BooleanField()
+    number = models.PositiveIntegerField(help_text='Index number of the item attachment')
+    name = models.CharField(max_length=250, null=True, help_text='Short name for the agenda item')
+    public = models.BooleanField(help_text='Is attachment public?')
     file = models.FileField(upload_to=settings.AHJO_ATTACHMENT_PATH, null=True)
-    hash = models.CharField(max_length=50, null=True)
-    file_type = models.CharField(max_length=10, null=True)
+    hash = models.CharField(max_length=50, null=True, help_text='SHA-1 hash of the file contents')
+    file_type = models.CharField(max_length=10, null=True, help_text='File extension')
 
     class Meta:
         unique_together = (('agenda_item', 'number'),)
