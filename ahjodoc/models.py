@@ -73,6 +73,7 @@ class AgendaItem(models.Model):
 
     class Meta:
         unique_together = (('meeting', 'issue'), ('meeting', 'index'))
+        ordering = ('meeting', 'index')
 
 class Attachment(models.Model):
     agenda_item = models.ForeignKey(AgendaItem, db_index=True)

@@ -24,16 +24,15 @@ show_meeting = (meeting, $parent) ->
             $next.slideDown()
         return
 
-    $.getJSON API_PREFIX + 'v1/agenda_item/', {meeting: meeting.id}, (data) ->
+    $.getJSON API_PREFIX + 'v1/agenda_item/', {meeting: meeting.id, order_by: 'index'}, (data) ->
         $list = $("<ol></ol>")
-        console.log data
         for obj in data.objects
             url = "#{API_PREFIX}issue/#{obj.issue.slug}/"
             if obj.issue.summary
                 summary = obj.issue.summary
             else
                 summary = ''
-            $el = $("<li><h4><a href='#{url}'>#{obj.issue.subject}</h4></a><div class='content'>#{summary}</div></li>")
+            $el = $("<li value='#{obj.index}'><h4><a href='#{url}'>#{obj.issue.subject}</h4></a><div class='content'>#{summary}</div></li>")
             $list.append $el
         $list.hide()
         $parent.after $list
