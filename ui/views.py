@@ -14,6 +14,9 @@ def get_js_paths():
 def home_view(request):
     return render_to_response('home.html', get_js_paths())
 
+def meetings_view(request):
+    return render_to_response('meetings.html', get_js_paths())
+
 def issue_view(request, slug):
     issue = get_object_or_404(Issue, slug=slug)
     prefix = getattr(settings, 'URL_PREFIX', '')

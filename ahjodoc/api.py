@@ -13,9 +13,17 @@ from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
 
 class CommitteeResource(ModelResource):
+    def apply_filters(self, request, filters):
+        qs = super(CommitteeResource, self).apply_filters(request, filters)
+        meetings = request.GET.get('meetings', '')
+        if meetings.lower() not in ('0', 'false'):
+            # Include only categories with associated issues
+            qs = qs.annotate(num_meetings=Count('meeting')).filter(num_meetings__gt=0)
+        return qs
     class Meta:
         queryset = Committee.objects.all()
         resource_name = 'committee'
+        ordering = ('name',)
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=600)
@@ -73,6 +81,7 @@ class MeetingResource(ModelResource):
         filtering = {
             'committee': ALL_WITH_RELATIONS
         }
+        ordering = ('date', 'committee')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=600)
@@ -101,7 +110,7 @@ class MeetingDocumentResource(ModelResource):
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=600)
-
+    
 def build_bbox_filter(bbox_val, field_name):
     points = bbox_val.split(',')
     if len(points) != 4:

@@ -12,6 +12,9 @@ agenda_item_list = []
 
 item_template = Handlebars.compile $("#item-template").html()
 
+map = null
+map_markers = []
+
 render_item = (agenda_item) ->
     item_html = item_template agenda_item
     $("#item-details").html item_html
@@ -27,20 +30,27 @@ render_item = (agenda_item) ->
                 break
     if agenda_item.issue.geometries
         map = L.map($(".item-details .map")[0])
-        markers = []
+        map.addLayer leaflet_default_layer
+        if map_markers
+            for m in map_markers
+                map.removeLayer m
+        map_markers = []
         for geom in agenda_item.issue.geometries
             coords = geom.coordinates
             ll = new L.LatLng coords[1], coords[0]
             marker = L.marker ll
             marker.bindPopup "<b>#{geom.name}</b>"
-            markers.push marker
-        bounds = new L.LatLngBounds (m.getLatLng() for m in markers)
-        map.addLayer leaflet_default_layer
+            map_markers.push marker
+        bounds = new L.LatLngBounds (m.getLatLng() for m in map_markers)
+        ###
         max_zoom = map._layersMaxZoom
         map._layersMaxZoom = 14
         map.fitBounds bounds
         map._layersMaxZoom = max_zoom
-        for m in markers
+        ###
+        map.setView map_markers[0].getLatLng(), 14
+        map.invalidateSize()
+        for m in map_markers
             map.addLayer m
 
 format_agenda_item = (ai) ->
