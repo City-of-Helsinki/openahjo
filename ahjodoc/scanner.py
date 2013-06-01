@@ -42,6 +42,7 @@ class AhjoScanner(object):
             for idx, f in enumerate(FIELD_NAMES):
                 info[f] = fields[idx]
             info['meeting_nr'] = int(info['meeting_nr'])
+            info['year'] = int(info['date'].split('-')[0])
             info['committee_id'] = committee_id
             # Skip Swedish documents
             if info['language'] != 'Su':
@@ -83,7 +84,7 @@ class AhjoScanner(object):
         return info_list
 
     def generate_doc_id(self, info):
-        s = "%s_%s_%d_%s" % (info['org'], info['committee'], info['meeting_nr'], info['doc_type_id'])
+        s = "%s_%s_%d-%d_%s" % (info['org'], info['committee'], info['year'], info['meeting_nr'], info['doc_type_id'])
         return s
 
     def download_document(self, info):
