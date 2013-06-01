@@ -112,7 +112,7 @@ class Command(BaseCommand):
         try:
             doc = MeetingDocument.objects.get(origin_id=origin_id)
             if not self.full_update and doc.last_modified_time >= info['last_modified']:
-                self.logger.info("Skipping up-to-date document")
+                self.logger.info("Up-to-date document %s (last modified %s)" % (origin_id, info['last_modified']))
                 return
         except MeetingDocument.DoesNotExist:
             print "Adding new document %s" % origin_id
@@ -141,7 +141,7 @@ class Command(BaseCommand):
         doc.meeting_nr = info['meeting_nr']
         doc.origin_url = info['url']
 
-        adoc = AhjoDocument()
+        adoc = AhjoDocument(verbosity=self.verbosity)
         zipf = self.scanner.download_document(info)
         try:
             adoc.import_from_zip(zipf)
@@ -234,6 +234,7 @@ class Command(BaseCommand):
             print "%10s %55s %15s" % (org_id, org_name, ORG_TYPES[int(org_type)])
 
     def handle(self, **options):
+        self.verbosity = options['verbosity']
         self.logger = logging.getLogger(__name__)
         self.full_update = options['full_update']
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
@@ -249,7 +250,7 @@ class Command(BaseCommand):
 
         self.import_committees()
         self.import_categories()
-        self.scanner = AhjoScanner()
+        self.scanner = AhjoScanner(verbosity=self.verbosity)
         doc_list = self.scanner.scan_documents(cached=options['cached'])
         media_dir = settings.MEDIA_ROOT
         self.scanner.doc_store_path = os.path.join(media_dir, settings.AHJO_ZIP_PATH)

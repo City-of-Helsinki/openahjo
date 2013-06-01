@@ -22,7 +22,8 @@ def clean_text(text):
 class AhjoDocument(object):
     ATTACHMENT_EXTS = ('pdf', 'xls', 'ppt')
 
-    def __init__(self):
+    def __init__(self, verbosity=1):
+        self.verbosity = verbosity
         self.logger = logging.getLogger(__name__)
         pass
 
@@ -59,8 +60,9 @@ class AhjoDocument(object):
 
     def parse_header_info(self):
         desc_info = self.xml_root.xpath('//Kuvailutiedot/JulkaisuMuutostiedot')[0]
-        date = desc_info.find('JulkaisuEsilletulopaiva').text
-        time = desc_info.find('JulkaisuEsilletuloklo').text
+        # WORKAROUND: remove spaces from date and time
+        date = desc_info.find('JulkaisuEsilletulopaiva').text.replace(' ', '')
+        time = desc_info.find('JulkaisuEsilletuloklo').text.replace(' ', '')
         time_str = "%s %s" % (date, time)
         self.publish_time = datetime.strptime(time_str, '%Y-%m-%d %H:%M').replace(tzinfo=local_timezone)
 
@@ -90,6 +92,8 @@ class AhjoDocument(object):
                         assert not tail
                         content.append(u'<p>%s</p>' % clean_text(text))
                 elif p.tag == 'Otsikko':
+                    if not p.text:
+                        continue
                     content.append(u'<h3>%s</h3>' % clean_text(p.text))
                 elif p.tag == 'Henkilotietoa':
                     content.append(u'<span class="redacted-personal-information">*****</span>')
@@ -123,15 +127,16 @@ class AhjoDocument(object):
         section_el_list = item_el.xpath('./SisaltoSektioToisto/SisaltoSektio')
         content = []
         for section_el in section_el_list:
-            if 'sisaltosektioTyyppi' in section_el.attrib:
-                s = section_el.attrib['sisaltosektioTyyppi']
-            else:
+            s = section_el.attrib.get('sisaltosektioTyyppi')
+            if not s:
                 self.logger.warning("attribute sisaltosektioTyyppi not found")
                 s = section_el.find('SisaltoOtsikko').attrib['SisaltoOtsikkoTyyppi']
             if s == '1':
                 s = 'paatos'
             elif s == '2':
                 s = 'kasittely'
+            if self.verbosity >= 2:
+                self.logger.debug('Section: %s' % s)
             section_type = self.SECTION_TYPES[s]
             # sanity check
             subject = section_el.find('SisaltoOtsikko').text
@@ -169,6 +174,8 @@ class AhjoDocument(object):
 
     def parse_item(self, index, item_el):
         info = {}
+        if self.verbosity >= 3:
+            self.logger.debug(etree.tostring(item_el, encoding='utf8', method='html'))
         desc_el = item_el.find('KuvailutiedotOpenDocument')
         lang_id = desc_el.find('Kieli').attrib['KieliID']
         if lang_id != 'fi-FI':
@@ -180,6 +187,8 @@ class AhjoDocument(object):
             return
 
         info['subject'] = desc_el.find('Otsikko').text.strip()
+        if self.verbosity >= 2:
+            self.logger.debug('Parsing item: %s' % info['subject'])
         if self.type == 'minutes':
             item_nr = int(desc_el.find('Pykala').text)
         else:
@@ -191,7 +200,6 @@ class AhjoDocument(object):
         for kw_el in desc_el.findall('Asiasanat'):
             kw_list.append(clean_text(kw_el.text))
         info['keywords'] = kw_list
-
         self.parse_item_content(info, item_el)
         self.parse_item_attachments(info, item_el)
         self.items.append(info)

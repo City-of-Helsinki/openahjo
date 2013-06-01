@@ -10,12 +10,15 @@ from lxml import html
 from progressbar import ProgressBar
 from .doc import local_timezone
 
+SKIP_LIST = ['Opev_SKJ_2013-2_El', 'HKR_Ytlk_2013-18_El', 'Ymk_Ylk_2013-1_El']
+
 CHUNK_SIZE = 32*1024
 
 URL_BASE = "http://openhelsinki.hel.fi"
 
 class AhjoScanner(object):
-    def __init__(self):
+    def __init__(self, verbosity=1):
+        self.verbosity = verbosity
         self.doc_store_path = None
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
@@ -59,6 +62,9 @@ class AhjoScanner(object):
 
             info['url'] = URL_BASE + link
             info['origin_id'] = self.generate_doc_id(info)
+            if info['origin_id'] in SKIP_LIST:
+                self.logger.warning("Skipping document on skip list: %s" % info['origin_id'])
+                continue
             info_list.append(info)
         return info_list
 
