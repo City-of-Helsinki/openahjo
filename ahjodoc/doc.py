@@ -113,6 +113,7 @@ class AhjoDocument(object):
 
     SECTION_TYPES = {
         'paatosehdotus': 'draft resolution',
+        'paatoksenperustelut': 'reasons for resolution',
         'tiivistelma': 'summary',
         'esittelija': 'presenter',
         'paatos': 'resolution',

@@ -90,7 +90,7 @@ class Attachment(models.Model):
 
 class ContentSection(models.Model):
     # Either draft resolution, summary, presenter, resolution or hearing
-    type = models.CharField(max_length=20)
+    type = models.CharField(max_length=50)
     # Content sections are bound to meetings
     agenda_item = models.ForeignKey(AgendaItem, db_index=True)
     index = models.PositiveIntegerField()
