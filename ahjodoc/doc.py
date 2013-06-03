@@ -278,8 +278,12 @@ class AhjoDocument(object):
                 raise ParseError("Unknown attachment type (%s)" % ext)
         att['type'] = ext
         f_name = '%s.%s' % (att['hash'], ext)
-        att['file'] = f_name
-        f_path = os.path.join(out_path, f_name)
+        subdir = att['hash'][0:2]
+        att['file'] = os.path.join(subdir, f_name)
+        storage_dir = os.path.join(out_path, subdir)
+        if not os.path.exists(storage_dir):
+            os.makedirs(storage_dir)
+        f_path = os.path.join(storage_dir, f_name)
         if os.path.exists(f_path):
             if os.path.getsize(f_path) != zip_info.file_size:
                 raise ParseError("Size mismatch with attachment '%s': %d vs. %d" % (f_name, os.path.getsize(f_path), zip_info.file_size))
