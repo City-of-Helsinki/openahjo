@@ -10,7 +10,12 @@ from lxml import html
 from progressbar import ProgressBar
 from .doc import local_timezone
 
-SKIP_LIST = ['Opev_SKJ_2013-2_El', 'HKR_Ytlk_2013-18_El', 'Ymk_Ylk_2013-1_El']
+SKIP_LIST = [
+    'Opev_SKJ_2013-2_El',
+    'HKR_Ytlk_2013-18_El',
+    'Ymk_Ylk_2013-1_El',
+    'Rakpa_Tplk_2013-1_Pk', # KuvailutiedotOpenDocument missing
+]
 
 CHUNK_SIZE = 32*1024
 

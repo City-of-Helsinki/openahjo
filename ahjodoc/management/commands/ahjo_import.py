@@ -23,7 +23,9 @@ class Command(BaseCommand):
     option_list = BaseCommand.option_list + (
         make_option('--cached', dest='cached', action='store_true', help='cache HTTP requests'),
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
+        make_option('--start-from', dest='start_from', action='store', help='start from provided meeting'),
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
+        make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
     )
 
     def __init__(self):
@@ -72,6 +74,7 @@ class Command(BaseCommand):
             agenda_item = AgendaItem.objects.get(issue=issue, meeting=meeting)
         except AgendaItem.DoesNotExist:
             agenda_item = AgendaItem(issue=issue, meeting=meeting)
+        agenda_item.subject = info['subject']
         agenda_item.index = info['number']
         agenda_item.from_minutes = meeting_doc.type == 'minutes'
         agenda_item.last_modified_time = meeting_doc.last_modified_time
@@ -87,6 +90,8 @@ class Command(BaseCommand):
             section.text = '\n'.join(p[1])
             section.save()
 
+        if self.no_attachments:
+            return
         for att in info['attachments']:
             args = {'agenda_item': agenda_item, 'number': att['number']}
             try:
@@ -101,7 +106,7 @@ class Command(BaseCommand):
                 continue
             adoc.extract_zip_attachment(att, self.attachment_path)
             obj.public = True
-            obj.file = os.path.join(settings.AHJO_ATTACHMENT_PATH, att['file'])
+            obj.file = os.path.join(settings.AHJO_PATHS['attachment'], att['file'])
             obj.file_type = att['type']
             obj.hash = att['hash']
             obj.name = att['name']
@@ -160,7 +165,7 @@ class Command(BaseCommand):
             assert info['doc_type'] == 'minutes'
         adoc.output_cleaned_xml(xmlf)
         xmlf.close()
-        doc.xml_file = os.path.join(settings.AHJO_XML_PATH, fname)
+        doc.xml_file = os.path.join(settings.AHJO_PATHS['xml'], fname)
         doc.publish_time = adoc.publish_time
         doc.last_modified_time = info['last_modified']
         doc.save()
@@ -171,6 +176,19 @@ class Command(BaseCommand):
         if meeting.minutes and info['doc_type'] == 'agenda':
             self.logger.info("Skipping agenda doc because minutes already exists")
             return
+
+        # Perform some sanity checks.
+        existing_ais = AgendaItem.objects.filter(meeting=meeting).order_by('index')
+        if existing_ais.count() > len(adoc.items):
+            self.logger.warning("More agenda items in DB (%d) than in document (%d)" % (existing_ais.count(), len(adoc.items)))
+            existing_ais.delete()
+        for idx, ai in enumerate(existing_ais):
+            adi = adoc.items[idx]
+            if adi['register_id'] == ai.issue.register_id and adi['number'] == ai.index:
+                continue
+            self.logger.warning("Issue mismatch at index %d: %s vs. %s" % (idx, adi['register_id'], ai.issue.register_id))
+            AgendaItem.objects.filter(meeting=meeting, index__gte=ai.index).delete()
+            break
 
         for issue in adoc.items:
             self.store_issue(meeting, doc, issue, adoc)
@@ -234,9 +252,10 @@ class Command(BaseCommand):
             print "%10s %55s %15s" % (org_id, org_name, ORG_TYPES[int(org_type)])
 
     def handle(self, **options):
-        self.verbosity = options['verbosity']
+        self.verbosity = int(options['verbosity'])
         self.logger = logging.getLogger(__name__)
         self.full_update = options['full_update']
+        self.no_attachments = options['no_attachments']
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
         addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
         if os.path.isfile(addr_fname):
@@ -253,17 +272,13 @@ class Command(BaseCommand):
         self.scanner = AhjoScanner(verbosity=self.verbosity)
         doc_list = self.scanner.scan_documents(cached=options['cached'])
         media_dir = settings.MEDIA_ROOT
-        self.scanner.doc_store_path = os.path.join(media_dir, settings.AHJO_ZIP_PATH)
-        self.xml_path = os.path.join(media_dir, settings.AHJO_XML_PATH)
-        self.attachment_path = os.path.join(media_dir, settings.AHJO_ATTACHMENT_PATH)
-        try:
-            os.makedirs(self.xml_path)
-        except OSError:
-            pass
-        try:
-            os.makedirs(self.attachment_path)
-        except OSError:
-            pass
+        self.scanner.doc_store_path = os.path.join(media_dir, settings.AHJO_PATHS['zip'])
+        self.xml_path = os.path.join(media_dir, settings.AHJO_PATHS['xml'])
+        self.attachment_path = os.path.join(media_dir, settings.AHJO_PATHS['attachment'])
+        self.video_path = os.path.join(media_dir, settings.AHJO_PATHS['video'])
+        for path in (self.xml_path, self.attachment_path, self.video_path):
+            if not os.path.exists(path):
+                os.makedirs(path)
 
         if options['meeting_id']:
             for info in doc_list:
@@ -275,6 +290,11 @@ class Command(BaseCommand):
                 exit(1)
         else:
             for info in doc_list:
+                if options['start_from']:
+                    if options['start_from'] == info['origin_id']:
+                        options['start_from'] = ''
+                    else:
+                        continue
                 self.import_doc(info)
 
         if self.geocoder and self.geocoder.no_match_addresses:

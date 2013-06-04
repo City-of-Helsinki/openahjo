@@ -8,6 +8,9 @@ class Committee(models.Model):
     abbreviation = models.CharField(max_length=20, null=True, help_text='Official abbreviation')
     origin_id = models.CharField(max_length=20, db_index=True, help_text='ID string in upstream system')
 
+    def __unicode__(self):
+        return self.name
+
 class Meeting(models.Model):
     committee = models.ForeignKey(Committee, help_text='Committee or other organization')
     date = models.DateField(db_index=True, help_text='Date of the meeting')
@@ -15,6 +18,9 @@ class Meeting(models.Model):
     year = models.PositiveIntegerField(help_text='Year the meeting is held')
     issues = models.ManyToManyField('Issue', through='AgendaItem')
     minutes = models.BooleanField(help_text='Meeting minutes document available')
+
+    def __unicode__(self):
+        return u"%s %d/%d (%s)" % (self.committee, self.number, self.year, self.date) 
 
     class Meta:
         unique_together = (('committee', 'date'), ('committee', 'year', 'number'))
@@ -29,7 +35,7 @@ class MeetingDocument(models.Model):
     last_modified_time = models.DateTimeField(help_text='Time when the meeting information last changed')
     publish_time = models.DateTimeField(help_text='Time when the meeting document was scheduled for publishing')
     origin_url = models.URLField(help_text='Link to the upstream file')
-    xml_file = models.FileField(upload_to=settings.AHJO_XML_PATH)
+    xml_file = models.FileField(upload_to=settings.AHJO_PATHS['xml'])
 
 class Category(MPTTModel):
     origin_id = models.CharField(max_length=20, unique=True, help_text='ID string in upstream system')
@@ -68,8 +74,16 @@ class AgendaItem(models.Model):
     meeting = models.ForeignKey(Meeting, db_index=True, help_text='Meeting for the agenda item')
     issue = models.ForeignKey(Issue, db_index=True, help_text='Issue for the item')
     index = models.PositiveIntegerField(help_text='Item number on the agenda')
+    subject = models.CharField(max_length=500, help_text='One-line description for agenda item')
     from_minutes = models.BooleanField(help_text='Do the contents come from the minutes document?')
     last_modified_time = models.DateTimeField(db_index=True, help_text='Time of last modification')
+
+    def __unicode__(self):
+        if self.issue:
+            return u"%s / #%d: %s (%s)" % (self.meeting, self.index, self.subject,
+                                           self.issue.register_id)
+        else:
+            return u"%s / #%d: %s" % (self.meeting, self.index, self.subject)
 
     class Meta:
         unique_together = (('meeting', 'issue'), ('meeting', 'index'))
@@ -80,7 +94,7 @@ class Attachment(models.Model):
     number = models.PositiveIntegerField(help_text='Index number of the item attachment')
     name = models.CharField(max_length=250, null=True, help_text='Short name for the agenda item')
     public = models.BooleanField(help_text='Is attachment public?')
-    file = models.FileField(upload_to=settings.AHJO_ATTACHMENT_PATH, null=True)
+    file = models.FileField(upload_to=settings.AHJO_PATHS['attachment'], null=True)
     hash = models.CharField(max_length=50, null=True, help_text='SHA-1 hash of the file contents')
     file_type = models.CharField(max_length=10, null=True, help_text='File extension')
 

@@ -152,7 +152,7 @@ class IssueResource(ModelResource):
             idx = text.find('</p>')
             if idx >= 0:
                 text = text[0:idx+4]
-            if len(text) > 500:
+            if len(text) > 1000:
                 text = text[0:1000]
             bundle.data['summary'] = strip_tags(text)
         geometries = []

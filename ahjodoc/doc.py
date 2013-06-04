@@ -177,6 +177,8 @@ class AhjoDocument(object):
         if self.verbosity >= 3:
             self.logger.debug(etree.tostring(item_el, encoding='utf8', method='html'))
         desc_el = item_el.find('KuvailutiedotOpenDocument')
+        if not desc_el:
+            raise ParseError("Field KuvailutiedotOpenDocument missing")
         lang_id = desc_el.find('Kieli').attrib['KieliID']
         if lang_id != 'fi-FI':
             print "Invalid language: %s" % lang_id
@@ -189,10 +191,7 @@ class AhjoDocument(object):
         info['subject'] = desc_el.find('Otsikko').text.strip()
         if self.verbosity >= 2:
             self.logger.debug('Parsing item: %s' % info['subject'])
-        if self.type == 'minutes':
-            item_nr = int(desc_el.find('Pykala').text)
-        else:
-            item_nr = index
+        item_nr = index + 1
         info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
         info['number'] = item_nr
         info['category'] = desc_el.find('Tehtavaluokka').text.strip()
