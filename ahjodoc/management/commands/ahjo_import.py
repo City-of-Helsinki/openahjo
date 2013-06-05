@@ -5,6 +5,7 @@ import re
 import csv
 import logging
 import datetime
+import difflib
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from django import db
@@ -14,6 +15,7 @@ from ahjodoc.scanner import AhjoScanner
 from ahjodoc.doc import AhjoDocument, ParseError
 from ahjodoc.models import *
 from ahjodoc.geo import AhjoGeocoder
+from ahjodoc.video import get_videos_for_meeting, open_video, get_video_frame
 
 #parser.add_argument('--config', dest='config', action='store', help='config file location (YAML format)')
 #parser.add_argument()
@@ -24,6 +26,7 @@ class Command(BaseCommand):
         make_option('--cached', dest='cached', action='store_true', help='cache HTTP requests'),
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
         make_option('--start-from', dest='start_from', action='store', help='start from provided meeting'),
+        make_option('--committee-id', dest='committee_id', action='store', help='process only provided committee'),
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
         make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
     )
@@ -197,6 +200,97 @@ class Command(BaseCommand):
             meeting.minutes = True
             meeting.save()
 
+        self.import_videos(meeting)
+
+    def get_video_screenshot(self, video, video_stream):
+        meeting_id = '%d-%d' % (video.meeting.number, video.meeting.year)
+        path = os.path.join(self.video_path, meeting_id)
+        if not os.path.exists(path):
+            os.makedirs(path)
+        if not video.agenda_item:
+            fname = 'meeting.jpg'
+            # Take screenshot at 4 minutes
+            pos = 240
+        else:
+            fname = 'item%d-%d.jpg' % (video.agenda_item.index, video.index)
+            pos = video.start_pos + video.duration / 2.0
+
+        self.logger.debug("Fetching screenshot as %s" % fname)
+        ss_img = get_video_frame(video_stream, pos)
+        ss_img.save(os.path.join(path, fname))
+        video.screenshot = os.path.join(settings.AHJO_PATHS['video'], meeting_id, fname)
+
+    def import_videos(self, meeting):
+        # Only Kaupunginvaltuusto supported for now.
+        if meeting.committee.origin_id != '02900':
+            return
+        self.logger.debug("Checking for videos for %s" % meeting)
+        meeting_info = {'year': meeting.year, 'nr': meeting.number}
+        video_info = get_videos_for_meeting(meeting_info)
+        if not video_info:
+            return
+        try:
+            video = Video.objects.get(meeting=meeting, agenda_item=None)
+        except Video.DoesNotExist:
+            video = Video(meeting=meeting, agenda_item=None)
+        video.start_pos = 0
+        video.speaker = None
+        video.index = 0
+        video.url = video_info['video']['http_url']
+
+        self.logger.debug("Opening video at %s" % video.url)
+        #video_stream = open_video(video.url)
+        video_stream = open_video('data/valtuusto100413.mp4')
+        video.duration = video_stream.duration
+        self.get_video_screenshot(video, video_stream)
+        video.save()
+
+        ai_list = AgendaItem.objects.filter(meeting=meeting)
+        for idx, issue in enumerate(video_info['issues']):
+            agenda_index = issue['id']
+            # Skip subsections (like question hour)
+            if '.' in agenda_index:
+                #agenda_index = agenda_index.split('.')[0]
+                continue
+            agenda_index = int(agenda_index)
+            for ai in ai_list:
+                if ai.index == agenda_index:
+                    break
+            else:
+                self.logger.info("No agenda item found for issue: %s" % issue['title'])
+                continue
+            title = issue['title'].strip()
+            if ai.subject != title:
+                matcher = difflib.SequenceMatcher(None, ai.subject, title)
+                if matcher.ratio() < 0.90:
+                    raise Exception("Mismatch between titles: '%s' vs. '%s'" % (ai.subject, title))
+            vid_list = [{'start_pos': issue['video_position'], 'speaker': None, 'party': None}]
+            for statement in issue['statements']:
+                vid = {'start_pos': statement['video_position'], 'duration': statement['duration']}
+                vid['speaker'] = statement['participant']['name']
+                vid['party'] = statement['participant']['party']
+                vid_list.append(vid)
+            for idx, vid_info in enumerate(vid_list):
+                args = dict(meeting=meeting, agenda_item=ai, index=idx)
+                try:
+                    video = Video.objects.get(**args)
+                except Video.DoesNotExist:
+                    video = Video(**args)
+                video.url = video.url
+                video.speaker = vid_info['speaker']
+                video.start_pos = vid_info['start_pos']
+                video.party = vid_info['party']
+                if 'duration' in vid_info:
+                    video.duration = vid_info['duration']
+                else:
+                    if idx < len(vid_list) - 1:
+                        video.duration = vid_list[idx+1]['start_pos'] - video.start_pos
+                    else:
+                
+                        video.duration = 0
+                self.get_video_screenshot(video, video_stream)
+                video.save()
+
     def import_categories(self):
         if Category.objects.count():
             return
@@ -280,22 +374,27 @@ class Command(BaseCommand):
             if not os.path.exists(path):
                 os.makedirs(path)
 
-        if options['meeting_id']:
-            for info in doc_list:
+        for info in doc_list:
+            if options['meeting_id']:
                 if info['origin_id'] == options['meeting_id']:
                     self.import_doc(info)
                     break
-            else:
+                else:
+                    continue
+
+            if options['start_from']:
+                if options['start_from'] == info['origin_id']:
+                    options['start_from'] = ''
+                else:
+                    continue
+
+            if options['committee_id'] and info['committee_id'] != options['committee_id']:
+                continue
+            self.import_doc(info)
+        else:
+            if options['meeting_id']:
                 print "No meeting document with id '%s' found" % options['meeting_id']
                 exit(1)
-        else:
-            for info in doc_list:
-                if options['start_from']:
-                    if options['start_from'] == info['origin_id']:
-                        options['start_from'] = ''
-                    else:
-                        continue
-                self.import_doc(info)
 
         if self.geocoder and self.geocoder.no_match_addresses:
             print "No coordinate match found for addresses:"

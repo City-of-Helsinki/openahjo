@@ -114,3 +114,19 @@ class ContentSection(models.Model):
     class Meta:
         unique_together = (('agenda_item', 'index'),)
         ordering = ('agenda_item', 'index')
+
+class Video(models.Model):
+    meeting = models.ForeignKey(Meeting)
+    # If agenda_item is null, video is for the whole meeting.
+    agenda_item = models.ForeignKey(AgendaItem, null=True)
+    url = models.URLField()
+    index = models.PositiveIntegerField(help_text='Video number within the agenda item')
+    start_pos = models.FloatField()
+    duration = models.FloatField()
+    speaker = models.CharField(max_length=50, null=True)
+    party = models.CharField(max_length=50, null=True)
+    screenshot = models.FileField(upload_to=settings.AHJO_PATHS['video'])
+
+    class Meta:
+        unique_together = (('meeting', 'agenda_item', 'start_pos'),)
+        ordering = ('agenda_item', 'start_pos')
