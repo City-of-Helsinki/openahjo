@@ -20,7 +20,7 @@ def clean_text(text):
     return re.sub(r'\s\s+', ' ', text, re.U).strip()
 
 class AhjoDocument(object):
-    ATTACHMENT_EXTS = ('pdf', 'xls', 'ppt')
+    ATTACHMENT_EXTS = ('pdf', 'xls', 'ppt', 'doc')
 
     def __init__(self, verbosity=1):
         self.verbosity = verbosity
