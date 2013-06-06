@@ -42,6 +42,7 @@
         <script src="{% static "js/vendor/leaflet-pip.min.js" %}"></script>
         {% endcompress %}
         <script src="{% static "js/vendor/typeahead.min.js" %}"></script>
+        {% block extra_head %}{% endblock %}
     </head>
     <body>
         <div class="navbar navbar-inverse">

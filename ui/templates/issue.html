@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% load i18n compress static %}
+{% block extra_head %}
+<link href="http://vjs.zencdn.net/4.0/video-js.css" rel="stylesheet">
+<script src="http://vjs.zencdn.net/4.0/video.js"></script>
+{% endblock %}
+
 {% block content %}
 
 <div id="item-details" class="container-fluid">
@@ -22,6 +27,9 @@
                 {{#each issue.future_list}}
                 <li {{#is_active}}class="active"{{/is_active}}><a class="meeting-link" data-agenda-item-id="{{id}}" href="#"><div class="committee">{{meeting.committee_name}}</div><div class="date">{{meeting.date_str}}/{{meeting.number}}</div></a></li>
                 {{/each}}
+            </ul>
+            <ul class="nav nav-list hide" id="video-list">
+                <li class="nav-header">Videot</li>
             </ul>
         </div>
         <div class="span6">
@@ -57,6 +65,17 @@
 </script>
 {% endverbatim %}
 
+<div id="video-playback-modal" class="modal hide fade">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h3></h3>
+    </div>
+    <div class="modal-body">
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn">Sulje</a>
+    </div>
+</div>
 
 <script>
     window.active_issue_id = {{issue.id}};

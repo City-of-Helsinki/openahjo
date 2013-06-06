@@ -28,7 +28,7 @@ render_item = (agenda_item) ->
                     break
                 render_agenda_item ai
                 break
-    if agenda_item.issue.geometries
+    if agenda_item.issue.geometries.length
         map = L.map($(".item-details .map")[0])
         map.addLayer leaflet_default_layer
         if map_markers
@@ -63,6 +63,60 @@ format_agenda_item = (ai) ->
     for c in ai.content
         c.type_str = TRANSLATIONS[c.type]
 
+play_video = (ev) ->
+    ev.preventDefault()
+    vid_id = parseInt $(this).data('id')
+    video = null
+    for v in active_agenda_item.video_list
+        if v.id == vid_id
+            video = v
+            break
+    # Setup modal dialog
+    $modal = $("#video-playback-modal")
+    $modal.find(".modal-header h3").html(active_agenda_item.subject)
+    $vid_el = $("""
+    <video id="video" class="video-js vjs-default-skin" controls preload="auto" width="512" height="288">
+        <source src="#{video.url}" type='video/mp4'>
+        <p>Video Playback Not Supported</p>
+    </video>""")
+    $modal.find(".modal-body").append $vid_el
+    # Initialize video player
+    player = videojs "video",
+        preload: "metadata"
+        poster: video.screenshot_uri
+        autoplay: true
+    # Display the modal
+    $modal.modal()
+
+    player.on "loadedmetadata", ->
+        player.currentTime video.start_pos
+        player.off "loadedmetadata"
+
+    $modal.on 'hide', ->
+        player = _V_("video")
+        player.pause()
+        $modal.off 'hide'
+    $modal.on 'hidden', ->
+        player.dispose()
+        $vid_el.remove()
+        $modal.off 'hidden'
+
+render_videos = (video_list) ->
+    $ul = $("#video-list")
+    for vid in video_list
+        console.log vid
+        if vid.speaker
+            title = vid.speaker
+            if vid.party
+                title += "<br />" + vid.party
+        else if vid.index == 0
+            title = "Asian käsittely"
+        $el = $("<li data-id='#{vid.id}'><a href='#'>#{title}</a></li>")
+        $ul.append $el
+        $el.click play_video
+    if video_list.length
+        $ul.show()
+
 render_agenda_item = (active_ai) ->
     future_list = []
     past_list = []
@@ -80,6 +134,14 @@ render_agenda_item = (active_ai) ->
     issue.past_list = past_list
     active_ai.issue = issue
     render_item active_agenda_item
+    if active_agenda_item.video_list?
+        render_videos active_agenda_item.video_list
+    else
+        console.log "fetching"
+        $.getJSON "#{API_PREFIX}v1/video/", {agenda_item: active_agenda_item.id, limit: 500}, (data) ->
+            console.log "got data"
+            active_agenda_item.video_list = data.objects
+            render_videos active_agenda_item.video_list
 
 issue_id = window.active_issue_id
 $.getJSON "#{API_PREFIX}v1/issue/#{issue_id}/", (issue) ->
