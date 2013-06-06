@@ -12,6 +12,8 @@ from tastypie.cache import SimpleCache
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from ahjodoc.models import *
 
+CACHE_TIMEOUT = 600
+
 class CommitteeResource(ModelResource):
     def apply_filters(self, request, filters):
         qs = super(CommitteeResource, self).apply_filters(request, filters)
@@ -26,7 +28,7 @@ class CommitteeResource(ModelResource):
         ordering = ('name',)
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 class CategoryResource(ModelResource):
     parent = fields.ToOneField('self', 'parent', null=True)
@@ -65,7 +67,7 @@ class CategoryResource(ModelResource):
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 class MeetingResource(ModelResource):
     committee = fields.ToOneField(CommitteeResource, 'committee')
@@ -84,7 +86,7 @@ class MeetingResource(ModelResource):
         ordering = ('date', 'committee')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 class MeetingDocumentResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
@@ -109,7 +111,7 @@ class MeetingDocumentResource(ModelResource):
         ordering = ('date', 'publish_time')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
     
 def build_bbox_filter(bbox_val, field_name):
     points = bbox_val.split(',')
@@ -172,7 +174,7 @@ class IssueResource(ModelResource):
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 class IssueGeometryResource(ModelResource):
     issue = fields.ToOneField(IssueResource, 'issue')
@@ -183,7 +185,7 @@ class IssueGeometryResource(ModelResource):
         filtering = {
             'issue': ALL_WITH_RELATIONS
         }
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 class AgendaItemResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
@@ -212,7 +214,7 @@ class AgendaItemResource(ModelResource):
         ordering = ('last_modified_time', 'meeting', 'index')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 class AttachmentResource(ModelResource):
     agenda_item = fields.ToOneField(AgendaItemResource, 'agenda_item')
@@ -237,9 +239,33 @@ class AttachmentResource(ModelResource):
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
-        cache = SimpleCache(timeout=600)
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
+
+class VideoResource(ModelResource):
+    meeting = fields.ToOneField(MeetingResource, 'meeting')
+    agenda_item = fields.ToOneField(AgendaItemResource, 'agenda_item', null=True)
+    screenshot_uri = fields.CharField()
+
+    def dehydrate_screenshot_uri(self, bundle):
+        uri = bundle.obj.screenshot.url
+        if bundle.request:
+            uri = bundle.request.build_absolute_uri(uri)
+        return uri
+
+    class Meta:
+        queryset = Video.objects.all()
+        excludes = ['screenshot']
+        filtering = {
+            'meeting': ALL_WITH_RELATIONS,
+            'agenda_item': ALL_WITH_RELATIONS,
+            'index': ALL,
+        }
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 all_resources = [
     MeetingDocumentResource, CommitteeResource, CategoryResource,
-    MeetingResource, IssueResource, AgendaItemResource, AttachmentResource
+    MeetingResource, IssueResource, AgendaItemResource, AttachmentResource,
+    VideoResource
 ]
