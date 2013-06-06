@@ -29,6 +29,7 @@ class Command(BaseCommand):
         make_option('--committee-id', dest='committee_id', action='store', help='process only provided committee'),
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
         make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
+        make_option('--no-videos', dest='no_videos', action='store_true', help='do not import meeting videos'),
     )
 
     def __init__(self):
@@ -200,7 +201,8 @@ class Command(BaseCommand):
             meeting.minutes = True
             meeting.save()
 
-        self.import_videos(meeting)
+        if not self.no_videos:
+            self.import_videos(meeting)
 
     def get_video_screenshot(self, video, video_stream):
         meeting_id = '%d-%d' % (video.meeting.number, video.meeting.year)
@@ -240,7 +242,7 @@ class Command(BaseCommand):
 
         self.logger.debug("Opening video at %s" % video.url)
         #video_stream = open_video(video.url)
-        video_stream = open_video('data/valtuusto100413.mp4')
+        video_stream = open_video(video.url)
         video.duration = video_stream.duration
         self.get_video_screenshot(video, video_stream)
         video.save()
@@ -280,13 +282,13 @@ class Command(BaseCommand):
                 video.speaker = vid_info['speaker']
                 video.start_pos = vid_info['start_pos']
                 video.party = vid_info['party']
+                video.url = video_info['video']['http_url']
                 if 'duration' in vid_info:
                     video.duration = vid_info['duration']
                 else:
                     if idx < len(vid_list) - 1:
                         video.duration = vid_list[idx+1]['start_pos'] - video.start_pos
                     else:
-                
                         video.duration = 0
                 self.get_video_screenshot(video, video_stream)
                 video.save()
@@ -350,6 +352,7 @@ class Command(BaseCommand):
         self.logger = logging.getLogger(__name__)
         self.full_update = options['full_update']
         self.no_attachments = options['no_attachments']
+        self.no_videos = options['no_videos']
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
         addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
         if os.path.isfile(addr_fname):

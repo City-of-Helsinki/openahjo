@@ -158,7 +158,7 @@ Installation
 ------------
 Required Debian packages:
 
-    language-pack-fi postgis postgresql-9.1-postgis libxml2-dev libxslt1-dev
+    language-pack-fi postgis postgresql-9.1-postgis libxml2-dev libxslt1-dev libavcodec-dev libavformat-dev libswscale-dev
 
 Shell commands:
 

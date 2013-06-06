@@ -13,3 +13,4 @@ django-cors-headers
 django-mptt
 django-tastypie-swagger
 South
+ffvideo
