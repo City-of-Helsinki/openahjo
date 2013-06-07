@@ -62,6 +62,7 @@ ID,nameFIN,nameSWE,type
 1901,Toimitusjohtaja,Verkställande direktören,10
 2000,Työterveyskeskus,Företagshälsovårdscentralen,8
 02000VH1,Työterveysjohtaja,Företagshälsovårdsdirektör,12
+21110,Terveyslautakunta,Hälsovårdsnämnden,5
 2300,Tietokeskus,Faktacentralen,8
 02300VH1,Johtaja,Direktör,12
 23100,Hallinto,Förvaltning,9
@@ -109,6 +110,7 @@ ID,nameFIN,nameSWE,type
 200ES1,Rakennus- ja ympäristötointa johtava apulaiskaupunginjohtaja,Biträdande stadsdirektör för byggnads- och miljöväsendet,12
 300,Sivistys- ja henkilöstötoimi,Bildnings- och personalväsendet,7
 300ES1,Sivistys- ja henkilöstötointa johtava apulaiskaupunginjohtaja,Biträdande stadsdirektör för bildnings- och personalväsendet,12
+34100,Sosiaalilautakunta,Socialnämnden,5
 400,Sosiaali- ja terveystoimi,Social- och hälsovårdsväsendet,7
 40000,Opetusvirasto,Utbildningsverket,8
 40000VH1,Opetustoimen johtaja,Utbildningsdirektör,12
