@@ -22,7 +22,7 @@ def fetch_meetings():
     for sess in sess_list:
         if 'Kaupunginvaltuuston' not in sess['title']:
             continue
-        m = re.match(u'[\w ]+(\d+)/(\d{1,2}\.\d{1,2}.\d{4})', sess['title'])
+        m = re.match(u'[\w ]+ (\d+)/(\d{1,2}\.\d{1,2}.\d{4})', sess['title'])
         if not m:
             continue
         meeting_nr = int(m.groups()[0])
@@ -31,8 +31,8 @@ def fetch_meetings():
         url = sess['url']
         #url = url.split('@@')[0]
         #url += '@@hallinfo-meeting'
-        meetings.append({'url': url, 'nr': meeting_nr, 'date': meeting_date, 'year': int(year)})
-
+        meeting = {'url': url, 'nr': meeting_nr, 'date': meeting_date, 'year': int(year)}
+        meetings.append(meeting)
     cached_meetings = meetings
     return meetings
 
