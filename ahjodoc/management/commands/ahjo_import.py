@@ -16,6 +16,7 @@ from ahjodoc.doc import AhjoDocument, ParseError
 from ahjodoc.models import *
 from ahjodoc.geo import AhjoGeocoder
 from ahjodoc.video import get_videos_for_meeting, open_video, get_video_frame
+from ahjodoc.utils import download_file
 
 #parser.add_argument('--config', dest='config', action='store', help='config file location (YAML format)')
 #parser.add_argument()
@@ -30,6 +31,7 @@ class Command(BaseCommand):
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
         make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
         make_option('--no-videos', dest='no_videos', action='store_true', help='do not import meeting videos'),
+        make_option('--force-committees', dest='force_committees', action='store_true', help='force importing of committees'),
     )
 
     def __init__(self):
@@ -94,7 +96,7 @@ class Command(BaseCommand):
             section.text = '\n'.join(p[1])
             section.save()
 
-        if self.no_attachments:
+        if self.options['no_attachments']:
             return
         for att in info['attachments']:
             args = {'agenda_item': agenda_item, 'number': att['number']}
@@ -120,7 +122,7 @@ class Command(BaseCommand):
         origin_id = info['origin_id']
         try:
             doc = MeetingDocument.objects.get(origin_id=origin_id)
-            if not self.full_update and doc.last_modified_time >= info['last_modified']:
+            if not self.options['full_update'] and doc.last_modified_time >= info['last_modified']:
                 self.logger.info("Up-to-date document %s (last modified %s)" % (origin_id, info['last_modified']))
                 return
         except MeetingDocument.DoesNotExist:
@@ -201,7 +203,7 @@ class Command(BaseCommand):
             meeting.minutes = True
             meeting.save()
 
-        if not self.no_videos:
+        if not self.options['no_videos']:
             self.import_videos(meeting)
 
     def get_video_screenshot(self, video, video_stream):
@@ -222,6 +224,14 @@ class Command(BaseCommand):
         ss_img.save(os.path.join(path, fname))
         video.screenshot = os.path.join(settings.AHJO_PATHS['video'], meeting_id, fname)
 
+    def download_video(self, url):
+        fname = url.split('/')[-1]
+        path = os.path.join(self.video_path, fname)
+        if not os.path.exists(path):
+            self.logger.debug("Downloading video at %s" % url)
+            download_file(url, path)
+        return path
+
     def import_videos(self, meeting):
         # Only Kaupunginvaltuusto supported for now.
         if meeting.committee.origin_id != '02900':
@@ -240,9 +250,8 @@ class Command(BaseCommand):
         video.index = 0
         video.url = video_info['video']['http_url']
 
-        self.logger.debug("Opening video at %s" % video.url)
-        #video_stream = open_video(video.url)
-        video_stream = open_video(video.url)
+        video_fname = self.download_video(video.url)
+        video_stream = open_video(video_fname)
         video.duration = video_stream.duration
         self.get_video_screenshot(video, video_stream)
         video.save()
@@ -327,7 +336,7 @@ class Command(BaseCommand):
             9: 'Osasto',
         }
 
-        if Committee.objects.count():
+        if not self.options['force_committees'] and Committee.objects.count():
             return
         f = open(os.path.join(self.data_path, 'organisaatiokoodit.csv'), 'r')
         reader = csv.reader(f)
@@ -350,9 +359,7 @@ class Command(BaseCommand):
     def handle(self, **options):
         self.verbosity = int(options['verbosity'])
         self.logger = logging.getLogger(__name__)
-        self.full_update = options['full_update']
-        self.no_attachments = options['no_attachments']
-        self.no_videos = options['no_videos']
+        self.options = options
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
         addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
         if os.path.isfile(addr_fname):
