@@ -63,6 +63,9 @@ format_agenda_item = (ai) ->
     for c in ai.content
         c.type_str = TRANSLATIONS[c.type]
 
+video_player = null
+video_url = null
+
 play_video = (ev) ->
     ev.preventDefault()
     vid_id = parseInt $(this).data('id')
@@ -74,6 +77,26 @@ play_video = (ev) ->
     # Setup modal dialog
     $modal = $("#video-playback-modal")
     $modal.find(".modal-header h3").html(active_agenda_item.subject)
+
+    show_modal = ->
+        $modal.on 'hide', ->
+            player = _V_("video")
+            player.pause()
+            $modal.off 'hide'
+        $modal.modal()
+
+    if video_player?
+        if video.url == video_url
+            $modal.on 'shown', ->
+                video_player.currentTime video.start_pos
+                video_player.play()
+            show_modal()
+            return
+        else
+            video_player.dispose()
+            video_player = null
+            $modal.find("video").remove()
+
     $vid_el = $("""
     <video id="video" class="video-js vjs-default-skin" controls preload="auto" width="512" height="288">
         <source src="#{video.url}" type='video/mp4'>
@@ -85,21 +108,12 @@ play_video = (ev) ->
         preload: "metadata"
         poster: video.screenshot_uri
         autoplay: true
-    # Display the modal
-    $modal.modal()
-
     player.on "loadedmetadata", ->
         player.currentTime video.start_pos
         player.off "loadedmetadata"
-
-    $modal.on 'hide', ->
-        player = _V_("video")
-        player.pause()
-        $modal.off 'hide'
-    $modal.on 'hidden', ->
-        player.dispose()
-        $vid_el.remove()
-        $modal.off 'hidden'
+    video_url = video.url
+    video_player = player
+    show_modal()
 
 render_videos = (video_list) ->
     $ul = $("#video-list")
