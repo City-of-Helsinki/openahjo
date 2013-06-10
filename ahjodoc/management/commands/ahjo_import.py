@@ -255,8 +255,17 @@ class Command(BaseCommand):
         video.duration = video_stream.duration
         self.get_video_screenshot(video, video_stream)
         video.save()
+        ai_list = AgendaItem.objects.filter(meeting=meeting).order_by('index')
+        if self.verbosity >= 2:
+            # DEBUG
+            print "Video"
+            titles = ["%s. %s" % (i['id'], i['title']) for i in video_info['issues']]
+            for t in titles: print "\t" + t
 
-        ai_list = AgendaItem.objects.filter(meeting=meeting)
+            print "Ahjo"
+            titles = ["%s. %s" % (i.index, i.subject) for i in ai_list]
+            for t in titles: print "\t" + t
+
         for idx, issue in enumerate(video_info['issues']):
             agenda_index = issue['id']
             # Skip subsections (like question hour)
@@ -268,13 +277,15 @@ class Command(BaseCommand):
                 if ai.index == agenda_index:
                     break
             else:
-                self.logger.info("No agenda item found for issue: %s" % issue['title'])
+                self.logger.info(u"No agenda item found for issue: %s" % issue['title'])
                 continue
             title = issue['title'].strip()
             if ai.subject != title:
+                # Attempt a fuzzy match
                 matcher = difflib.SequenceMatcher(None, ai.subject, title)
                 if matcher.ratio() < 0.90:
-                    raise Exception("Mismatch between titles: '%s' vs. '%s'" % (ai.subject, title))
+                    self.logger.error(u"Mismatch between titles: '%s' vs. '%s'" % (ai.subject, title))
+                    raise Exception("Title mismatch")
             vid_list = [{'start_pos': issue['video_position'], 'speaker': None, 'party': None}]
             for statement in issue['statements']:
                 vid = {'start_pos': statement['video_position'], 'duration': statement['duration']}

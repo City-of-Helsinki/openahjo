@@ -10,6 +10,14 @@ INDEX_URL = "http://www.helsinkikanava.fi/@@opendata-index-v2.0"
 
 cached_meetings = None
 
+def fix_meeting_quirks(meeting):
+    if meeting['title'] == 'Kaupunginvaltuuston kokous 19/14.11.2012':
+        issues = meeting['issues']
+        issues[2]['id'] = '3'
+        issues[3]['id'] = '4'
+        issues[4]['id'] = '5'
+    return meeting
+
 def fetch_meetings():
     global cached_meetings
 
@@ -45,6 +53,7 @@ def fetch_meeting(meeting):
 
     r = requests.get(meeting['url'])
     ret = r.json()
+    fix_meeting_quirks(ret)
     cached_meeting_entries[meet_id] = ret
     return ret
 
