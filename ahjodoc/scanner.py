@@ -16,6 +16,7 @@ SKIP_LIST = [
     'Ymk_Ylk_2013-1_El',
     'Rakpa_Tplk_2013-1_Pk', # KuvailutiedotOpenDocument missing
     'Halke_Khs_2012-27_Pk', # Attachment missing
+    'Halke_Khs_2012-26_Pk', # Attachment missing
 ]
 
 CHUNK_SIZE = 32*1024
