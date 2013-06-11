@@ -81,7 +81,7 @@ class AgendaItem(models.Model):
     REMOVED = "REMOVED"
     TABLED = "TABLED"
     ELECTION = "ELECTION"
-    DECISION_CHOICES = (
+    RESOLUTION_CHOICES = (
         (PASSED, 'Passed as drafted'),
         (PASSED_VOTED, 'Passed after a vote'),
         (PASSED_REVISED, 'Passed revised by presenter'),
@@ -99,7 +99,7 @@ class AgendaItem(models.Model):
     subject = models.CharField(max_length=500, help_text='One-line description for agenda item')
     from_minutes = models.BooleanField(help_text='Do the contents come from the minutes document?')
     last_modified_time = models.DateTimeField(db_index=True, help_text='Time of last modification')
-    decision = models.CharField(max_length=20, choices=DECISION_CHOICES, null=True, help_text="Type of decision made")
+    resolution = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, null=True, help_text="Type of resolution made")
 
     def __unicode__(self):
         if self.issue:

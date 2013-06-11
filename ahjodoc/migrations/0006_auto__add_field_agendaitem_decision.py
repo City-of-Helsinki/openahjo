@@ -8,21 +8,21 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding field 'AgendaItem.decision'
-        db.add_column(u'ahjodoc_agendaitem', 'decision',
+        # Adding field 'AgendaItem.resolution'
+        db.add_column(u'ahjodoc_agendaitem', 'resolution',
                       self.gf('django.db.models.fields.CharField')(max_length=20, null=True),
                       keep_default=False)
 
 
     def backwards(self, orm):
-        # Deleting field 'AgendaItem.decision'
-        db.delete_column(u'ahjodoc_agendaitem', 'decision')
+        # Deleting field 'AgendaItem.resolution'
+        db.delete_column(u'ahjodoc_agendaitem', 'resolution')
 
 
     models = {
         u'ahjodoc.agendaitem': {
             'Meta': {'ordering': "('meeting', 'index')", 'unique_together': "(('meeting', 'issue'), ('meeting', 'index'))", 'object_name': 'AgendaItem'},
-            'decision': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
+            'resolution': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
             'from_minutes': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'index': ('django.db.models.fields.PositiveIntegerField', [], {}),

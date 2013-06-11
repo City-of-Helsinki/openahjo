@@ -172,7 +172,7 @@ class AhjoDocument(object):
                     break
         info['attachments'] = att_list
 
-    DECISION_TYPES = [
+    RESOLUTION_TYPES = [
         'PASSED',
         'PASSED_VOTED',
         'PASSED_REVISED',
@@ -213,9 +213,9 @@ class AhjoDocument(object):
             kw_list.append(clean_text(kw_el.text))
         info['keywords'] = kw_list
 
-        decision_el = desc_el.find('Pikapaatos')
-        if decision_el is not None:
-            info['decision'] = self.DECISION_TYPES[int(decision_el.attrib['PikapaatosId'])]
+        resolution_el = desc_el.find('Pikapaatos')
+        if resolution_el is not None:
+            info['resolution'] = self.RESOLUTION_TYPES[int(resolution_el.attrib['PikapaatosId'])]
 
         self.parse_item_content(info, item_el)
         self.parse_item_attachments(info, item_el)

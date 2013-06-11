@@ -82,7 +82,7 @@ class Command(BaseCommand):
         agenda_item.index = info['number']
         agenda_item.from_minutes = meeting_doc.type == 'minutes'
         agenda_item.last_modified_time = meeting_doc.last_modified_time
-        agenda_item.decision = info.get('decision')
+        agenda_item.resolution = info.get('resolution')
         agenda_item.save()
 
         for idx, p in enumerate(info['content']):
