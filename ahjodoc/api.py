@@ -259,6 +259,7 @@ class VideoResource(ModelResource):
             'meeting': ALL_WITH_RELATIONS,
             'agenda_item': ALL_WITH_RELATIONS,
             'index': ALL,
+            'speaker': ['exact'],
         }
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
