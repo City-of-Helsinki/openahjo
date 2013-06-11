@@ -3,7 +3,6 @@ from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
 from tastypie.api import Api
 from ahjodoc.api import all_resources
-import demo
 
 v1_api = Api(api_name='v1')
 for res in all_resources:
