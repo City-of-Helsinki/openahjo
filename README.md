@@ -154,6 +154,26 @@ http://dev.hel.fi/openahjo/v1/agenda_item/1/?format=json
 }
 ```
 
+### video
+```
+http://dev.hel.fi/openahjo/v1/video/2409/?format=json
+```
+```json
+{
+    agenda_item: "/openahjo/v1/agenda_item/3219/",
+    duration: 63,
+    id: 2409,
+    index: 3,
+    meeting: "/openahjo/v1/meeting/19/",
+    party: "",
+    resource_uri: "/openahjo/v1/video/2409/",
+    screenshot_uri: "http://dev.hel.fi/openahjo/media/video/6-2013/item5-3.jpg",
+    speaker: "Pajunen Jussi",
+    start_pos: 2327,
+    url: "http://media.helsinkikanava.fi/valtuusto270313.mp4"
+}
+```
+
 Installation
 ------------
 Required Debian packages:
@@ -176,3 +196,7 @@ After the database is created, you need to create the tables:
 
     ./manage.py syncdb --all
     ./manage.py migrate --fake
+
+Then you can just populate your tables (this will take a while):
+
+    ./manage.py ahjo_import
