@@ -18,7 +18,7 @@ class CommitteeResource(ModelResource):
     def apply_filters(self, request, filters):
         qs = super(CommitteeResource, self).apply_filters(request, filters)
         meetings = request.GET.get('meetings', '')
-        if meetings.lower() not in ('0', 'false'):
+        if meetings.lower() in ('1', 'true'):
             # Include only categories with associated issues
             qs = qs.annotate(num_meetings=Count('meeting')).filter(num_meetings__gt=0)
         return qs
