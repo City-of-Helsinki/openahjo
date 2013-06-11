@@ -10,7 +10,7 @@ class Migration(SchemaMigration):
     def forwards(self, orm):
         # Adding field 'AgendaItem.decision'
         db.add_column(u'ahjodoc_agendaitem', 'decision',
-                      self.gf('django.db.models.fields.CharField')(default=None, max_length=20),
+                      self.gf('django.db.models.fields.CharField')(max_length=20, null=True),
                       keep_default=False)
 
 
@@ -22,7 +22,7 @@ class Migration(SchemaMigration):
     models = {
         u'ahjodoc.agendaitem': {
             'Meta': {'ordering': "('meeting', 'index')", 'unique_together': "(('meeting', 'issue'), ('meeting', 'index'))", 'object_name': 'AgendaItem'},
-            'decision': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': True}),
+            'decision': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True'}),
             'from_minutes': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             u'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'index': ('django.db.models.fields.PositiveIntegerField', [], {}),
