@@ -10,13 +10,17 @@ from lxml import html
 from progressbar import ProgressBar
 from .doc import local_timezone
 
-SKIP_LIST = [
+SKIP_DOC_LIST = [
     'Opev_SKJ_2013-2_El',
     'HKR_Ytlk_2013-18_El',
     'Ymk_Ylk_2013-1_El',
     'Rakpa_Tplk_2013-1_Pk', # KuvailutiedotOpenDocument missing
     'Halke_Khs_2012-27_Pk', # Attachment missing
     'Halke_Khs_2012-26_Pk', # Attachment missing
+]
+
+SKIP_URL_LIST = [
+    'http://openhelsinki.hel.fi/files/Taloushallintopalvelu-liikelaitoksen%20jk_71900/Talpa%202013-05-28%20Talpajk%203%20El%20Su.zip', # Duplicate
 ]
 
 CHUNK_SIZE = 32*1024
@@ -69,7 +73,10 @@ class AhjoScanner(object):
 
             info['url'] = URL_BASE + link
             info['origin_id'] = self.generate_doc_id(info)
-            if info['origin_id'] in SKIP_LIST:
+            if info['url'] in SKIP_URL_LIST:
+                self.logger.warning("Skipping document on URL skip list: %s" % info['origin_id'])
+                continue
+            if info['origin_id'] in SKIP_DOC_LIST:
                 self.logger.warning("Skipping document on skip list: %s" % info['origin_id'])
                 continue
             info_list.append(info)
@@ -111,7 +118,11 @@ class AhjoScanner(object):
             fname = "%s_%s.zip" % (info['date'], self.generate_doc_id(info))
             store_fpath = os.path.join(self.doc_store_path, fname)
             if os.path.exists(store_fpath):
-                return open(store_fpath, 'rb')
+                mtime = datetime.fromtimestamp(os.path.getmtime(store_fpath))
+                mtime = mtime.replace(tzinfo=local_timezone)
+                # Use stored file only if it's newer.
+                if mtime >= info['last_modified']:
+                    return open(store_fpath, 'rb')
             delete_tmp = False
         else:
             store_fpath = None
