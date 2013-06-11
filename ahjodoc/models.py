@@ -71,12 +71,35 @@ class IssueGeometry(models.Model):
     objects = models.GeoManager()
 
 class AgendaItem(models.Model):
+    PASSED = "PASSED_UNCHANGED"
+    PASSED_VOTED = "PASSED_VOTED"
+    PASSED_REVISED = "PASSED_REVISED"
+    PASSED_MODIFIED = "PASSED_MODIFIED"
+    REJECTED = "REJECTED"
+    NOTED = "NOTED"
+    RETURNED = "RETURNED"
+    REMOVED = "REMOVED"
+    TABLED = "TABLED"
+    ELECTION = "ELECTION"
+    DECISION_CHOICES = (
+        (PASSED, 'Passed as drafted'),
+        (PASSED_VOTED, 'Passed after a vote'),
+        (PASSED_REVISED, 'Passed revised by presenter'),
+        (PASSED_MODIFIED, 'Passed modified'),
+        (REJECTED, 'Rejected'),
+        (NOTED, 'Noted as informational'),
+        (RETURNED, 'Returned to preparation'),
+        (REMOVED, 'Removed from agenda'),
+        (TABLED, 'Tabled'),
+        (ELECTION, 'Election'),
+    )
     meeting = models.ForeignKey(Meeting, db_index=True, help_text='Meeting for the agenda item')
     issue = models.ForeignKey(Issue, db_index=True, help_text='Issue for the item')
     index = models.PositiveIntegerField(help_text='Item number on the agenda')
     subject = models.CharField(max_length=500, help_text='One-line description for agenda item')
     from_minutes = models.BooleanField(help_text='Do the contents come from the minutes document?')
     last_modified_time = models.DateTimeField(db_index=True, help_text='Time of last modification')
+    decision = models.CharField(max_length=20, choices=DECISION_CHOICES, null=True, help_text="Type of decision made")
 
     def __unicode__(self):
         if self.issue:
