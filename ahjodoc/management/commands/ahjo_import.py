@@ -84,6 +84,7 @@ class Command(BaseCommand):
         agenda_item.index = info['number']
         agenda_item.from_minutes = meeting_doc.type == 'minutes'
         agenda_item.last_modified_time = meeting_doc.last_modified_time
+        agenda_item.decision = info.get('decision')
         agenda_item.save()
 
         for idx, p in enumerate(info['content']):
@@ -125,6 +126,8 @@ class Command(BaseCommand):
             if not self.options['full_update'] and doc.last_modified_time >= info['last_modified']:
                 self.logger.info("Up-to-date document %s (last modified %s)" % (origin_id, info['last_modified']))
                 return
+            else:
+                print "Re-importing document %s" % origin_id
         except MeetingDocument.DoesNotExist:
             print "Adding new document %s" % origin_id
             doc = MeetingDocument(origin_id=origin_id)

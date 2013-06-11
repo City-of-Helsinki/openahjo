@@ -172,6 +172,19 @@ class AhjoDocument(object):
                     break
         info['attachments'] = att_list
 
+    DECISION_TYPES = [
+        'PASSED',
+        'PASSED_VOTED',
+        'PASSED_REVISED',
+        'PASSED_MODIFIED',
+        'REJECTED',
+        'NOTED',
+        'RETURNED',
+        'REMOVED',
+        'TABLED',
+        'ELECTION',
+    ]
+
     def parse_item(self, index, item_el):
         info = {}
         if self.verbosity >= 3:
@@ -199,6 +212,11 @@ class AhjoDocument(object):
         for kw_el in desc_el.findall('Asiasanat'):
             kw_list.append(clean_text(kw_el.text))
         info['keywords'] = kw_list
+
+        decision_el = desc_el.find('Pikapaatos')
+        if decision_el is not None:
+            info['decision'] = self.DECISION_TYPES[int(decision_el.attrib['PikapaatosId'])]
+
         self.parse_item_content(info, item_el)
         self.parse_item_attachments(info, item_el)
         self.items.append(info)
