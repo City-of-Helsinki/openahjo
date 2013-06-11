@@ -158,7 +158,7 @@ Installation
 ------------
 Required Debian packages:
 
-    language-pack-fi postgis postgresql-9.1-postgis libxml2-dev libxslt1-dev libavcodec-dev libavformat-dev libswscale-dev
+    language-pack-fi postgis postgresql-9.1-postgis libxml2-dev libxslt1-dev libavcodec-dev libavformat-dev libswscale-dev python-imaging
 
 Shell commands:
 
@@ -171,3 +171,8 @@ PostgreSQL commands:
 
     CREATE EXTENSION postgis;
     CREATE EXTENSION postgis_topology;
+
+After the database is created, you need to create the tables:
+
+    ./manage.py syncdb --all
+    ./manage.py migrate --fake
