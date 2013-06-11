@@ -28,30 +28,30 @@ render_item = (agenda_item) ->
                     break
                 render_agenda_item ai
                 break
+    map_container = $(".item-details .map")
     if agenda_item.issue.geometries.length
-        map = L.map($(".item-details .map")[0])
+        map = L.map map_container[0]
         map.addLayer leaflet_default_layer
         if map_markers
             for m in map_markers
                 map.removeLayer m
-        map_markers = []
-        for geom in agenda_item.issue.geometries
-            coords = geom.coordinates
-            ll = new L.LatLng coords[1], coords[0]
-            marker = L.marker ll
-            marker.bindPopup "<b>#{geom.name}</b>"
-            map_markers.push marker
-        bounds = new L.LatLngBounds (m.getLatLng() for m in map_markers)
-        ###
-        max_zoom = map._layersMaxZoom
-        map._layersMaxZoom = 14
-        map.fitBounds bounds
-        map._layersMaxZoom = max_zoom
-        ###
-        map.setView map_markers[0].getLatLng(), 14
-        map.invalidateSize()
-        for m in map_markers
-            map.addLayer m
+        map_geometries = []
+        for geojson_geom in agenda_item.issue.geometries
+            geom = L.geoJson geojson_geom
+            geom.bindPopup "<b>#{geojson_geom.name}</b>"
+            map_geometries.push geom
+        layer_group = L.featureGroup map_geometries
+        bounds = layer_group.getBounds()
+        layer_group.addTo map
+        if false
+            max_zoom = map._layersMaxZoom
+            map._layersMaxZoom = 14
+            map.fitBounds bounds
+            map._layersMaxZoom = max_zoom
+        else
+            map.setView bounds.getCenter(), 14, true
+        L.Util.requestAnimFrame map.invalidateSize, map
+        window.map = map
 
 format_agenda_item = (ai) ->
     date = moment ai.meeting.date

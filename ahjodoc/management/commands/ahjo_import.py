@@ -39,8 +39,6 @@ class Command(BaseCommand):
         return super(Command, self).__init__()
 
     def geocode_issue(self, issue, info):
-        if not self.geocoder:
-            return
         # Attempt to geocode first from subject and keywords.
         # If no matches are found, attempt to geocode from content text.
         text_list = []
@@ -56,7 +54,7 @@ class Command(BaseCommand):
                     igeom = IssueGeometry.objects.get(issue=issue, name=m['name'])
                 except IssueGeometry.DoesNotExist:
                     igeom = IssueGeometry(issue=issue, name=m['name'])
-                igeom.geometry = m['location']
+                igeom.geometry = m['geometry']
                 igeom.save()
 
     def store_issue(self, meeting, meeting_doc, info, adoc):
@@ -375,15 +373,26 @@ class Command(BaseCommand):
         self.logger = logging.getLogger(__name__)
         self.options = options
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
+        self.geocoder = AhjoGeocoder()
+
+        plan_path = os.path.join(self.data_path, 'plans')
+        if os.path.isdir(plan_path):
+            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_vir_rajaus.TAB'))
+            self.geocoder.load_plans(os.path.join(plan_path, 'Lv_rajaus.TAB'))
+            self.geocode_plans = True
+        else:
+            print "Plan database not found; plan geocoding not available."
+            self.geocode_plans = False
+
         addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
         if os.path.isfile(addr_fname):
             addr_f = open(addr_fname, 'r')
-            self.geocoder = AhjoGeocoder()
             self.geocoder.load_address_database(addr_f)
             addr_f.close()
+            self.geocode_addresses = True
         else:
-            print "Address database not found; geocoder not available."
-            self.geocoder = None
+            print "Address database not found; address geocoding not available."
+            self.geocode_addresses = False
 
         self.import_committees()
         self.import_categories()
@@ -420,10 +429,14 @@ class Command(BaseCommand):
                 print "No meeting document with id '%s' found" % options['meeting_id']
                 exit(1)
 
-        if self.geocoder and self.geocoder.no_match_addresses:
+        if self.geocoder.no_match_addresses:
             print "No coordinate match found for addresses:"
             for adr in set(self.geocoder.no_match_addresses):
                 print adr
+        if self.geocoder.no_match_plans:
+            print "No coordinate match found for plans:"
+            for plan in self.geocoder.no_match_plans:
+                print plan
         if self.failed_import_list:
             print "Importing failed for following documents:"
             for doc in self.failed_import_list:

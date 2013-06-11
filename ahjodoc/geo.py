@@ -5,17 +5,21 @@ import os
 import re
 import logging
 from noaho import NoAho
-from django.contrib.gis.gdal import SpatialReference, CoordTransform
-from django.contrib.gis.geos import Point
+from django.contrib.gis.gdal import DataSource, SpatialReference, CoordTransform
+from django.contrib.gis.geos import GEOSGeometry, Point, Polygon, MultiPolygon, LineString, LinearRing
 from django.conf import settings
+
+GK25_SRID = 3879
 
 class AhjoGeocoder(object):
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.no_match_addresses = []
+        self.no_match_plans = []
+        self.plan_map = {}
 
     def convert_from_gk25(self, north, east):
-        pnt = Point(east, north, srid=3879)
+        pnt = Point(east, north, srid=GK25_SRID)
         pnt.transform(settings.PROJECTION_SRID)
         return pnt
 
@@ -28,15 +32,26 @@ class AhjoGeocoder(object):
                 break
         else:
             self.logger.warning("No match found for '%s %d'" % (street, num))
-            self.no_match_addresses.append('%s %d' % (e['street'], num))
+            s = '%s %d' % (e['street'], num)
+            if not s in self.no_match_addresses:
+                self.no_match_addresses.append(s)
             return None
 
         pnt = self.convert_from_gk25(e['coord_n'], e['coord_e'])
-        return {'name': '%s %d' % (e['street'], num), 'location': pnt}
+        return {'name': '%s %d' % (e['street'], num), 'geometry': pnt}
+
+    def geocode_plan(self, plan_id):
+        plan = self.plan_map.get(plan_id)
+        if not plan:
+            if plan_id not in self.no_match_plans:
+                self.logger.warning("No plan fonud for plan id %s" % plan_id)
+                self.no_match_plans.append(plan_id)
+            return
+        return {'name': 'Kaava %s' % plan_id, 'geometry': plan['geometry']}
 
     def geocode_from_text(self, text):
         if not isinstance(text, unicode):
-            text = unicode(text)
+            text = unicode(text).strip()
         STREET_SUFFIXES = ('katu', 'tie', 'kuja', 'polku', 'kaari', 'linja', 'raitti', 'rinne', 'penger', 'ranta', u'väylä')
         for sfx in STREET_SUFFIXES:
             m = re.search(r'([A-Z]\w+%s)\s+(\d+)' % sfx, text)
@@ -48,7 +63,7 @@ class AhjoGeocoder(object):
                 self.no_match_addresses.append('%s %s' % (m.groups()[0], m.groups()[1]))
         textl = text.lower()
         ret = [x for x in self.street_tree.findall_long(textl)]
-        points = {}
+        geometries = {}
         for street_match in ret:
             (start, end) = street_match[0:2]
             street_name = textl[start:end]
@@ -61,8 +76,15 @@ class AhjoGeocoder(object):
 
             pnt = self.geocode_address(street_name, num)
             if pnt:
-                points[pnt['name']] = pnt
-        return points
+                geometries[pnt['name']] = pnt
+
+        m = re.match(r'^(\d{3,5})\.[a-zA-Z]$', text)
+        if m:
+            geom = self.geocode_plan(m.groups()[0])
+            if geom:
+                geometries[geom['name']] = geom
+        
+        return geometries
 
     def geocode_from_text_list(self, text_list):
         points = {}
@@ -110,3 +132,35 @@ class AhjoGeocoder(object):
         print "%d street names loaded" % len(self.street_hash)
         for street in self.street_hash.keys():
             self.street_tree.add(street)
+
+    def load_plans(self, plan_file):
+        ds = DataSource(plan_file, encoding='iso8859-1')
+        lyr = ds[0]
+
+        for idx, feat in enumerate(lyr):
+            origin_id = feat['kaavatunnus'].as_string().strip()
+            geom = feat.geom
+            geom.srid = GK25_SRID
+            geom.transform(settings.PROJECTION_SRID)
+            if origin_id not in self.plan_map:
+                plan = {'geometry': None}
+                self.plan_map[origin_id] = plan
+            else:
+                plan = self.plan_map[origin_id]
+            poly = GEOSGeometry(geom.wkb, srid=geom.srid)
+            if isinstance(poly, LineString):
+                try:
+                    ring = LinearRing(poly.tuple)
+                except Exception:
+                    self.logger.error("Skipping plan %s, it's linestring doesn't close." % origin_id)
+                    # if the LineString doesn't form a polygon, skip it.
+                    continue
+                poly = Polygon(ring)
+                print type(poly)
+            if plan['geometry']:
+                if isinstance(plan['geometry'], Polygon):
+                    plan['geometry'] = MultiPolygon(plan['geometry'])
+                plan['geometry'].append(poly)
+            else:
+                plan['geometry'] = poly
+        print "%d plans imported" % idx

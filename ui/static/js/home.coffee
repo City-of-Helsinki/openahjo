@@ -1,52 +1,3 @@
-###
-TRANSLATIONS = {
-    "draft resolution": "Päätösesitys"
-    "presenter": "Esittelijä"
-    "resolution": "Päätös"
-    "summary": "Yhteenveto"
-}
-
-show_meeting = (meeting, $parent) ->
-    $next = $parent.next()
-    if $next.prop('tagName') == 'OL'
-        if $next.is(':visible')
-            $next.slideUp()
-        else
-            $next.slideDown()
-        return
-
-    $.getJSON '/v1/agenda_item/', {meeting: meeting.id}, (data) ->
-        $list = $("<ol></ol>")
-        for obj in data.objects
-            console.log obj
-            content_html = ''
-            for c in obj.content
-                if c.type of TRANSLATIONS
-                    type = TRANSLATIONS[c.type]
-                else
-                    type = c.type
-                content_html += "<strong>#{type}</strong>#{c.text}"
-            $el = $("<li><h4>#{obj.item.subject}</h4><div class='content hide'>#{content_html}</div></li>")
-            $list.append $el
-            $el.find('h4').css('cursor', 'pointer').click (ev) ->
-                content = $(ev.target).parent().find('.content')
-                if content.is(':visible')
-                    content.slideUp()
-                else
-                    content.slideDown()
-        $list.hide()
-        $parent.after $list
-        $list.slideDown()
-
-$.getJSON '/v1/meeting/', (data) ->
-    $list = $('#meeting-list')
-    for obj in data.objects
-      do (obj) ->
-        $el = $('<button class="btn btn-primary btn-block">' + obj.committee_name + ' ' + obj.number + '/' + obj.year + '</button>')
-        $list.append $el
-        $el.click (ev) ->
-            show_meeting obj, $el
-###
 
 map = L.map('map').setView [60.170833, 24.9375], 12
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
@@ -63,9 +14,9 @@ active_category = null
 issues = []
 issue_template = Handlebars.compile $("#issue-list-template").html()
 
-markers = []
+geometries = []
 refresh_issues = ->
-    params = {limit: 1000}
+    params = {limit: 100}
 
     if active_borders
         bounds = active_borders.getBounds()
@@ -84,24 +35,25 @@ refresh_issues = ->
     $.getJSON API_PREFIX + 'v1/issue/', params, (data) ->
         issues = []
         list_el.empty()
-        for m in markers
+        for m in geometries
             map.removeLayer m
-        markers = []
+        geometries = []
         for issue in data.objects
             #if not issue.geometries.length
             #    continue
             issue.details_uri = "#{API_PREFIX}issue/#{issue.slug}/"
-            for geom in issue.geometries
-                coords = geom.coordinates
-                ll = new L.LatLng coords[1], coords[0]
-                if active_borders
-                    if not leafletPip.pointInLayer(ll, active_borders).length
-                        continue
+            for geom_json in issue.geometries
+                geom = L.geoJson geom_json
+                if geom_json.type == 'Point'
+                    ll = geom.getBounds().getCenter()
+                    #ll = new L.LatLng coords[1], coords[0]
+                    if active_borders
+                        if not leafletPip.pointInLayer(ll, active_borders).length
+                            continue
                 issue.in_bounds = true
-                marker = L.marker ll
-                marker.bindPopup "<b>#{geom.name}</b><br><a href='#{issue.details_uri}'>#{issue.subject}</a>"
-                marker.addTo map
-                markers.push marker
+                geom.bindPopup "<b>#{geom_json.name}</b><br><a href='#{issue.details_uri}'>#{issue.subject}</a>"
+                geom.addTo map
+                geometries.push geom
             if active_borders? and not issue.in_bounds
                 continue
             issue_html = issue_template issue
@@ -129,6 +81,7 @@ $(".district-input input").on 'typeahead:selected', (ev, datum) ->
     borders = L.geoJson datum.borders,
         style:
             weight: 2
+            color: "red"
     borders.bindPopup datum.name
     borders.addTo map
     active_borders = borders
