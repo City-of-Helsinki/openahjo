@@ -172,18 +172,18 @@ class AhjoDocument(object):
                     break
         info['attachments'] = att_list
 
-    RESOLUTION_TYPES = [
-        'PASSED',
-        'PASSED_VOTED',
-        'PASSED_REVISED',
-        'PASSED_MODIFIED',
-        'REJECTED',
-        'NOTED',
-        'RETURNED',
-        'REMOVED',
-        'TABLED',
-        'ELECTION',
-    ]
+    RESOLUTION_TYPES = {
+        1: 'PASSED',
+        2: 'PASSED_VOTED',
+        3: 'PASSED_REVISED',
+        4: 'PASSED_MODIFIED',
+        5: 'REJECTED',
+        6: 'NOTED',
+        7: 'RETURNED',
+        8: 'REMOVED',
+        9: 'TABLED',
+        10: 'ELECTION',
+    }
 
     def parse_item(self, index, item_el):
         info = {}
