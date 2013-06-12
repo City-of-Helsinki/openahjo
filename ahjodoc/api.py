@@ -1,5 +1,6 @@
 import json
 import urlparse
+import os
 from django.contrib.gis.geos import Polygon
 from django.utils.html import strip_tags
 from django.conf import settings
@@ -251,6 +252,25 @@ class VideoResource(ModelResource):
         if bundle.request:
             uri = bundle.request.build_absolute_uri(uri)
         return uri
+
+    def dehydrate(self, bundle):
+        # A quick hack to provide links to the .OGG versions
+        fname = bundle.obj.url.split('/')[-1]
+        if fname.split('.')[-1] != 'mp4':
+            return bundle
+        base_path = os.path.join(settings.MEDIA_ROOT, settings.AHJO_PATHS['video'])
+        local_copies = {}
+        uri_path = os.path.join(settings.MEDIA_URL, settings.AHJO_PATHS['video'])
+        if os.path.exists(os.path.join(base_path, fname)):
+            uri = bundle.request.build_absolute_uri('%s/%s' % (uri_path, fname))
+            local_copies['video/mp4'] = uri
+        fname = '.'.join(fname.split('.')[:-1] + ['ogv'])
+        if os.path.exists(os.path.join(base_path, fname)):
+            uri = bundle.request.build_absolute_uri('%s/%s' % (uri_path, fname))
+            local_copies['video/ogg'] = uri
+        if local_copies:
+            bundle.data['local_copies'] = local_copies
+        return bundle
 
     class Meta:
         queryset = Video.objects.all()

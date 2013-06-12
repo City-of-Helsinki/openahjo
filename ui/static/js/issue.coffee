@@ -99,9 +99,15 @@ play_video = (ev) ->
 
     $vid_el = $("""
     <video id="video" class="video-js vjs-default-skin" controls preload="auto" width="512" height="288">
-        <source src="#{video.url}" type='video/mp4'>
         <p>Video Playback Not Supported</p>
     </video>""")
+    if video.local_copies?
+        # If there are local copies of the videos, prefer those.
+        for mime_type of video.local_copies
+            $vid_el.append $("<source src='#{video.local_copies[mime_type]}' type='#{mime_type}'>")
+    else
+        $vid_el.append $("<source src='#{video.url}' type='video/mp4'>")
+
     $modal.find(".modal-body").append $vid_el
     # Initialize video player
     player = videojs "video",
@@ -118,7 +124,6 @@ play_video = (ev) ->
 render_videos = (video_list) ->
     $ul = $("#video-list")
     for vid in video_list
-        console.log vid
         if vid.speaker
             title = vid.speaker
             if vid.party
@@ -151,9 +156,7 @@ render_agenda_item = (active_ai) ->
     if active_agenda_item.video_list?
         render_videos active_agenda_item.video_list
     else
-        console.log "fetching"
         $.getJSON "#{API_PREFIX}v1/video/", {agenda_item: active_agenda_item.id, limit: 500}, (data) ->
-            console.log "got data"
             active_agenda_item.video_list = data.objects
             render_videos active_agenda_item.video_list
 
