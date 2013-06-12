@@ -174,6 +174,10 @@ http://dev.hel.fi/openahjo/v1/video/2409/?format=json
 }
 ```
 
+Models
+------
+![OpenAhjo Django model graph](Docs/models.png)
+
 Installation
 ------------
 Required Debian packages:
