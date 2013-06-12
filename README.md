@@ -42,10 +42,10 @@ http://dev.hel.fi/openahjo/v1/committee/1/?format=json
 ```
 ```json
 {
-    id: 1,
-    name: "Tarkastuslautakunta",
-    origin_id: "00311",
-    resource_uri: "/openahjo/v1/committee/1/"
+    "id": 1,
+    "name": "Tarkastuslautakunta",
+    "origin_id": "00311",
+    "resource_uri": "/openahjo/v1/committee/1/"
 }
 ```
 
@@ -59,14 +59,14 @@ http://dev.hel.fi/openahjo/v1/meeting/5/?format=json
 ```
 ```json
 {
-    committee: "/openahjo/v1/committee/26/",
-    committee_name: "Asuntotuotantotoimikunta",
-    date: "2013-05-08",
-    id: 5,
-    minutes: false,
-    number: 6,
-    resource_uri: "/openahjo/v1/meeting/5/",
-    year: 2013
+    "committee": "/openahjo/v1/committee/26/",
+    "committee_name": "Asuntotuotantotoimikunta",
+    "date": "2013-05-08",
+    "id": 5,
+    "minutes": false,
+    "number": 6,
+    "resource_uri": "/openahjo/v1/meeting/5/",
+    "year": 2013
 }
 ```
 
@@ -118,59 +118,67 @@ http://dev.hel.fi/openahjo/v1/agenda_item/1/?format=json
 ```
 ```json
 {
-    attachments: [
+    "attachments": [
         {
-            agenda_item: "/openahjo/v1/agenda_item/1/",
-            file_type: "pdf",
-            file_uri: "http://dev.hel.fi/openahjo/media/att/2b4dca8e2ee0467353205b55c47aa44cbf6500b8.pdf",
-            hash: "2b4dca8e2ee0467353205b55c47aa44cbf6500b8",
-            id: 1,
-            name: "Asunto Oy Hietalahdenkatu 12",
-            number: 1,
-            public: true,
-            resource_uri: "/openahjo/v1/attachment/1/"
+            "agenda_item": "/openahjo/v1/agenda_item/1/",
+            "file_type": "pdf",
+            "file_uri": "http://dev.hel.fi/openahjo/media/att/2b4dca8e2ee0467353205b55c47aa44cbf6500b8.pdf",
+            "hash": "2b4dca8e2ee0467353205b55c47aa44cbf6500b8",
+            "id": 1,
+            "name": "Asunto Oy Hietalahdenkatu 12",
+            "number": 1,
+            "public": true,
+            "resource_uri": "/openahjo/v1/attachment/1/"
         }
     ],
-    content: [
+    "content": [
         {
-            text: "<p>Lautakunta päätti puoltaa Asunto Oy Hietalahdenkatu 12:sta perusparannushankkeen korkotukilainahakemusta.</p>",
-            type: "resolution"
+            "text": "<p>Lautakunta päätti puoltaa Asunto Oy Hietalahdenkatu 12:sta perusparannushankkeen korkotukilainahakemusta.</p>",
+            "type": "resolution"
         }, {
-            text: "<p>Asunto Oy Hietalahdenkatu 12 on jättänyt korkotukilainahakemuksen lämmitysjärjestelmän osittaiseen uusimiseen sekä vesi- ja viemärijohtojen uusimiseen. Hankkeessa on 69 asuntoa ja asuntoala on 2368 asm². Rakennus on valmistunut vuonna 1918.</p> <p>Asumisen rahoitus- ja kehittämiskeskus varaa käytettävissä olevien myöntämisvaltuuksien mukaan korkotukilainat kunnan puoltamille hankkeille.</p> <p>Esittelijän näkemyksen mukaan hakemusta tulisi puoltaa.</p>",
-            type: "presenter"
+            "text": "<p>Asunto Oy Hietalahdenkatu 12 on jättänyt korkotukilainahakemuksen lämmitysjärjestelmän osittaiseen uusimiseen sekä vesi- ja viemärijohtojen uusimiseen. Hankkeessa on 69 asuntoa ja asuntoala on 2368 asm². Rakennus on valmistunut vuonna 1918.</p> <p>Asumisen rahoitus- ja kehittämiskeskus varaa käytettävissä olevien myöntämisvaltuuksien mukaan korkotukilainat kunnan puoltamille hankkeille.</p> <p>Esittelijän näkemyksen mukaan hakemusta tulisi puoltaa.</p>",
+            "type": "presenter"
         }
     ],
-    from_minutes: true,
-    id: 1,
-    index: 35,
-    issue: {
+    "from_minutes": true,
+    "id": 1,
+    "index": 35,
+    "issue": {
         ...
     },
-    last_modified_time: "2013-04-30T11:02:00",
-    meeting: {
+    "last_modified_time": "2013-04-30T11:02:00",
+    "meeting": {
         ...
     },
-    resource_uri: "/openahjo/v1/agenda_item/1/"
+    "resource_uri": "/openahjo/v1/agenda_item/1/"
 }
 ```
 
 ### video
+
+Currently, the city council meetings are recorded on video. One `video` resource
+can either point to the whole recording (`agenda_item` is null), to the processing
+of an agenda item (`index` is 0) or to an individual statement by a speaker
+(`index` is non-zero and `speaker` is defined).
+
+Supports filtering on `agenda_item`, `meeting` and `speaker`.
+
 ```
 http://dev.hel.fi/openahjo/v1/video/2409/?format=json
 ```
 ```json
 {
-    agenda_item: "/openahjo/v1/agenda_item/3219/",
-    duration: 63,
-    id: 2409,
-    index: 3,
-    meeting: "/openahjo/v1/meeting/19/",
-    party: "",
-    resource_uri: "/openahjo/v1/video/2409/",
-    screenshot_uri: "http://dev.hel.fi/openahjo/media/video/6-2013/item5-3.jpg",
-    speaker: "Pajunen Jussi",
-    start_pos: 2327,
-    url: "http://media.helsinkikanava.fi/valtuusto270313.mp4"
+    "agenda_item": "/openahjo/v1/agenda_item/3219/",
+    "duration": 63,
+    "id": 2409,
+    "index": 3,
+    "meeting": "/openahjo/v1/meeting/19/",
+    "party": "",
+    "resource_uri": "/openahjo/v1/video/2409/",
+    "screenshot_uri": "http://dev.hel.fi/openahjo/media/video/6-2013/item5-3.jpg",
+    "speaker": "Pajunen Jussi",
+    "start_pos": 2327,
+    "url": "http://media.helsinkikanava.fi/valtuusto270313.mp4"
 }
 ```
 
