@@ -5,6 +5,28 @@ TRANSLATIONS = {
     "resolution": "Päätös"
     "summary": "Yhteenveto"
 }
+RESOLUTIONS_EN =
+    'PASSED': 'Passed as drafted'
+    'PASSED_VOTED': 'Passed after a vote'
+    'PASSED_REVISED': 'Passed revised by presenter'
+    'PASSED_MODIFIED': 'Passed modified'
+    'REJECTED': 'Rejected'
+    'NOTED': 'Noted as informational'
+    'RETURNED': 'Returned to preparation'
+    'REMOVED': 'Removed from agenda'
+    'TABLED': 'Tabled'
+    'ELECTION': 'Election'
+RESOLUTIONS_FI =
+    'PASSED': 'Ehdotuksen mukaan'
+    'PASSED_VOTED': 'Ehdotuksen mukaan äänestyksin'
+    'PASSED_REVISED': 'Esittelijän muutetun ehdotuksen mukaan'
+    'PASSED_MODIFIED': 'Esittelijän ehdotuksesta poiketen'
+    'REJECTED': 'Hylättiin'
+    'NOTED': 'Merkittiin tiedoksi'
+    'RETURNED': 'Palautettiin'
+    'REMOVED': 'Poistettiin'
+    'TABLED': 'Pöydättiin'
+    'ELECTION': 'Vaali'
 
 active_agenda_item = null
 active_issue = null
@@ -60,6 +82,8 @@ format_agenda_item = (ai) ->
         ai.is_active = true
     else
         ai.is_active = false
+    if ai.resolution
+        ai.resolution_str = RESOLUTIONS_FI[ai.resolution]
     for c in ai.content
         c.type_str = TRANSLATIONS[c.type]
 

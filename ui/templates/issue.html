@@ -42,6 +42,10 @@
         </div>
         <div class="span3">
             <dl>
+                {{#if resolution_str}}
+                <dt>Päätös</td>
+                <dd>{{resolution_str}}
+                {{/if}}
                 <dt>Diaarinumero</dt>
                 <dd>{{issue.register_id}}</dd>
             </dl>
