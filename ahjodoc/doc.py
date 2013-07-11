@@ -192,7 +192,12 @@ class AhjoDocument(object):
         desc_el = item_el.find('KuvailutiedotOpenDocument')
         if not desc_el:
             raise ParseError("Field KuvailutiedotOpenDocument missing")
-        lang_id = desc_el.find('Kieli').attrib['KieliID']
+        lang_el = desc_el.find('Kieli')
+        if lang_el is not None:
+            lang_id = desc_el.find('Kieli').attrib['KieliID']
+        else:
+            # Sometimes the language field can go missing...
+            lang_id = 'fi-FI'
         if lang_id != 'fi-FI':
             print "Invalid language: %s" % lang_id
             return
