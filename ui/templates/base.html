@@ -13,9 +13,9 @@
 
         {% compress css %}
         <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/bootstrap.less" %}">
-        <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/responsive.less" %}">
+        <!-- <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/responsive.less" %}"> -->
         {% endcompress %}
-        <link href='http://fonts.googleapis.com/css?family=Telex' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,700,900' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{% static "css/leaflet.css" %}">
         {% compress css %}
         <link rel="stylesheet" href="{% static "css/main.less" %}" type="text/less">
@@ -45,7 +45,7 @@
         {% block extra_head %}{% endblock %}
     </head>
     <body>
-        <div class="navbar navbar-inverse">
+        <nav class="navbar">
             <div class="navbar-inner">
                 <div class="container">
                     <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
@@ -53,7 +53,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </a>
-                    <a class="brand" href="{% url "ui.views.home_view" %}">OpenAhjo</a>
+                    <a class="brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li><a href="{% url "ui.views.home_view" %}">Asiat</a></li>
@@ -62,9 +62,9 @@
                     </div><!--/.nav-collapse -->
                 </div>
             </div>
-        </div>
+        </nav>
 
-        <div class="container">
+        <div id="content-container">
             {% block content %}{% endblock %}
         </div>
 

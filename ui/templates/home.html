@@ -1,15 +1,80 @@
 {% extends "base.html" %}
-{% load compress static %}
+{% load i18n compress static %}
 
 {% block content %}
 <div class="row">
-    <div class="">
-        <div class="hero-unit">
-            <h1 style="font-size: 48px">Helsingin avoin päätöksenteko</h1>
+    <header id="home-header-box" class="span12">
+        <div class="left-side">
+            <h1>PÄÄTÖKSET</h1>
             <p>Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset. Mitä naapurustossasi tapahtuu? Kuka päättää, mitä päätetään ja millä perusteella?</p>
+        </div>
+        <div class="right-side">
+            <form class="form-search">
+                <div class="input-append">
+                    <input class="span3 search-query" placeholder="Syötä hakusana..." type="text">
+                    <button class="btn search-query" type="button">Hae</button>
+                </div>
+            </form>
+            <a class="browse-link" href="#">Selaa päätöksiä</a>
+        </div>
+    </header>
+</div>
+
+<div class="row">
+    <nav id="home-nav-buttons">
+        <div class="nav-button span4">
+            <a href="#"><div class="content">
+                <h2>MITKÄ PÄÄTÖKSET?</h2>
+                <p>Täältä löydät kaikki kaupungin päätökset ja niihin liittyvät asiakirjat</p>
+            </div></a>
+        </div>
+        <div class="nav-button span4">
+            <a href="#"><div class="content">
+                <h2>KARTALLA</h2>
+                <p>Katso omaa aluettasi koskevat päätökset.</p>
+            </div></a>
+        </div>
+        <div class="nav-button span4">
+            <a href="#"><div class="content">
+                <h2>PÄÄTTÄJÄT</h2>
+                <p>Missä päätökset tehdään? Selaa päätöksen käsittelijöitä.</p>
+            </div></a>
+        </div>
+    </nav>
+</div>
+
+<div class="row" id="home-recent-content">
+    <div class="box span6">
+        <article class="recent-decisions">
+            <h2>Vasta käsiteltyä</h2>
+        </article>
+    </div>
+    <div class="box span6">
+        <article class="latest-meetings">
+            <h2>Uusimmat kokoukset</h2>
+        </article>
+    </div>
+</div>
+
+<div class="row" id="home-logo-row">
+    <div class="span4 hel-heart-dev">
+        <div class="logo">
+            <img src="{% static 'img/hel-heart-dev.png' %}">
+        </div>
+    </div>
+    <div class="span4 helsinki">
+        <div class="logo">
+            <img src="{% static 'img/helsinki.png' %}">
+        </div>
+    </div>
+    <div class="span4 hri">
+        <div class="logo">
+            <img src="{% static 'img/hri.png' %}">
         </div>
     </div>
 </div>
+
+<!--
 
 <div class="row" style="margin-bottom: 16px">
     <div class="span9">
@@ -63,5 +128,5 @@
 {% compress js %}
 <script src="{% static "js/home.coffee" %}" type="text/coffeescript"></script>
 {% endcompress %}
-
+-->
 {% endblock %}

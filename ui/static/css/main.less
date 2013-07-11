@@ -1,13 +1,29 @@
+@import "bootstrap/variables.less";
+
+@border_color: #55C0B4;
+@box_background_color: #E6E6E6;
+@box_text_color: #00363e;
+@header_color: #004D59;
+@news_color_2: #8F3332;
+
+@charset "UTF-8";
+
 footer {
+    padding-top: 40px;
     height: 60px;
-    background-color: #f5f5f5;
+    background-color: @box_text_color;
     p {
         margin-top: 22px;
     }
 }
 
-.hero-unit {
-    //background-image: url("../img/back.jpg");
+.browse-link {
+    &:after {
+        content: ' ››';
+    }
+    &:hover {
+        text-decoration: none;
+    }
 }
 
 .item-details {
@@ -25,5 +41,145 @@ footer {
     .subject {
         font-size: 16px;
         line-height: 28px;
+    }
+}
+
+
+body {
+    background-image: url('../img/paatokset_bg_vaalea.gif');
+}
+
+.navbar {
+    margin-bottom: 0px;
+    .navbar-inner {
+        background-color: black;
+        background-image: none;
+        border: none;
+    }
+    .brand {
+        margin-left: 80px;
+        font-weight: 700;
+    }
+    .btn-navbar {
+        background-image: none;
+        background-color: gray;
+    }
+    li {
+        font-weight: 600;
+        font-size: 16px;
+    }
+}
+
+#content-container {
+    background-color: white;
+    margin-left: auto; /* 80px */
+    margin-right: auto;
+    border-left: 8px solid @border_color;
+    border-right: 8px solid @border_color;
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 40px;
+    padding-bottom: 80px;
+    width: @gridRowWidth;
+}
+
+#home-header-box {
+    background-image: url('../img/paatokset_bg_tumma.gif');
+    height: 200px;
+    color: white;
+    margin-bottom: 20px;
+    h1 {
+        color: white;
+    }
+    p {
+        font-weight: 600;
+        font-size: 16px;
+        color: #BFE1DB;
+    }
+    .left-side {
+        width: 50%;
+        margin-top: 40px;
+        margin-left: 50px;
+        float: left;
+    }
+    .right-side {
+        margin-top: 40px;
+        padding-right: 30px;
+        float: right;
+        text-align: right;
+        font-weight: bold;
+        a {
+            color: @box_background_color;
+            font-size: 28px;
+            font-weight: 900;
+        }
+    }
+}
+
+#home-nav-buttons {
+    margin-bottom: 20px;
+    height: 180px;
+    .nav-button {
+        background-color: @border_color;
+        height: 100%;
+        a:hover {
+            text-decoration: none;
+            color: @box_text_color;
+        }
+    }
+    .content {
+        padding: 15px;
+        color: @box_text_color;
+        h2 {
+            margin-top: 0px;
+            color: @box_text_color;
+            font-weight: 900;
+        }
+        p {
+            font-weight: 600;
+            font-size: 16px;
+        }
+    }
+}
+
+#home-recent-content {
+    margin-bottom: 20px;
+    .box {
+        background-color: @box_background_color;
+    }
+    article {
+        padding: 20px;
+        height: 300px;
+        h2 {
+            margin-top: 0px;
+        }
+    }
+    .recent-decisions {
+        color: @news_color_2;
+        h2 {
+            color: @news_color_2;
+        }
+    }
+    .latest-meetings {
+        color: @header_color;
+        h2 {
+            color: @header_color;
+        }
+    }
+}
+
+#home-logo-row {
+    margin-top: 60px;
+    height: 162px;
+    .logo {
+        width: 280px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .helsinki .logo {
+        width: 140px;
+    }
+    img {
+        width: 100%;
     }
 }
