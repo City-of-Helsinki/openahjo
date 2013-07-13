@@ -149,21 +149,57 @@ body {
     }
     article {
         padding: 20px;
-        height: 300px;
         h2 {
             margin-top: 0px;
         }
     }
-    .recent-decisions {
+    ul {
+        list-style: none;
+        height: 300px;
+        overflow-y: hidden;
+        margin: 0px;
+        position: relative;
+        li {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-weight: 700;
+            font-size: 16px;
+            a {
+                text-decoration: none;
+            }
+        }
+    }
+    .recent-items {
         color: @news_color_2;
         h2 {
             color: @news_color_2;
         }
+
+        li {
+            &:first-child {
+                border-top: 1px solid @news_color_2;
+            }                
+            border-bottom: 1px solid @news_color_2;
+            a {
+                color: @news_color_2;
+            }
+        }
+            
     }
     .latest-meetings {
         color: @header_color;
         h2 {
             color: @header_color;
+        }
+
+        li {
+            &:first-child {
+                border-top: 1px solid @header_color;
+            }                
+            border-bottom: 1px solid @header_color;
+            a {
+                color: @header_color;
+            }
         }
     }
 }

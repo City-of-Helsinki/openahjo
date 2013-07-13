@@ -82,7 +82,8 @@ class MeetingResource(ModelResource):
         queryset = Meeting.objects.order_by('-date').select_related('committee')
         resource_name = 'meeting'
         filtering = {
-            'committee': ALL_WITH_RELATIONS
+            'committee': ALL_WITH_RELATIONS,
+            'minutes': ('exact',)
         }
         ordering = ('date', 'committee')
         list_allowed_methods = ['get']
@@ -211,6 +212,7 @@ class AgendaItemResource(ModelResource):
             'issue': ['exact', 'in'],
             'issue__category': ['exact', 'in'],
             'last_modified_time': ['gt', 'gte', 'lt', 'lte'],
+            'from_minutes': ['exact']
         }
         ordering = ('last_modified_time', 'meeting', 'index')
         list_allowed_methods = ['get']

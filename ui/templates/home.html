@@ -45,13 +45,17 @@
 
 <div class="row" id="home-recent-content">
     <div class="box span6">
-        <article class="recent-decisions">
+        <article class="recent-items">
             <h2>Vasta käsiteltyä</h2>
+            <ul class="item-list unstyled">
+            </ul>
         </article>
     </div>
     <div class="box span6">
         <article class="latest-meetings">
             <h2>Uusimmat kokoukset</h2>
+            <ul class="meeting-list unstyled">
+            </ul>
         </article>
     </div>
 </div>
@@ -125,8 +129,9 @@
     </li>
 </script>
 {% endverbatim %}
+-->
+
 {% compress js %}
 <script src="{% static "js/home.coffee" %}" type="text/coffeescript"></script>
 {% endcompress %}
--->
 {% endblock %}
