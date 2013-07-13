@@ -1,10 +1,14 @@
 @import "bootstrap/variables.less";
+@import "bootstrap/mixins.less";
 
-@border_color: #55C0B4;
+@page_side_color: #55C0B4;
+@border_color: #ddd;
 @box_background_color: #E6E6E6;
 @box_text_color: #00363e;
 @header_color: #004D59;
 @news_color_2: #8F3332;
+@issue_list_item_bg_color: #FBF1F3;
+@issue_list_item_text_color: #671C14;
 
 @charset "UTF-8";
 
@@ -26,27 +30,13 @@ footer {
     }
 }
 
-.item-details {
-    .subject {
-        font-size: 16px;
-        line-height: 28px;
-    }
-    .map {
-        height: 250px;
-        margin-bottom: 20px;
-    }
-}
-
-#item-list {
-    .subject {
-        font-size: 16px;
-        line-height: 28px;
-    }
-}
-
-
 body {
     background-image: url('../img/paatokset_bg_vaalea.gif');
+}
+
+h1 {
+    color: @header_color;
+    font-weight: 600;
 }
 
 .navbar {
@@ -70,18 +60,32 @@ body {
     }
 }
 
+#logo-right {
+    margin-top: 20px;
+    height: 60px;
+    text-align: right;
+    font-size: 50px;
+}
+
 #content-container {
+    > h1 {
+        margin-bottom: 40px;
+    }
     background-color: white;
     margin-left: auto; /* 80px */
     margin-right: auto;
-    border-left: 8px solid @border_color;
-    border-right: 8px solid @border_color;
+    border-left: 8px solid @page_side_color;
+    border-right: 8px solid @page_side_color;
     padding-left: 25px;
     padding-right: 25px;
     padding-top: 40px;
     padding-bottom: 80px;
     width: @gridRowWidth;
 }
+
+/*****************************************
+ * Home page                             *
+ *****************************************/
 
 #home-header-box {
     background-image: url('../img/paatokset_bg_tumma.gif');
@@ -120,7 +124,7 @@ body {
     margin-bottom: 20px;
     height: 180px;
     .nav-button {
-        background-color: @border_color;
+        background-color: @page_side_color;
         height: 100%;
         a:hover {
             text-decoration: none;
@@ -217,5 +221,95 @@ body {
     }
     img {
         width: 100%;
+    }
+}
+
+
+/*****************************************
+ * Issue list view                       *
+ *****************************************/
+
+#issue-list-filter {
+    border: 1px solid @border_color;
+    .border-radius(3px);
+    min-height: 120px;
+    padding: 20px;
+    margin-bottom: 30px;
+    h2 {
+        text-transform: uppercase;
+        width: 100%;
+        border-bottom: 1px solid @border_color;
+        font-size: 18px;
+        line-height: 18px;
+        font-weight: 700;
+        color: black;
+        margin-top: 0;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+    }
+    .caret {
+        margin-right: 6px;
+    }
+    label {
+        float: left;
+        margin-bottom: 0px;
+        margin-top: 5px;
+    }
+}
+
+#issue-list-results {
+    margin-bottom: 20px;
+    header {
+        float: left;
+        font-weight: 700;
+        font-size: 24px;
+        margin-top: 10px;
+    }
+    .btn-toolbar {
+        margin: 0;
+    }
+}
+
+#issue-list-items {
+    li {
+        background-color: @issue_list_item_bg_color;
+        overflow: hidden;
+        border: 1px solid @border_color;
+        .border-radius(3px);
+        padding: 6px 15px 6px 15px;
+        margin-bottom: 10px;
+        .subject {
+            font-weight: 600;
+            color: @issue_list_item_text_color;
+            float: left;
+            width: 500px;
+            margin-right: 20px
+        }
+        .district {
+            width: 110px;
+            float: left;
+        }
+        .category {
+            width: 110px;
+            float: left;
+        }
+    }
+}
+
+.item-details {
+    .subject {
+        font-size: 16px;
+        line-height: 28px;
+    }
+    .map {
+        height: 250px;
+        margin-bottom: 20px;
+    }
+}
+
+#item-list {
+    .subject {
+        font-size: 16px;
+        line-height: 28px;
     }
 }

@@ -1,0 +1,69 @@
+{% extends "subpage_base.html" %}
+{% load i18n compress static %}
+{% block title %}Asiat{% endblock %}
+
+{% block content %}
+<h1>Selaa asioita</h1>
+
+<div class="row">
+    <div class="span10 offset1">
+        <div id="issue-list-filter">
+            <h2>Rajaus</h2>
+            <div class="control-group">
+                <label class="span2" style="margin-left: 0" for="text-filter">Hae sisällöstä</label>
+                <div class="controls">
+                    <input type="text" id="text-filter" placeholder="Syötä teksti...">
+                </div>
+            </div>
+            <div id="category-filter" class="input-prepend">
+                <div class="btn-group">
+                    <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
+                    <ul class="dropdown-menu">
+                    </ul>
+                </div>
+                <input class="span3" type="text">
+            </div>
+            <div id="district-filter" class="input-prepend">
+                <div class="btn-group">
+                    <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Kaupunginosa</button>
+                    <ul class="dropdown-menu">
+                    </ul>
+                </div>
+                <input class="span3" type="text">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row"><div class="span10 offset1" id="issue-list-results">
+    <header id="result-count">Löytyi <span class="count">123</span> kpl</header>
+    <div class="btn-toolbar pull-right">
+        <div class="btn-group">
+            <button class="btn"><i class="icon-list"></i> Lista</button>
+            <button class="btn"><i class="icon-globe"></i> Kartalla</button>
+        </div>
+    </div>
+</div></div>
+
+<div class="row"><div class="span10 offset1" id="issue-list-items">
+    <ul class="unstyled">
+        <li class="issue">
+            <div class="subject">Lausunto kiinteistölautakunnalle osoitteeseen Elimäenkatu 23 suunniteltujen Stadin ammattiopiston tilapäisten lisätilojen vuokrausta koskevasta hankesuunnitelmasta</div>
+            <div class="district"><span class="label label-inverse">Malminkartano</span></div>
+            <div class="category"><span class="label label-info">Kansainvälinen toiminta ja maahanmuuttopolitiikka</span></div>
+            <div style="clear: both;"></div>
+        </li>
+        <li class="issue">
+            <div class="subject">Lausunto kiinteistölautakunnalle osoitteeseen Elimäenkatu 23 suunniteltujen Stadin ammattiopiston tilapäisten lisätilojen vuokrausta koskevasta hankesuunnitelmasta</div>
+            <div class="district"><span class="label label-inverse">Malminkartano</span><span class="label label-inverse">Kulosaari</span></div>
+            <div class="category"><span class="label label-info">Kansainvälinen toiminta ja maahanmuuttopolitiikka</span></div>
+            <div style="clear: both;"></div>
+        </li>
+    </ul>
+</div></div>
+
+{% compress js %}
+<script type="text/coffeescript" src="{% static 'js/issue-list.coffee' %}"></script>
+{% endcompress %}
+
+{% endblock %}

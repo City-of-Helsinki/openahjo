@@ -48,12 +48,12 @@ class CategoryResource(ModelResource):
     def apply_filters(self, request, filters):
         qs = super(CategoryResource, self).apply_filters(request, filters)
         issues = request.GET.get('issues', '')
-        if issues.lower() not in ('0', 'false'):
+        if issues.lower() in ('1', 'true'):
             # Include only categories with associated issues
             qs = qs.annotate(num_issues=Count('issue')).filter(num_issues__gt=0)
         return qs
     def dehydrate(self, bundle):
-        if getattr(bundle.obj, 'num_issues'):
+        if hasattr(bundle.obj, 'num_issues'):
             bundle.data['num_issues'] = bundle.obj.num_issues
         return bundle
 
@@ -66,6 +66,7 @@ class CategoryResource(ModelResource):
             'name': ALL,
             'origin_id': ALL,
         }
+        ordering = ['level', 'name', 'origin_id']
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)

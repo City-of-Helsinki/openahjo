@@ -1,3 +1,4 @@
+###
 map = L.map('map').setView [60.170833, 24.9375], 12
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
@@ -101,7 +102,8 @@ map.on 'moveend', (ev) ->
     refresh_issues()
 
 input_category_list = null
-###
+
+"""
 $(".category-input input").typeahead
     source: (query, process_cb) ->
         $.getJSON(API_PREFIX + 'v1/category/', {input: query, issues: 1}, (data) ->
@@ -112,7 +114,7 @@ $(".category-input input").typeahead
             input_category_list = objs
             process_cb ret
         )
-###
+"""
 
 category_suggestion_template = Handlebars.compile """
 {{value}} <strong>({{num_issues}})</strong>
@@ -138,3 +140,37 @@ $(".category-input input").on 'typeahead:autocompleted', (ev, datum) ->
     refresh_issues()
 
 refresh_issues()
+###
+
+params =
+    level__lte: 1
+    limit: 1000
+
+$.getJSON API_PREFIX + 'v1/category/', params, (data) ->
+    cats = _.sortBy data.objects, (x) -> "#{x.level} #{x.origin_id}"
+    top_cats = []
+    for cat in data.objects
+        if cat.level == 0
+            cat.children = []
+            top_cats.push cat
+            continue
+        parent_id = parseInt(cat.parent.split("/").slice(-2)[0])
+        for top_cat in top_cats
+            if top_cat.id == parent_id
+                top_cat.children.push cat
+                break
+
+    $filter_list_el = $("#category-filter ul")
+
+    make_li = (cat, $parent) ->
+        $el = $("<li><a tabindex='-1' href='#'>#{cat.origin_id} #{cat.name}</a></li>")
+        if cat.children
+            $el.addClass "dropdown-submenu"
+            $list_el = $("<ul class='dropdown-menu'></ul>")
+            $el.append $list_el
+            for kitten in cat.children
+                make_li kitten, $list_el
+        $parent.append $el
+
+    for cat in top_cats
+        $el = make_li cat, $filter_list_el
