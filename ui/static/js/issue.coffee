@@ -32,14 +32,14 @@ active_agenda_item = null
 active_issue = null
 agenda_item_list = []
 
-item_template = Handlebars.compile $("#item-template").html()
+item_template = _.template $("#item-template").html()
 
 map = null
 map_markers = []
 
 render_item = (agenda_item) ->
     item_html = item_template agenda_item
-    $("#item-details").html item_html
+    $(".item-details").html item_html
     $(".item-details .meeting-link").click (ev) ->
         id = $(this).data('agenda-item-id')
         item = active_agenda_item.item

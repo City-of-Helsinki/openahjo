@@ -1,17 +1,94 @@
-{% extends "base.html" %}
+{% extends "subpage_base.html" %}
 {% load i18n compress static %}
+{% block title %}{{ issue.subject }}{% endblock %}
+
 {% block extra_head %}
 <link href="http://vjs.zencdn.net/4.0/video-js.css" rel="stylesheet">
 <script src="http://vjs.zencdn.net/4.0/video.js"></script>
 {% endblock %}
 
 {% block content %}
+<h1>Asia</h1>
 
-<div id="item-details" class="container-fluid">
+<div class="item-details row">
 </div>
 
+<script id="item-template" type="text/template">
+<div class="navigate-column span4">
+    <div class="decision-history">
+        <h2 class="header-bar">Käsittelyhistoria</h2>
+        <ul class="unstyled vertical-list">
+            <li class="clearfix active">
+                <div class="committee-icon"><i class="icon-search"></i></div>
+                <div class="text">
+                    <span class="committee">Kaupunginvaltuusto</span>
+                    <span class="meeting">27.3.2013/6</span>
+                    <div class="meeting-link">
+                        <a class="browse-link" href="#">Kokouksen muut päätökset</a>
+                    </div>
+                </div>
+                <div class="resolution">
+                    <i class="icon-ok"></i>
+                </div>
+            </li>
+            <li class="clearfix">
+                <div class="committee-icon"><i class="icon-search"></i></div>
+                <div class="text">
+                    <span class="committee">Kaupunginvaltuusto</span>
+                    <span class="meeting">27.3.2013/6</span>
+                    <div class="meeting-link">
+                        <a class="browse-link" href="#">Kokouksen muut päätökset</a>
+                    </div>
+                </div>
+                <div class="resolution">
+                    <i class="icon-ok"></i>
+                </div>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="span5">
+    <div class="content-column">
+        <header><h1><%= subject %></h1></header>
+        <div class="content">
+            <% _.each(content, function(item) { %>
+                <h2><%= item.type_str %></h2>
+                <%= item.text %>
+            <% }); %>
+        </div>
+    </div>
+</div>
+<div class="meta-column span3">
+    <div class="identifiers clearfix section">
+        <div class="icon">
+            <i class="icon-paperclip"></i>
+        </div>
+        <div class="data">
+            <span class="id-label">Diaarinumero</span>
+            <span class="id-value archive-id"><%= issue.register_id %></span>
+        </div>
+    </div>
+    <div class="labels section">
+        <span class="label label-info">Hallintoasiat</span>
+        <span class="label label-inverse">Kluuvi</span>
+    </div>
+    <% if (attachments.length) { %>
+    <h2 class="header-bar">Liitteet</h2>
+    <ol class="attachment-list">
+      <% _.each(attachments, function (att) {
+           if (att.public) { %>
+      <li value=<%= att.number %> class="public"><div class="number"><%= att.number %>.</div><div class="icon"><i class="icon-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.name %></a></div></li>
+      <%   } else { %>
+      <li value=<%= att.number %> class="non-public"><i class="icon-eye-close"></i><div class="name">Ei-julkinen</div></li>
+      <%   }
+         }); %>
+    </ol>
+    <% } %>
+</div>
+</script>
+
+{% comment %}
 {% verbatim %}
-<script id="item-template" type="text/x-handlebars-template">
     <div class="row-fluid item-details">
         <div class="span3">
             <ul class="nav nav-list" id="meeting-list">
@@ -53,21 +130,12 @@
             <div class="map"></div>
             {{/if}}
             {{#if attachments}}
-            <h5>Liitteet</h5>
-            <ol class="attachment-list">
-                {{#each attachments}}
-                {{#if public}}
-                <li value={{number}}><a href="{{file_uri}}">{{name}}</a></li>
-                {{else}}
-                <li value={{number}} class="non-public muted">Ei-julkinen</li>
-                {{/if}}
-                {{/each}}
-            </ol>
             {{/if}}
         </div>
     </div>
 </script>
 {% endverbatim %}
+{% endcomment %}
 
 <div id="video-playback-modal" class="modal hide fade">
     <div class="modal-header">

@@ -330,14 +330,157 @@ h1 {
     }
 }
 
+/*****************************************
+ * Issue details view                    *
+ *****************************************/
+
 .item-details {
-    .subject {
-        font-size: 16px;
-        line-height: 28px;
+    .header-bar {
+        color: white;
+        background-color: @issue_main_color;
+        margin: 0px;
+        padding-left: 16px;
+        padding-top: 4px;
+        padding-bottom: 4px;
+        font-size: 22px;
+        line-height: 24px;
+        font-weight: 900;
     }
-    .map {
-        height: 250px;
-        margin-bottom: 20px;
+    .vertical-list {
+        li {
+            &.active {
+                background-color: @issue_bg_color;
+            }
+            border-bottom: 1px solid @issue_main_color;
+            padding: 12px 8px 12px 8px;
+        }
+    }
+
+    .navigate-column {
+        .decision-history li {
+            &.active {
+                .meeting-link {
+                    display: block;
+                }
+            }
+            .committee-icon {
+                background-color: @page_side_color;
+                height: 32px;
+                width: 32px;
+                float: left;
+                font-size: 24px;
+                color: #333;
+                text-align: center;
+                i {
+                    padding-top: 4px;
+                    display: block;
+                }
+            }
+            .text {
+                float: left;
+                margin-left: 8px;
+            }
+            .resolution {
+                float: right;
+                margin-top: 10px;
+            }
+            .committee {
+                display: block;
+            }
+            .meeting-link {
+                display: none;
+            }
+            .meeting-link a {
+                margin-top: 8px;
+                color: @issue_browse_link_color;
+                font-weight: 700;
+                text-decoration: underline;
+            }
+        }
+    }
+    .content-column {
+        border: solid 1px @issue_main_color;
+        h1, h2, h3 {
+            color: #333;
+        }
+        header {
+            h1 {
+                color: #333;
+                font-size: 16px;
+                line-height: 20px;
+                font-weight: 700;
+                margin-left: 48px;
+                margin-right: 16px;
+            }
+            border-top: solid 10px @issue_main_color;
+        }
+        .content {
+            h2 {
+                font-size: 28px;
+            }
+            h3 {
+                font-size: 16px;
+                line-height: 20px;
+            }
+            overflow: auto;
+            padding: 20px 16px 20px 16px;
+            background-color: @issue_bg_color;
+        }
+    }
+    .meta-column {
+        .section {
+            margin-bottom: 16px;
+        }
+        .identifiers {
+            font-size: 14px;
+            line-height: 16px;
+            font-style: italic;
+            color: @issue_main_color;
+            .icon {
+                float: left;
+                font-size: 24px;
+                width: 32px;
+                height: 32px;
+                color: gray;
+            }
+            .data {
+                float: left;
+            }
+            .id-label {
+                display: block;
+                margin-top: -2px;
+            }
+        }
+        .attachment-list {
+            margin-left: 0px;
+            li {
+                .clearfix();
+                list-style: none;
+                margin-top: 4px;
+                padding-bottom: 4px;
+                border-bottom: 1px solid @issue_main_color;
+                .number {
+                    float: left;
+                    line-height: 24px;
+                }
+                .icon {
+                    float: left;
+                    width: 24px;
+                    text-align: center;
+                    font-size: 24px;
+                    margin-left: 8px;
+                    margin-right: 8px;
+                }
+                .name {
+                    line-height: 24px;
+                    float: left;
+                    a {
+                        color: @issue_main_color;
+                        font-style: italic;
+                    }
+                }
+            }
+        }
     }
 }
 
