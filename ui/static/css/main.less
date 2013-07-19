@@ -9,8 +9,36 @@
 @news_color_2: #8F3332;
 @issue_list_item_bg_color: #FBF1F3;
 @issue_list_item_text_color: #671C14;
+@issue_main_color: #D15A4D;
+@issue_bg_color: #F7DFDC;
+@issue_browse_link_color: #025959;
 
 @charset "UTF-8";
+
+/* Bootstrap overrides */
+textarea,
+input[type="text"],
+input[type="password"],
+input[type="datetime"],
+input[type="datetime-local"],
+input[type="date"],
+input[type="month"],
+input[type="time"],
+input[type="week"],
+input[type="number"],
+input[type="email"],
+input[type="url"],
+input[type="search"],
+input[type="tel"],
+input[type="color"],
+.uneditable-input {
+  // Focus state
+  &:focus {
+    // Use @page_side_color
+    border-color: rgba(85,192,180,.8);
+    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(85,192,180,.6)");
+  }
+}
 
 footer {
     padding-top: 40px;
