@@ -1,9 +1,12 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content_base %}
 <div id="content-container">
     <div class="row">
-        <div class="span12" id="logo-right">PÄÄTÖKSET</div>
+        <div class="span12" id="logo-right">
+            <img src="{% static 'img/logo-black.png' %}" alt="Päätökset">
+        </div>
     </div>
     {% block content %}{% endblock %}
 </div>
