@@ -348,11 +348,13 @@ h1 {
     }
     .vertical-list {
         li {
+            .clearfix();
             &.active {
                 background-color: @issue_bg_color;
             }
             border-bottom: 1px solid @issue_main_color;
             padding: 12px 8px 12px 8px;
+            cursor: pointer;
         }
     }
 
@@ -474,12 +476,22 @@ h1 {
                 .name {
                     line-height: 24px;
                     float: left;
+                    color: @issue_main_color;
+                    font-style: italic;
                     a {
                         color: @issue_main_color;
-                        font-style: italic;
+                    }
+                }
+                &.non-public {
+                    .icon {
+                        color: gray;
                     }
                 }
             }
+        }
+        .non-public-info {
+            font-size: 10px;
+            line-height: 14px;
         }
     }
 }

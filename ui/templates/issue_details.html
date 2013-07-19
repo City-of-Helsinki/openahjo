@@ -13,39 +13,46 @@
 <div class="item-details row">
 </div>
 
+<script id="meeting-template" type="text/template">
+<li data-agenda-item-id="<%= id %>" <% if (is_active) { %>class="active"<% } %>>
+    <div class="committee-icon"><i class="icon-search"></i></div>
+    <div class="text">
+        <span class="committee"><%= meeting.committee_name %></span>
+        <span class="meeting"><%= meeting.number %>/<%= meeting.date_str %></span>
+        <div class="meeting-link">
+            <a class="browse-link" href="#">Kokouksen muut päätökset</a>
+        </div>
+    </div>
+    <% if (resolution_str) { %>
+    <div class="resolution">
+        <i class="icon-<%= resolution_icon %>" title="<%= resolution_str %>"></i>
+    </div>
+    <% } %>
+</li>
+</script>
+
 <script id="item-template" type="text/template">
 <div class="navigate-column span4">
-    <div class="decision-history">
-        <h2 class="header-bar">Käsittelyhistoria</h2>
+    <% if (issue.future_list.length) { %>
+    <div class="future-hearings meeting-list">
+        <h2 class="header-bar">Tulevat käsittelyt</h2>
         <ul class="unstyled vertical-list">
-            <li class="clearfix active">
-                <div class="committee-icon"><i class="icon-search"></i></div>
-                <div class="text">
-                    <span class="committee">Kaupunginvaltuusto</span>
-                    <span class="meeting">27.3.2013/6</span>
-                    <div class="meeting-link">
-                        <a class="browse-link" href="#">Kokouksen muut päätökset</a>
-                    </div>
-                </div>
-                <div class="resolution">
-                    <i class="icon-ok"></i>
-                </div>
-            </li>
-            <li class="clearfix">
-                <div class="committee-icon"><i class="icon-search"></i></div>
-                <div class="text">
-                    <span class="committee">Kaupunginvaltuusto</span>
-                    <span class="meeting">27.3.2013/6</span>
-                    <div class="meeting-link">
-                        <a class="browse-link" href="#">Kokouksen muut päätökset</a>
-                    </div>
-                </div>
-                <div class="resolution">
-                    <i class="icon-ok"></i>
-                </div>
-            </li>
+            <% _.each(issue.past_list, function(ai) { %>
+              <%= meeting_template(ai) %>
+            <% }); %>
         </ul>
     </div>
+    <% } %>
+    <% if (issue.past_list.length) { %>
+    <div class="decision-history meeting-list">
+        <h2 class="header-bar">Käsittelyhistoria</h2>
+        <ul class="unstyled vertical-list">
+            <% _.each(issue.past_list, function(ai) { %>
+              <%= meeting_template(ai) %>
+            <% }); %>
+        </ul>
+    </div>
+    <% } %>
 </div>
 <div class="span5">
     <div class="content-column">
@@ -79,10 +86,16 @@
            if (att.public) { %>
       <li value=<%= att.number %> class="public"><div class="number"><%= att.number %>.</div><div class="icon"><i class="icon-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.name %></a></div></li>
       <%   } else { %>
-      <li value=<%= att.number %> class="non-public"><i class="icon-eye-close"></i><div class="name">Ei-julkinen</div></li>
+      <li value=<%= att.number %> class="non-public"><div class="number"><%= att.number %>.</div><div class="icon"><i class="icon-eye-close"></i></div><div class="name">Ei-julkinen</div></li>
       <%   }
          }); %>
     </ol>
+    <% } %>
+    <% if (has_non_public_attachments) { %>
+    <p class="non-public-info">
+Päätösasiakirjoissa on mainittu liitteitä, joita ei julkaista internetissä. Pois jätetään liitteet, jotka sisältävät salassa pidettäviä tietoja, tai joissa olevien tietojen julkistaminen voi vaarantaa yksityisyyden suojan tai elinkeinonharjoittajan liike- tai ammattisalaisuuden, tai joita ei ole teknisistä
+syistä saatu sähköiseen muotoon. (Julkisuuslaki § 621/1999, Sähköisen viestinnän tietosuojalaki § 516/2004, Henkilötietolaki § 523/1999, Sosiaalihuollon asiakaslaki § 812/2000, Potilaslaki § 785/1992, Laki julkisista hankinnoista § 348/2007)
+    </p>
     <% } %>
 </div>
 </script>
