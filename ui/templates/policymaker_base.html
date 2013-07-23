@@ -1,0 +1,16 @@
+{% extends "subpage_base.html" %}
+{% load static compress %}
+
+{% block content %}
+<h1>{% block content_header %}{% endblock %}</h1>
+
+<ul class="nav nav-pills policymaker-nav">
+</ul>
+
+{% block policymaker_content %}{% endblock %}
+
+{% compress js %}
+<script type="text/coffeescript" src="{% static 'js/policymaker.coffee' %}"></script>
+{% endcompress %}
+
+{% endblock %}

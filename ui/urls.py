@@ -6,4 +6,6 @@ urlpatterns = patterns('',
     (r'^meeting/(?P<slug>[\w-]+)/$', 'ui.views.meeting_details'),
     (r'^issue/$', 'ui.views.issue_list'),
     (r'^issue/(?P<slug>[\w-]+)/$', 'ui.views.issue_details'),
+    (r'^policymaker/$', 'ui.views.policymaker_list'),
+    (r'^policymaker/(?P<slug>[\w-]+)/$', 'ui.views.policymaker_details'),
 )

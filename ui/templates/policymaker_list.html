@@ -1,0 +1,16 @@
+{% extends "policymaker_base.html" %}
+{% load i18n compress static %}
+{% block title %}Päättäjät{% endblock %}
+{% block content_header %}Päättäjät{% endblock %}
+
+{% block policymaker_content %}
+<div class="offset1 policymaker-list">
+</div>
+
+<script type="text/template" id="policymaker-list-template">
+    <div class="content">
+        <h3><%= title %></h3>
+        <i class="icon-<%= icon %>"></i>
+    </div>
+</script>
+{% endblock %}

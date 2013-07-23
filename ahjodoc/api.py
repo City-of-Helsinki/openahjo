@@ -26,6 +26,11 @@ class PolicymakerResource(ModelResource):
     class Meta:
         queryset = Policymaker.objects.all()
         resource_name = 'policymaker'
+        filtering = {
+            'abbreviation': ('exact', 'in', 'isnull'),
+            'name': ALL,
+            'slug': ('exact', 'in')
+        }
         ordering = ('name',)
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']

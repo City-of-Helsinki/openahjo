@@ -13,6 +13,14 @@
 @issue_bg_color: #F7DFDC;
 @issue_browse_link_color: #025959;
 
+@org_color_1: #00353d;
+@org_color_2: #004c58;
+@org_color_3: #38a694;
+@org_color_4: #54bfb3;
+@org_color_5: #89e2ce;
+@org_color_6: #bee0da;
+@org_color_7: #e1eeee;
+
 @charset "UTF-8";
 
 /* Bootstrap overrides */
@@ -496,4 +504,48 @@ h1 {
 
 .policymaker-nav {
     
+}
+
+.policymaker-list {
+    .row {
+        margin-bottom: 16px;
+    }
+    .org-box {
+        height: 100px;
+        cursor: pointer;
+    }
+    .content {
+        padding-left: 16px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+        h3 {
+            color: black;
+            font-size: 24px;
+            font-weight: 600;
+            line-height: 28px;
+            margin: 0px;
+            float: left;
+        }
+        i {
+            color: black;
+            float: right;
+            font-size: 24px;
+            margin-right: 16px;
+        }
+    }
+    .government {
+        background-color: @org_color_1;
+        h3, i {
+            color: white;
+        }
+    }
+    .council {
+        background-color: @org_color_2;
+        h3, i {
+            color: white;
+        }
+    }
+    .committee {
+        background-color: @org_color_3;
+    }
 }

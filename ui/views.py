@@ -43,4 +43,10 @@ def issue_details(request, slug):
     return render_view(request, 'issue_details.html', args)
 
 def policymaker_list(request):
-    return render_view(request, 'policymaker_list.html', get_js_paths())
+    return render_view(request, 'policymaker_list.html')
+
+def policymaker_details(request, slug):
+    pm = get_object_or_404(Policymaker, slug=slug)
+    args = {}
+    args['policymaker'] = pm
+    return render_view(request, 'policymaker_details.html', args)

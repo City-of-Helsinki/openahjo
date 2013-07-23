@@ -33,9 +33,10 @@
         </script>
 
         {% compress js %}
-        <script src="{% static "js/vendor/underscore.min.js" %}"></script>
-        <script src="{% static "js/vendor/backbone.min.js" %}"></script>
         <script src="{% static "js/vendor/jquery-1.9.1.min.js" %}"></script>
+        <script src="{% static "js/vendor/underscore.min.js" %}"></script>
+        <script src="{% static "js/vendor/backbone.js" %}"></script>
+        <script src="{% static "js/vendor/backbone-tastypie.js" %}"></script>
         <script src="{% static "js/vendor/bootstrap.min.js" %}"></script>
         <script src="{% static "js/vendor/modernizr-2.6.2.min.js" %}"></script>
         <script src="{% static "js/vendor/console.min.js" %}"></script>
@@ -57,16 +58,11 @@
         <nav class="navbar">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </a>
                     <a class="brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET</a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li><a href="{% url "ui.views.issue_list" %}">Asiat</a></li>
-                            <li><a href="{% url "ui.views.meeting_list" %}">Kokoukset</a></li>
+                            <li><a href="{% url "ui.views.policymaker_list" %}">Päättäjät</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
