@@ -136,6 +136,10 @@ class Command(BaseCommand):
         policymaker = Policymaker.objects.get(origin_id=info['policymaker_id'])
         args = {'policymaker': policymaker, 'number': info['meeting_nr'],
                 'year': doc_date.year}
+        if not policymaker.abbreviation and 'policymaker_abbr' in info:
+            self.logger.info("Saving abbreviation '%s' for %s" % (info['policymaker_abbr'], policymaker))
+            policymaker.abbreviation = info['policymaker_abbr']
+            policymaker.save()
         try:
             meeting = Meeting.objects.get(**args)
         except Meeting.DoesNotExist:

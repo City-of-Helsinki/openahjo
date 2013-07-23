@@ -58,6 +58,7 @@ class AhjoScanner(object):
             info['meeting_nr'] = int(info['meeting_nr'])
             info['year'] = int(info['date'].split('-')[0])
             info['policymaker_id'] = policymaker_id
+            info['policymaker_abbr'] = info['policymaker']
             # Skip Swedish documents
             if info['language'] != 'Su':
                 continue
