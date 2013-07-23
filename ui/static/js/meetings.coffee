@@ -1,16 +1,16 @@
-committees = {}
-selected_committee = null
+policymakers = {}
+selected_policymaker = null
 
-$.getJSON API_PREFIX + 'v1/committee/', {order_by: 'name', meetings: true}, (data) ->
-    $list = $('#committee-list')
+$.getJSON API_PREFIX + 'v1/policymaker/', {order_by: 'name', meetings: true}, (data) ->
+    $list = $('#policymaker-list')
     $list.append $('<li class="nav-header">Päättäjät</li>')
     for obj in data.objects
         $el = $("<li><a href='#' data-id='#{obj.id}'>#{obj.name}</a></li>")
         $list.append $el
-        committees[obj.id] = obj
+        policymakers[obj.id] = obj
     $list.find('a').click (ev) ->
         id = $(this).data 'id'
-        selected_committee = committees[id]
+        selected_policymaker = policymakers[id]
         $list.find('li').removeClass 'active'
         $(this).parent().addClass 'active'
         refresh_meetings()
@@ -40,8 +40,8 @@ show_meeting = (meeting, $parent) ->
 
 refresh_meetings = ->
     params = {}
-    if selected_committee
-        params['committee'] = selected_committee.id
+    if selected_policymaker
+        params['policymaker'] = selected_policymaker.id
     $.getJSON API_PREFIX + 'v1/meeting/', params, (data) ->
         $list = $('#meeting-list')
         $list.empty()
@@ -49,7 +49,7 @@ refresh_meetings = ->
           do (obj) ->
             date = obj.date.split('-')
             date_str = "#{date[2]}.#{date[1]}.#{date[0]}"
-            $el = $('<button class="btn btn-large btn-block">' + obj.committee_name + ' ' + obj.number + '/' + obj.year + " (#{date_str})</a>")
+            $el = $('<button class="btn btn-large btn-block">' + obj.policymaker_name + ' ' + obj.number + '/' + obj.year + " (#{date_str})</a>")
             $list.append $el
             $el.click (ev) ->
                 show_meeting obj, $el

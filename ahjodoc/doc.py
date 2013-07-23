@@ -66,8 +66,8 @@ class AhjoDocument(object):
         time_str = "%s %s" % (date, time)
         self.publish_time = datetime.strptime(time_str, '%Y-%m-%d %H:%M').replace(tzinfo=local_timezone)
 
-        committee_el = self.xml_root.xpath('./YlatunnisteSektio/Paattaja')[0]
-        self.committee_id = committee_el.attrib['PaattajaId']
+        policymaker_el = self.xml_root.xpath('./YlatunnisteSektio/Paattaja')[0]
+        self.policymaker_id = policymaker_el.attrib['PaattajaId']
 
     def parse_text_section(self, section_el):
         children = section_el.getchildren()

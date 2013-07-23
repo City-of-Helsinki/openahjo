@@ -3,8 +3,8 @@ from django.contrib.gis.db import models
 from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 
-class Committee(models.Model):
-    name = models.CharField(max_length=100, help_text='Name of committee')
+class Policymaker(models.Model):
+    name = models.CharField(max_length=100, help_text='Name of policymaker')
     abbreviation = models.CharField(max_length=20, null=True, help_text='Official abbreviation')
     origin_id = models.CharField(max_length=20, db_index=True, help_text='ID string in upstream system')
 
@@ -12,18 +12,18 @@ class Committee(models.Model):
         return self.name
 
 class Meeting(models.Model):
-    committee = models.ForeignKey(Committee, help_text='Committee or other organization')
+    policymaker = models.ForeignKey(Policymaker, help_text='Policymaker or other organization')
     date = models.DateField(db_index=True, help_text='Date of the meeting')
-    number = models.PositiveIntegerField(help_text='Meeting number for the committee')
+    number = models.PositiveIntegerField(help_text='Meeting number for the policymaker')
     year = models.PositiveIntegerField(help_text='Year the meeting is held')
     issues = models.ManyToManyField('Issue', through='AgendaItem')
     minutes = models.BooleanField(help_text='Meeting minutes document available')
 
     def __unicode__(self):
-        return u"%s %d/%d (%s)" % (self.committee, self.number, self.year, self.date) 
+        return u"%s %d/%d (%s)" % (self.policymaker, self.number, self.year, self.date) 
 
     class Meta:
-        unique_together = (('committee', 'date'), ('committee', 'year', 'number'))
+        unique_together = (('policymaker', 'date'), ('policymaker', 'year', 'number'))
 
 class MeetingDocument(models.Model):
     meeting = models.ForeignKey(Meeting)
@@ -41,6 +41,9 @@ class Category(MPTTModel):
     origin_id = models.CharField(max_length=20, unique=True, help_text='ID string in upstream system')
     name = models.CharField(max_length=100, db_index=True, help_text='Full category name')
     parent = TreeForeignKey('self', null=True, blank=True, help_text='Parent category')
+
+    def __unicode__(self):
+        return u"%s %s" % (self.origin_id, self.name)
 
     class Meta:
         verbose_name_plural = 'categories'

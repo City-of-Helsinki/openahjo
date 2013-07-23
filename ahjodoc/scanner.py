@@ -34,7 +34,7 @@ class AhjoScanner(object):
         self.logger = logging.getLogger(__name__)
         self.logger.setLevel(logging.INFO)
 
-    def scan_dir(self, path, committee_id):
+    def scan_dir(self, path, policymaker_id):
         r = requests.get(URL_BASE + path)
         if r.status_code != 200:
             raise Exception("Failed to read directory '%s'" % path)
@@ -47,7 +47,7 @@ class AhjoScanner(object):
                 continue
             fname = link.split('/')[-1]
             fname = fname.replace('.zip', '')
-            FIELD_NAMES = ("org", "date", "committee", "meeting_nr", "doc_type_id", "language")
+            FIELD_NAMES = ("org", "date", "policymaker", "meeting_nr", "doc_type_id", "language")
             fields = fname.split('%20')
             info = {}
             if len(fields) == len(FIELD_NAMES) - 1:
@@ -57,7 +57,7 @@ class AhjoScanner(object):
                 info[f] = fields[idx]
             info['meeting_nr'] = int(info['meeting_nr'])
             info['year'] = int(info['date'].split('-')[0])
-            info['committee_id'] = committee_id
+            info['policymaker_id'] = policymaker_id
             # Skip Swedish documents
             if info['language'] != 'Su':
                 continue
@@ -95,8 +95,8 @@ class AhjoScanner(object):
             link = link_el.attrib['href']
             if not link.startswith('/files'):
                 continue
-            committee_id = link_el.text.split('_')[-1].strip()
-            dir_list = self.scan_dir(link, committee_id)
+            policymaker_id = link_el.text.split('_')[-1].strip()
+            dir_list = self.scan_dir(link, policymaker_id)
             info_list = info_list + dir_list
         self.doc_list = info_list
         if cached:
@@ -104,7 +104,7 @@ class AhjoScanner(object):
         return info_list
 
     def generate_doc_id(self, info):
-        s = "%s_%s_%d-%d_%s" % (info['org'], info['committee'], info['year'], info['meeting_nr'], info['doc_type_id'])
+        s = "%s_%s_%d-%d_%s" % (info['org'], info['policymaker'], info['year'], info['meeting_nr'], info['doc_type_id'])
         return s
 
     def download_document(self, info):

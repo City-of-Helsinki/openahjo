@@ -27,11 +27,11 @@ class Command(BaseCommand):
         make_option('--cached', dest='cached', action='store_true', help='cache HTTP requests'),
         make_option('--meeting-id', dest='meeting_id', action='store', help='import one meeting'),
         make_option('--start-from', dest='start_from', action='store', help='start from provided meeting'),
-        make_option('--committee-id', dest='committee_id', action='store', help='process only provided committee'),
+        make_option('--policymaker-id', dest='policymaker_id', action='store', help='process only provided policymaker'),
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
         make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
         make_option('--no-videos', dest='no_videos', action='store_true', help='do not import meeting videos'),
-        make_option('--force-committees', dest='force_committees', action='store_true', help='force importing of committees'),
+        make_option('--force-policymakers', dest='force_policymakers', action='store_true', help='force importing of policymakers'),
     )
 
     def __init__(self):
@@ -133,8 +133,8 @@ class Command(BaseCommand):
         d = [int(x) for x in info['date'].split('-')]
         doc_date = datetime.date(*d)
 
-        committee = Committee.objects.get(origin_id=info['committee_id'])
-        args = {'committee': committee, 'number': info['meeting_nr'],
+        policymaker = Policymaker.objects.get(origin_id=info['policymaker_id'])
+        args = {'policymaker': policymaker, 'number': info['meeting_nr'],
                 'year': doc_date.year}
         try:
             meeting = Meeting.objects.get(**args)
@@ -146,7 +146,7 @@ class Command(BaseCommand):
 
         doc.meeting = meeting
         doc.organisation = info['org']
-        doc.committee = info['committee']
+        doc.policymaker = info['policymaker']
         doc.date = doc_date
         if str(meeting.date) != str(doc.date):
             raise Exception("Date mismatch between doc and meeting (%s vs. %s)" % (meeting.date, doc.date))
@@ -177,8 +177,8 @@ class Command(BaseCommand):
         doc.last_modified_time = info['last_modified']
         doc.save()
 
-        if info['committee_id'] != adoc.committee_id:
-            raise Exception("Committee id mismatch (%s vs. %s)" % (info['committee_id'], adoc.committee_id))
+        if info['policymaker_id'] != adoc.policymaker_id:
+            raise Exception("Policymaker id mismatch (%s vs. %s)" % (info['policymaker_id'], adoc.policymaker_id))
 
         if meeting.minutes and info['doc_type'] == 'agenda':
             self.logger.info("Skipping agenda doc because minutes already exists")
@@ -235,7 +235,7 @@ class Command(BaseCommand):
 
     def import_videos(self, meeting):
         # Only Kaupunginvaltuusto supported for now.
-        if meeting.committee.origin_id != '02900':
+        if meeting.policymaker.origin_id != '02900':
             return
         self.logger.debug("Checking for videos for %s" % meeting)
         meeting_info = {'year': meeting.year, 'nr': meeting.number}
@@ -331,7 +331,7 @@ class Command(BaseCommand):
             cat, c = Category.objects.get_or_create(origin_id=cat_id, defaults=defaults)
             print "%-15s %s" % (cat_id, cat_name)
 
-    def import_committees(self):
+    def import_policymakers(self):
         ORG_TYPES = {
             1: 'Valtuusto',
             10: 'Esittelijä',
@@ -348,7 +348,7 @@ class Command(BaseCommand):
             9: 'Osasto',
         }
 
-        if not self.options['force_committees'] and Committee.objects.count():
+        if not self.options['force_policymakers'] and Policymaker.objects.count():
             return
         f = open(os.path.join(self.data_path, 'organisaatiokoodit.csv'), 'r')
         reader = csv.reader(f)
@@ -361,11 +361,11 @@ class Command(BaseCommand):
             elif len(org_id) == 4:
                 org_id = '0' + org_id
             org_type = int(org_type)
-            # Only choose the political committees
+            # Only choose the political policymakers
             if org_type not in (1, 2, 3, 4, 5):
                 continue
             defaults = {'name': org_name}
-            comm, c = Committee.objects.get_or_create(origin_id=org_id, defaults=defaults)
+            comm, c = Policymaker.objects.get_or_create(origin_id=org_id, defaults=defaults)
             print "%10s %55s %15s" % (org_id, org_name, ORG_TYPES[int(org_type)])
 
     def handle(self, **options):
@@ -394,7 +394,7 @@ class Command(BaseCommand):
             print "Address database not found; address geocoding not available."
             self.geocode_addresses = False
 
-        self.import_committees()
+        self.import_policymakers()
         self.import_categories()
         self.scanner = AhjoScanner(verbosity=self.verbosity)
         doc_list = self.scanner.scan_documents(cached=options['cached'])
@@ -421,7 +421,7 @@ class Command(BaseCommand):
                 else:
                     continue
 
-            if options['committee_id'] and info['committee_id'] != options['committee_id']:
+            if options['policymaker_id'] and info['policymaker_id'] != options['policymaker_id']:
                 continue
             self.import_doc(info)
         else:

@@ -15,15 +15,15 @@
 
 <script id="meeting-template" type="text/template">
 <li data-agenda-item-id="<%= id %>" <% if (is_active) { %>class="active"<% } %>>
-    <div class="committee-icon"><i class="icon-search"></i></div>
+    <div class="policymaker-icon"><i class="icon-search"></i></div>
     <div class="text">
-        <span class="committee"><%= meeting.committee_name %></span>
+        <span class="policymaker"><%= meeting.policymaker_name %></span>
         <span class="meeting"><%= meeting.number %>/<%= meeting.date_str %></span>
         <div class="meeting-link">
             <a class="browse-link" href="#">Kokouksen muut päätökset</a>
         </div>
     </div>
-    <% if (resolution_str) { %>
+    <% if (resolution) { %>
     <div class="resolution">
         <i class="icon-<%= resolution_icon %>" title="<%= resolution_str %>"></i>
     </div>
@@ -84,9 +84,9 @@
     <ol class="attachment-list">
       <% _.each(attachments, function (att) {
            if (att.public) { %>
-      <li value=<%= att.number %> class="public"><div class="number"><%= att.number %>.</div><div class="icon"><i class="icon-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.name %></a></div></li>
+      <li value=<%= att.number %> class="public"><div class="icon"><i class="icon-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
       <%   } else { %>
-      <li value=<%= att.number %> class="non-public"><div class="number"><%= att.number %>.</div><div class="icon"><i class="icon-eye-close"></i></div><div class="name">Ei-julkinen</div></li>
+      <li value=<%= att.number %> class="non-public"><div class="icon"><i class="icon-eye-close"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
       <%   }
          }); %>
     </ol>

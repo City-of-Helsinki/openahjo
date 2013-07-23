@@ -15,17 +15,17 @@ from ahjodoc.models import *
 
 CACHE_TIMEOUT = 600
 
-class CommitteeResource(ModelResource):
+class PolicymakerResource(ModelResource):
     def apply_filters(self, request, filters):
-        qs = super(CommitteeResource, self).apply_filters(request, filters)
+        qs = super(PolicymakerResource, self).apply_filters(request, filters)
         meetings = request.GET.get('meetings', '')
         if meetings.lower() in ('1', 'true'):
             # Include only categories with associated issues
             qs = qs.annotate(num_meetings=Count('meeting')).filter(num_meetings__gt=0)
         return qs
     class Meta:
-        queryset = Committee.objects.all()
-        resource_name = 'committee'
+        queryset = Policymaker.objects.all()
+        resource_name = 'policymaker'
         ordering = ('name',)
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
@@ -72,21 +72,21 @@ class CategoryResource(ModelResource):
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 class MeetingResource(ModelResource):
-    committee = fields.ToOneField(CommitteeResource, 'committee')
+    policymaker = fields.ToOneField(PolicymakerResource, 'policymaker')
 
     def dehydrate(self, bundle):
         obj = bundle.obj
-        bundle.data['committee_name'] = obj.committee.name
+        bundle.data['policymaker_name'] = obj.policymaker.name
         return bundle
 
     class Meta:
-        queryset = Meeting.objects.order_by('-date').select_related('committee')
+        queryset = Meeting.objects.order_by('-date').select_related('policymaker')
         resource_name = 'meeting'
         filtering = {
-            'committee': ALL_WITH_RELATIONS,
+            'policymaker': ALL_WITH_RELATIONS,
             'minutes': ('exact',)
         }
-        ordering = ('date', 'committee')
+        ordering = ('date', 'policymaker')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
@@ -289,7 +289,7 @@ class VideoResource(ModelResource):
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
 all_resources = [
-    MeetingDocumentResource, CommitteeResource, CategoryResource,
+    MeetingDocumentResource, PolicymakerResource, CategoryResource,
     MeetingResource, IssueResource, AgendaItemResource, AttachmentResource,
     VideoResource
 ]

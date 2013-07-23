@@ -49,7 +49,7 @@ render_latest_meetings = ->
     for item in latest_meetings
         item.date_str = format_date item.date
         item.view_url = format_view_url 'meeting-details', item.id
-    template = "<li><a href='<%= view_url %>'><%= committee_name %> <%= number %>/<%= year %> (<%= date_str %>)</a></li>"
+    template = "<li><a href='<%= view_url %>'><%= policymaker_name %> <%= number %>/<%= year %> (<%= date_str %>)</a></li>"
     render_list_elements $list_el, latest_meetings, template
 
 params = 
