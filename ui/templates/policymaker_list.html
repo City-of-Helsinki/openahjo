@@ -10,7 +10,7 @@
 <script type="text/template" id="policymaker-list-template">
     <div class="content">
         <h3><%= title %></h3>
-        <i class="icon-<%= icon %>"></i>
+        <% if (icon) { %><i class="icon-<%= icon %>"></i><% } %>
     </div>
 </script>
 {% endblock %}

@@ -10,19 +10,26 @@ class Policymaker extends Backbone.Tastypie.Model
         name = @get('name')
         if name.indexOf('lautakunta') >= 0
             return 'committee'
-        else
-            return null
+        if name.indexOf('johtokunta') >= 0 or name.indexOf(' jk') >= 0
+            return 'board'
+
+        return 'other'
 
 class PolicymakerList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/policymaker/'
     model: Policymaker
 
-HYPHENATED_NAMES =
-    'Kslk': ['Kaupunki-', 'suunnittelu-', 'lautakunta']
-    'Sotelk': ['Sosiaali-', 'ja terveys-', 'lautakunta']
-    'Tplk': ['Teknisen', 'palvelun', 'lautakunta']
-    'Vakalk': ['Varhais-', 'kasvatus-', 'lautakunta']
-    'Kklk': ['Kulttuuri- ja', 'kirjasto-', 'lautakunta']
+PM_VIEW_INFO =
+    'Kslk':
+        hyphen_names: ['Kaupunki-', 'suunnittelu-', 'lautakunta']
+    'Sotelk':
+        hyphen_names: ['Sosiaali-', 'ja terveys-', 'lautakunta']
+    'Tplk':
+        hyphen_names: ['Teknisen', 'palvelun', 'lautakunta']
+    'Vakalk':
+        hyphen_names: ['Varhais-', 'kasvatus-', 'lautakunta']
+    'Kklk':
+        hyphen_names: ['Kulttuuri- ja', 'kirjasto-', 'lautakunta']
 
 class PolicymakerView extends Backbone.View
     tagName: 'div'
@@ -32,8 +39,10 @@ class PolicymakerView extends Backbone.View
     format_title: ->
         name = @model.get 'name'
         abbrev = @model.get 'abbreviation'
-        if abbrev of HYPHENATED_NAMES
-            return HYPHENATED_NAMES[abbrev].join('<br/>')
+        if abbrev of PM_VIEW_INFO
+            vi = PM_VIEW_INFO[abbrev]
+            if 'hyphen_names' of vi
+                return vi.hyphen_names.join('<br/>')
         lk_idx = name.indexOf 'lautakunta'
         if lk_idx >= 0
             prev_char = name[lk_idx-1]
@@ -62,6 +71,8 @@ pm_list = new PolicymakerList null,
 
 render_pm_section = (list, heading, big) ->
     $container = $(".policymaker-list")
+    if heading
+        $container.append $("<h2>#{heading}</h2>")
     row_idx = 0
     $row = $("<div class='row'></div>")
     list.forEach (m) ->
@@ -93,6 +104,13 @@ render_policymakers = (list) ->
 
     committees = list.filter (m) -> m.get_category() == 'committee'
     render_pm_section committees, "Lautakunnat", false
+
+    boards = list.filter (m) -> m.get_category() == 'board'
+    render_pm_section boards, "Johtokunnat", true
+
+    others = list.filter (m) -> m.get_category() == 'other'
+    render_pm_section others, "Muut", true
+
 
 pm_list.fetch
     success: ->
