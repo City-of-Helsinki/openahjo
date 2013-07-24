@@ -13,6 +13,7 @@
 @issue_bg_color: #F7DFDC;
 @issue_browse_link_color: #025959;
 
+@pm_navbar_active_color: #005751;
 @org_color_1: #00353d;
 @org_color_2: #004c58;
 @org_color_3: #38a694;
@@ -502,8 +503,52 @@ h1 {
     }
 }
 
+.policymaker-nav-pill(@color) {
+    &> a {
+        color: @color;
+    }
+    .dropdown-toggle .caret {
+        border-top-color: @color;
+        border-bottom-color: @color;
+    }
+    .dropdown-menu > li > a {
+        &:hover, &:focus {
+            color: black;
+            background-color: @color;
+            background-image: none;
+        }
+    }
+    &.open .dropdown-toggle,
+    li.dropdown.open.active > a:hover,
+    li.dropdown.open.active > a:focus {
+        background-color: @color;
+        border-color: @color;
+    }
+}
+
 .policymaker-nav {
-    
+    .active > a {
+        color: white;
+        background-color: @pm_navbar_active_color;
+        &:hover {
+            background-color: lighten(@pm_navbar_active_color, 10%)
+        }
+    }
+    .council {
+        .policymaker-nav-pill(@org_color_1);
+    }
+    .government {
+        .policymaker-nav-pill(@org_color_2);
+    }
+    .committee {
+        .policymaker-nav-pill(@org_color_3);
+    }
+    .board {
+        .policymaker-nav-pill(@org_color_4);
+    }
+    .other {
+        .policymaker-nav-pill(@org_color_5);
+    }
 }
 
 .policymaker-list {
@@ -515,7 +560,7 @@ h1 {
         margin-bottom: 16px;
     }
     .org-box {
-        height: 100px;
+        height: 120px;
         cursor: pointer;
     }
     .content {
@@ -537,25 +582,32 @@ h1 {
             margin-right: 16px;
         }
     }
-    .government {
-        background-color: @org_color_1;
+
+    .org-type-box(@color) {
+        background-color: @color;
+        &:hover {
+            background-color: lighten(@color, 10%);
+        }
+    }
+    .org-type-box(@color) when (lightness(@color) < 40%) {
         h3, i {
             color: white;
         }
     }
+
     .council {
-        background-color: @org_color_2;
-        h3, i {
-            color: white;
-        }
+        .org-type-box(@org_color_1);
+    }
+    .government {
+        .org-type-box(@org_color_2);
     }
     .committee {
-        background-color: @org_color_3;
+        .org-type-box(@org_color_3);
     }
     .board {
-        background-color: @org_color_4;
+        .org-type-box(@org_color_4);
     }
     .other {
-        background-color: @org_color_5;
+        .org-type-box(@org_color_5);
     }
 }

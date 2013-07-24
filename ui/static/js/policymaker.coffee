@@ -1,4 +1,6 @@
 class Policymaker extends Backbone.Tastypie.Model
+    get_view_url: ->
+        return API_PREFIX + 'policymaker/' + @get('slug') + '/'
     get_category: ->
         abbrev = @get('abbreviation')
         if not abbrev
@@ -31,6 +33,37 @@ PM_VIEW_INFO =
     'Kklk':
         hyphen_names: ['Kulttuuri- ja', 'kirjasto-', 'lautakunta']
 
+class PolicymakerListNavView extends Backbone.View
+    el: '.policymaker-nav'
+
+    initialize: ->
+        @collection.on 'reset', @render, @
+    render: ->
+        COMPONENTS = [
+            {name: 'Kaupunginvaltuusto', category: 'council'}
+            {name: 'Kaupunginhallitus', category: 'government'}
+            {name: 'Lautakunnat', category: 'committee'}
+            {name: 'Johtokunnat', category: 'board'}
+            {name: 'Muut', category: 'other'}
+        ]
+        @$el.empty()
+        @$el.append $("<li class='active'><a href='#'>Päättäjät</a></li>")
+        for c in COMPONENTS
+            list = @collection.filter (m) -> m.get_category() == c.category
+            if list.length > 1
+                $li = $("<li class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'>#{c.name} <b class='caret'></b>")
+                $ul = $("<ul class='dropdown-menu'></ul>")
+                $li.append $ul
+                list.forEach (m) ->
+                    $el = $("<li><a href='#{m.get_view_url()}'>#{m.get 'name'}</a></li>")
+                    $ul.append $el
+            else
+                m = list[0]
+                $li = $("<li><a href='#{m.get_view_url()}'>#{c.name}</a></li>")
+
+            $li.addClass c.category
+            @$el.append $li
+
 class PolicymakerView extends Backbone.View
     tagName: 'div'
     className: 'org-box'
@@ -62,13 +95,6 @@ class PolicymakerView extends Backbone.View
         @$el.append html
         return @
 
-pm_list = new PolicymakerList null,
-    filters:
-        # Access only the policymakers that have some related
-        # material (meetings etc.).
-        abbreviation__isnull: false
-        limit: 1000
-
 render_pm_section = (list, heading, big) ->
     $container = $(".policymaker-list")
     if heading
@@ -96,11 +122,11 @@ render_pm_section = (list, heading, big) ->
         $container.append $row
 
 render_policymakers = (list) ->
-    gov = list.filter (m) -> m.get_category() == 'government'
-    render_pm_section gov, null, true
-
     council = list.filter (m) -> m.get_category() == 'council'
     render_pm_section council, null, true
+
+    gov = list.filter (m) -> m.get_category() == 'government'
+    render_pm_section gov, null, true
 
     committees = list.filter (m) -> m.get_category() == 'committee'
     render_pm_section committees, "Lautakunnat", false
@@ -111,7 +137,7 @@ render_policymakers = (list) ->
     others = list.filter (m) -> m.get_category() == 'other'
     render_pm_section others, "Muut", true
 
-
-pm_list.fetch
-    success: ->
-        render_policymakers pm_list
+policymaker_list = new PolicymakerList policymakers
+pm_nav_view = new PolicymakerListNavView {collection: policymaker_list}
+pm_nav_view.render()
+render_policymakers policymaker_list

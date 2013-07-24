@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.conf import settings
 from ahjodoc.models import *
+from ahjodoc.api import *
 
 def get_js_paths():
     prefix = getattr(settings, 'URL_PREFIX', '')
@@ -42,11 +43,25 @@ def issue_details(request, slug):
     args['issue'] = issue
     return render_view(request, 'issue_details.html', args)
 
+def policymaker_view(request, template, args={}):
+    res = PolicymakerResource()
+    req_bundle = res.build_bundle(request=request)
+    pm_list = Policymaker.objects.filter(abbreviation__isnull=False)
+    bundles = []
+    for obj in pm_list:
+        bundle = res.build_bundle(obj=obj, request=request)
+        bundles.append(res.full_dehydrate(bundle, for_list=True))
+    json = res.serialize(None, bundles, "application/json")
+
+    args['pm_list_json'] = json
+    
+    return render_view(request, template, args)
+
 def policymaker_list(request):
-    return render_view(request, 'policymaker_list.html')
+    return policymaker_view(request, 'policymaker_list.html')
 
 def policymaker_details(request, slug):
     pm = get_object_or_404(Policymaker, slug=slug)
     args = {}
     args['policymaker'] = pm
-    return render_view(request, 'policymaker_details.html', args)
+    return policymaker_view(request, 'policymaker_details.html', args)

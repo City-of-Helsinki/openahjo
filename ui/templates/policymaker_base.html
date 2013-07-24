@@ -1,6 +1,12 @@
 {% extends "subpage_base.html" %}
 {% load static compress %}
 
+{% block extra_head %}
+<script type="text/javascript">
+    policymakers = {{pm_list_json|safe}}
+</script>
+{% endblock %}
+
 {% block content %}
 <h1>{% block content_header %}{% endblock %}</h1>
 
