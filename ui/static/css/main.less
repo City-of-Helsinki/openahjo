@@ -658,7 +658,13 @@ h1 {
             border-left: 1px solid @border_color;
             border-right: 1px solid @border_color;
             padding: 8px;
-            color: @header_color;
+            cursor: pointer;
+            > a {
+                &:hover {
+                    text-decoration: none;
+                }
+                color: @header_color;
+            }
         }
         li:first-child {
             border-top: 1px solid @border_color;

@@ -54,14 +54,17 @@ def policymaker_view(request, template, args={}):
     json = res.serialize(None, bundles, "application/json")
 
     args['pm_list_json'] = json
-    
+
     return render_view(request, template, args)
 
 def policymaker_list(request):
     return policymaker_view(request, 'policymaker_list.html')
 
-def policymaker_details(request, slug):
+def policymaker_details(request, slug, year=None, number=None):
     pm = get_object_or_404(Policymaker, slug=slug)
     args = {}
     args['policymaker'] = pm
+    if year:
+        args['meeting_year'] = year
+        args['meeting_number'] = number
     return policymaker_view(request, 'policymaker_list.html', args)

@@ -120,7 +120,7 @@ class MeetingDocumentResource(ModelResource):
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
-    
+
 def build_bbox_filter(bbox_val, field_name):
     points = bbox_val.split(',')
     if len(points) != 4:
@@ -207,7 +207,8 @@ class AgendaItemResource(ModelResource):
         for cs in cs_list:
             d = {'type': cs.type, 'text': cs.text}
             content.append(d)
-        bundle.data['content'] = content            
+        bundle.data['content'] = content
+        bundle.data['permalink'] = bundle.request.build_absolute_uri(obj.get_absolute_url())
         return bundle
 
     class Meta:

@@ -1,7 +1,7 @@
 {% extends "policymaker_base.html" %}
 {% load i18n compress static %}
-{% block title %}Päättäjät{% endblock %}
-{% block content_header %}Päättäjät{% endblock %}
+{% block title %}{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}{% endblock %}
+{% block content_header %}{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}{% endblock %}
 
 {% block policymaker_content %}
 
@@ -27,29 +27,38 @@
 </script>
 
 <script type="text/template" id="policymaker-meeting-list-item-template">
-    <li><%- number %>/<%- year %> (<%- date_str %>)</li>
+    <li><a href="<%= view_url %>"><%- number %>/<%- year %> (<%- date_str %>)</a></li>
 </script>
 
 <script type="text/template" id="policymaker-meeting-details-template">
 <nav>
     <h3>Kokous</h3>
     <div class="back-fwd">
-        <a href="#">‹‹ edellinen kokous</a> | <a href="#">seuraava kokous ››</a>
+        <% if (prev_meeting) { %>
+        <a class="previous-meeting" href="<%= prev_meeting %>">‹‹ edellinen kokous</a>
+        <% } else { %>
+        <span class="disabled">‹‹ edellinen kokous</span>
+        <% } %> |
+        <% if (next_meeting) { %>
+        <a class="next-meeting" href="<%= next_meeting %>">seuraava kokous ››</a>
+        <% } else { %>
+        <span class="disabled">seuraava kokous ››</span>
+        <% } %>
     </div>
 </nav>
 <article>
     <header>
         <h1><%- policymaker_name %> <%- number %>/<%- year %></h1>
-        <time><%- date_str %></time>
+        <time datetime="<%- date %>"><%- date_str %></time>
     </header>
     <ol>
         <% _.each(agenda_items, function (ai) { %>
-        <li><a href="#">
+        <li><a href="<%= ai.permalink %>">
             <header class="item-header">
                 <div class="index"><%- ai.index %></div>
                 <div class="subject"><%- ai.subject %></div>
             </header>
-            <p><%- ai.summary %></p>
+            <% if (ai.summary) { %><p><%- ai.summary %></p><% } %>
         </a></li>
         <% }); %>
     </ol>

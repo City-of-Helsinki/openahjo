@@ -8,4 +8,5 @@ urlpatterns = patterns('',
     (r'^issue/(?P<slug>[\w-]+)/$', 'ui.views.issue_details'),
     (r'^policymaker/$', 'ui.views.policymaker_list'),
     (r'^policymaker/(?P<slug>[\w-]+)/$', 'ui.views.policymaker_details'),
+    (r'^policymaker/(?P<slug>[\w-]+)/(?P<year>\d+)/(?P<number>\d+)/$', 'ui.views.policymaker_details'),
 )

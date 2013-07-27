@@ -8,6 +8,10 @@ class AgendaItemList extends Backbone.Tastypie.Collection
     model: AgendaItem
 
 class Meeting extends Backbone.Tastypie.Model
+    get_view_url: ->
+        pm = @collection.policymaker_list.get @get('policymaker')
+        return pm.get_view_url() + "#{@get 'year'}/#{@get 'number'}/"
+
     initialize: ->
         @agenda_item_list = new AgendaItemList
         @agenda_item_list.filters['meeting'] = @get 'id'
@@ -23,9 +27,12 @@ class MeetingList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/meeting/'
     model: Meeting
 
+    initialize: (models, opts)->
+        @policymaker_list = opts.policymaker_list
+
 class Policymaker extends Backbone.Tastypie.Model
     initialize: ->
-        @meeting_list = new MeetingList
+        @meeting_list = new MeetingList null, policymaker_list: @collection
         @meeting_list.filters['policymaker'] = @get 'id'
         @meeting_list.filters['limit'] = 1000
 
@@ -107,12 +114,8 @@ class PolicymakerListNavView extends Backbone.View
             @$el.append $li
 
         @$el.find('li > a').click (ev) ->
-            href = $(@).attr 'href'
-            if href.indexOf(VIEW_BASE_URL) != 0
-                return
-            href = href[VIEW_BASE_URL.length..]
-            ev.preventDefault()
-            Backbone.history.navigate href, true
+            if router.navigate_to_link @
+                ev.preventDefault()
 
     set_category: (category) ->
         @$el.find('li').removeClass 'active'
@@ -204,7 +207,7 @@ class PolicymakerDetailsView extends Backbone.View
     template: _.template $("#policymaker-details-template").html()
 
     initialize: ->
-        @listenTo @model.meeting_list, 'reset', @render_meetings
+        @listenTo @model.meeting_list, 'reset', @render_meeting_list
         @listenTo @model.meeting_list, 'reset', @_select_meeting
 
     format_date: (date) ->
@@ -217,39 +220,77 @@ class PolicymakerDetailsView extends Backbone.View
         @$el.html html
         return @
 
-    render_meetings: ->
+    render_meeting_list: ->
         list = @model.meeting_list
         $list_el = @$el.find('.meeting-list').first()
+        $list_el.empty()
         template = _.template $("#policymaker-meeting-list-item-template").html()
         list.each (meeting) =>
             model = meeting.toJSON()
             model.date_str = @format_date meeting.get('date')
-            html = $.trim(template model)
-            $list_el.append $(html)
+            model.view_url = meeting.get_view_url()
+            $li = $($.trim(template model))
+            $li.click (ev) ->
+                link_el = $(@).find('> a')
+                if router.navigate_to_link link_el
+                    ev.preventDefault()
+            $list_el.append $li
 
     render_meeting_details: ->
         meeting = @selected_meeting
         template = _.template $("#policymaker-meeting-details-template").html()
         model = meeting.toJSON()
         model.date_str = @format_date meeting.get('date')
+
         agenda_items = []
         meeting.agenda_item_list.each (ai) ->
             m = ai.toJSON()
             agenda_items.push m
         model.agenda_items = agenda_items
+
+        meeting_list = @model.meeting_list
+        idx = meeting_list.indexOf meeting
+        if idx > 0
+            model.next_meeting = meeting_list.at(idx - 1).get_view_url()
+        else
+            model.next_meeting = null
+        if idx < meeting_list.length - 1
+            model.prev_meeting = meeting_list.at(idx + 1).get_view_url()
+        else
+            model.prev_meeting = null
+
         html = $.trim template(model)
         @$el.find('.meeting-details').first().html html
 
+        @$el.find('.back-fwd a').click (ev) ->
+            if router.navigate_to_link @
+                ev.preventDefault()
+
     _select_meeting: ->
+        meeting_list = @model.meeting_list
         if @selected_meeting
             @stopListening @selected_meeting.agenda_item_list
 
-        # If meeting id is not specified, choose the first (latest) meeting.
         if @selected_meeting_id
-            filtered = @model.meeting_list.filter (m) -> m.get('id') == @selected_meeting_id
-            meeting = filtered[0]
+            if @selected_meeting_id == 'next'
+                idx = meeting_list.indexOf @selected_meeting
+                if idx > 0
+                    idx--
+                meeting = meeting_list.at idx
+            else if @selected_meeting_id == 'prev'
+                idx = meeting_list.indexOf @selected_meeting
+                if idx < meeting_list.length - 1
+                    idx++
+                meeting = meeting_list.at idx
+            else
+                meeting = meeting_list.find (m) =>
+                    year = m.get('year')
+                    number = m.get('number')
+                    id = "#{year}/#{number}"
+                    return id == @selected_meeting_id
         else
-            meeting = @model.meeting_list.models[0]
+            # If meeting id is not specified, choose the first (latest) meeting.
+            meeting = meeting_list.at 0
 
         @listenTo meeting.agenda_item_list, 'reset', @render_meeting_details
         @selected_meeting = meeting
@@ -268,6 +309,16 @@ class PolicymakerRouter extends Backbone.Router
     routes:
         "": "pm_list"
         ":slug/": "pm_details"
+        ":slug/:year/:number/": "pm_details"
+
+    navigate_to_link: (el) ->
+        href = $(el).attr 'href'
+        if href.indexOf(VIEW_BASE_URL) != 0
+            return false
+        href = href[VIEW_BASE_URL.length..]
+        Backbone.history.navigate href, true
+        return true
+
     pm_list: ->
         $("#content-container > h1").html "Päättäjät"
         document.title = "Päättäjät"
@@ -276,7 +327,7 @@ class PolicymakerRouter extends Backbone.Router
         $(".policymaker-content").empty()
         $(".policymaker-content").append list_view.$el
 
-    pm_details: (slug) ->
+    pm_details: (slug, year, number) ->
         pm = policymaker_list.filter (m) -> m.get('slug') == slug
         pm = pm[0]
         nav_view.set_category pm.get_category()
@@ -285,7 +336,11 @@ class PolicymakerRouter extends Backbone.Router
         details_view = new PolicymakerDetailsView model: pm
         # Choose the latest meeting by default
         details_view.render()
-        details_view.select_meeting()
+        if year and number
+            meeting_id = "#{year}/#{number}"
+        else
+            meeting_id = null
+        details_view.select_meeting meeting_id
         $(".policymaker-content").empty()
         $(".policymaker-content").append details_view.$el
 

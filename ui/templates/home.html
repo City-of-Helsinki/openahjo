@@ -6,7 +6,7 @@
 <div class="row">
     <header id="home-header-box" class="span12">
         <div class="left-side">
-            <h1><img src="{% static 'img/logo-white.png' %}" alt='Päätökset' %}"></h1>
+            <h1><img src="{% static 'img/logo-white.png' %}" alt='Päätökset logo'></h1>
             <p>Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset. Mitä naapurustossasi tapahtuu? Kuka päättää, mitä päätetään ja millä perusteella?</p>
         </div>
         <div class="right-side">
@@ -64,73 +64,20 @@
 <div class="row" id="home-logo-row">
     <div class="span4 hel-heart-dev">
         <div class="logo">
-            <img src="{% static 'img/hel-heart-dev.png' %}">
+            <img src="{% static 'img/hel-heart-dev.png' %}" alt="Helsinki loves developers">
         </div>
     </div>
     <div class="span4 helsinki">
         <div class="logo">
-            <img src="{% static 'img/helsinki.png' %}">
+            <img src="{% static 'img/helsinki.png' %}" alt="Helsingin kaupunki">
         </div>
     </div>
     <div class="span4 hri">
         <div class="logo">
-            <img src="{% static 'img/hri.png' %}">
+            <img src="{% static 'img/hri.png' %}" alt="Helsinki Region Infoshare">
         </div>
     </div>
 </div>
-
-<!--
-
-<div class="row" style="margin-bottom: 16px">
-    <div class="span9">
-    Tietokannassa on tällä hetkellä <strong>{{stats.meeting_count}}</strong> kokousta, <strong>{{stats.agenda_item_count}}</strong> esityslistan kohtaa ja <strong>{{stats.issue_count}}</strong> asiaa. Paikkatieto on määritetty <strong>{{stats.issue_geo_count}}</strong> asialle.
-    </div>
-</div>
-
-<div class="row">
-    <div class="span3 district-input">
-        <div class="input-append">
-            <label>Kaupunginosa</label>
-            <input type="text" placeholder="Syötä kaupunginosa...">
-            <span class="add-on" style="display: none"><a class="close" href="#">&times;</a></span>
-        </div>
-    </div>
-    <div class="span3 category-input">
-        <div class="input-append">
-            <label>Tehtäväluokka</label>
-            <input type="text" placeholder="Syötä tehtäväluokka...">
-            <span class="add-on" style="display: none"><a class="close" href="#">&times;</a></span>
-        </div>
-    </div>
-    <div class="span3 keyword-input">
-        <div class="input-append">
-            <label>Hakusana</label>
-            <input type="text" placeholder="Syötä hakusana..." disabled>
-            <span class="add-on" style="display: none"><a class="close" href="#">&times;</a></span>
-        </div>
-    </div>
-</div>
-
-<div style="margin-top: 10px; margin-bottom: 40px" class="row">
-    <div class="span9" id="map" style="height: 300px"></div>
-</div>
-
-<div class="row">
-    <div class="span9">
-        <ul class="unstyled" id="issue-list"></ul>
-    </div>
-</div>
-{% verbatim %}
-<script id="issue-list-template" type="text/x-handlebars-template">
-    <li>
-        <a href="{{details_uri}}"><h3 class="subject">{{subject}}</h3></a>
-        {{#if summary}}
-        <p class="summary">{{summary}}</p>
-        {{/if}}
-    </li>
-</script>
-{% endverbatim %}
--->
 
 {% compress js %}
 <script src="{% static "js/home.coffee" %}" type="text/coffeescript"></script>

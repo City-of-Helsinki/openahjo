@@ -1,3 +1,4 @@
+from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.utils.text import slugify
@@ -109,6 +110,9 @@ class AgendaItem(models.Model):
     from_minutes = models.BooleanField(help_text='Do the contents come from the minutes document?')
     last_modified_time = models.DateTimeField(db_index=True, help_text='Time of last modification')
     resolution = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, null=True, help_text="Type of resolution made")
+
+    def get_absolute_url(self):
+        return reverse('ui.views.issue_details', kwargs={'slug': self.issue.slug})
 
     def __unicode__(self):
         if self.issue:
