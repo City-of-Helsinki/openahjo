@@ -4,13 +4,56 @@
 {% block content_header %}Päättäjät{% endblock %}
 
 {% block policymaker_content %}
-<div class="offset1 policymaker-list">
-</div>
 
-<script type="text/template" id="policymaker-list-template">
-    <div class="content">
-        <h3><%= title %></h3>
-        <% if (icon) { %><i class="icon-<%= icon %>"></i><% } %>
-    </div>
+<main class="policymaker-content">
+</main>
+
+<script type="text/template" id="policymaker-list-item-template">
+<div class="content">
+    <h3><%= title %></h3>
+    <% if (icon) { %><i class="icon-<%= icon %>"></i><% } %>
+</div>
 </script>
+
+<script type="text/template" id="policymaker-details-template">
+<nav>
+    <a href="#" class="description-link">Tehtävät ja kokoonpano</a>
+    <a href="#" class="meeting-link">Kokoukset<b class="caret"></b></a>
+    <ul class="meeting-list">
+    </ul>
+</nav>
+<div class="meeting-details">
+</div>
+</script>
+
+<script type="text/template" id="policymaker-meeting-list-item-template">
+    <li><%- number %>/<%- year %> (<%- date_str %>)</li>
+</script>
+
+<script type="text/template" id="policymaker-meeting-details-template">
+<nav>
+    <h3>Kokous</h3>
+    <div class="back-fwd">
+        <a href="#">‹‹ edellinen kokous</a> | <a href="#">seuraava kokous ››</a>
+    </div>
+</nav>
+<article>
+    <header>
+        <h1><%- policymaker_name %> <%- number %>/<%- year %></h1>
+        <time><%- date_str %></time>
+    </header>
+    <ol>
+        <% _.each(agenda_items, function (ai) { %>
+        <li><a href="#">
+            <header class="item-header">
+                <div class="index"><%- ai.index %></div>
+                <div class="subject"><%- ai.subject %></div>
+            </header>
+            <p><%- ai.summary %></p>
+        </a></li>
+        <% }); %>
+    </ol>
+</article>
+</script>
+
 {% endblock %}

@@ -12,6 +12,7 @@
 @issue_main_color: #D15A4D;
 @issue_bg_color: #F7DFDC;
 @issue_browse_link_color: #025959;
+@meeting_details_bg_color: #e5f7ee;
 
 @pm_navbar_active_color: #005751;
 @org_color_1: #00353d;
@@ -503,6 +504,10 @@ h1 {
     }
 }
 
+
+/*****************************************
+ * Policymaker views                     *
+ *****************************************/
 .policymaker-nav-pill(@color) {
     &> a {
         color: @color;
@@ -524,6 +529,12 @@ h1 {
         background-color: @color;
         border-color: @color;
     }
+    &.active > a {
+        color: white;
+    }
+}
+
+.policymaker-nav-pill(@color) when (lightness(@color) < 40%) {
 }
 
 .policymaker-nav {
@@ -533,6 +544,9 @@ h1 {
         &:hover {
             background-color: lighten(@pm_navbar_active_color, 10%)
         }
+    }
+    .list {
+        .policymaker-nav-pill(@pm_navbar_active_color);
     }
     .council {
         .policymaker-nav-pill(@org_color_1);
@@ -551,7 +565,13 @@ h1 {
     }
 }
 
+.policymaker-content {
+    min-height: 1000px;
+}
+
 .policymaker-list {
+    margin-left: 100px;
+
     > h2 {
         font-weight: 800;
         margin-top: 24px;
@@ -609,5 +629,104 @@ h1 {
     }
     .other {
         .org-type-box(@org_color_5);
+    }
+}
+
+.policymaker-details {
+    .makeRow;
+
+    > nav {
+        .makeColumn(4);
+        > a {
+            display: block;
+            color: @textColor;
+            text-decoration: underline;
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 20px;
+            .caret {
+                margin-top: 8px;
+                margin-left: 8px;
+            }
+        }
+        ul {
+            list-style: none;
+            margin: 0;
+        }
+        li {
+            border-bottom: 1px solid @border_color;
+            border-left: 1px solid @border_color;
+            border-right: 1px solid @border_color;
+            padding: 8px;
+            color: @header_color;
+        }
+        li:first-child {
+            border-top: 1px solid @border_color;
+        }
+    }
+
+    > .meeting-details {
+        .makeColumn(7);
+        > nav {
+            .clearfix;
+            h3 {
+                float: left;
+                font-size: 18px;
+                line-height: 18px;
+                margin-top: 0px;
+                text-transform: uppercase;
+                color: @header_color;
+            }
+            .back-fwd {
+                float: right;
+                a {
+                    color: lighten(@header_color, 5%);
+                }
+            }
+        }
+        > article {
+            background-color: @meeting_details_bg_color;
+            border: 1px solid black;
+            > header {
+                padding: 20px;
+                h1 {
+                    font-size: 28px;
+                    font-weight: 700;
+                    color: #333;
+                    margin-bottom: 0px;
+                    margin-top: 0px;
+                    line-height: 32px;
+                }
+                time {
+                    font-size: 20px;
+                    font-weight: 700;
+                    color: #888;
+                }
+            }
+            ol {
+                margin: 0px;
+                list-style: none;
+            }
+            li {
+                border-top: 1px solid black;
+                padding: 20px;
+                cursor: pointer;
+                .item-header {
+                    .clearfix;
+                    font-size: 24px;
+                    font-weight: 700;
+                    color: #333;
+                }
+                .index {
+                    float: left;
+                    width: 40px;
+                }
+                .subject {
+                    float: left;
+                    width: 458px;
+                    hyphens: auto;
+                }
+            }
+        }
     }
 }

@@ -1,6 +1,36 @@
+DATE_FORMAT = 'D.M.YYYY'
+VIEW_BASE_URL = API_PREFIX + 'policymaker/'
+
+class AgendaItem extends Backbone.Tastypie.Model
+
+class AgendaItemList extends Backbone.Tastypie.Collection
+    urlRoot: API_PREFIX + 'v1/agenda_item/'
+    model: AgendaItem
+
+class Meeting extends Backbone.Tastypie.Model
+    initialize: ->
+        @agenda_item_list = new AgendaItemList
+        @agenda_item_list.filters['meeting'] = @get 'id'
+        @agenda_item_list.filters['limit'] = 1000
+
+    fetch_agenda_items: ->
+        if @agenda_item_list.length
+            @agenda_item_list.trigger 'reset'
+            return
+        @agenda_item_list.fetch reset: true
+
+class MeetingList extends Backbone.Tastypie.Collection
+    urlRoot: API_PREFIX + 'v1/meeting/'
+    model: Meeting
+
 class Policymaker extends Backbone.Tastypie.Model
+    initialize: ->
+        @meeting_list = new MeetingList
+        @meeting_list.filters['policymaker'] = @get 'id'
+        @meeting_list.filters['limit'] = 1000
+
     get_view_url: ->
-        return API_PREFIX + 'policymaker/' + @get('slug') + '/'
+        return VIEW_BASE_URL + @get('slug') + '/'
     get_category: ->
         abbrev = @get('abbreviation')
         if not abbrev
@@ -14,8 +44,13 @@ class Policymaker extends Backbone.Tastypie.Model
             return 'committee'
         if name.indexOf('johtokunta') >= 0 or name.indexOf(' jk') >= 0
             return 'board'
-
         return 'other'
+
+    fetch_meetings: ->
+        if @meeting_list.length
+            @meeting_list.trigger 'reset'
+            return
+        @meeting_list.fetch reset: true
 
 class PolicymakerList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/policymaker/'
@@ -38,6 +73,7 @@ class PolicymakerListNavView extends Backbone.View
 
     initialize: ->
         @collection.on 'reset', @render, @
+        @active_category = null
     render: ->
         COMPONENTS = [
             {name: 'Kaupunginvaltuusto', category: 'council'}
@@ -47,9 +83,13 @@ class PolicymakerListNavView extends Backbone.View
             {name: 'Muut', category: 'other'}
         ]
         @$el.empty()
-        @$el.append $("<li class='active'><a href='#'>Päättäjät</a></li>")
+        $li = $("<li class='list'><a href='#{VIEW_BASE_URL}'>Päättäjät</a></li>")
+        if @active_section == 'list'
+            $li.addClass 'active'
+        @$el.append $li
         for c in COMPONENTS
             list = @collection.filter (m) -> m.get_category() == c.category
+            list = _.sortBy list, (m) -> m.get 'name'
             if list.length > 1
                 $li = $("<li class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'>#{c.name} <b class='caret'></b>")
                 $ul = $("<ul class='dropdown-menu'></ul>")
@@ -62,12 +102,27 @@ class PolicymakerListNavView extends Backbone.View
                 $li = $("<li><a href='#{m.get_view_url()}'>#{c.name}</a></li>")
 
             $li.addClass c.category
+            if @active_section == c.category
+                $li.addClass 'active'
             @$el.append $li
 
-class PolicymakerView extends Backbone.View
-    tagName: 'div'
+        @$el.find('li > a').click (ev) ->
+            href = $(@).attr 'href'
+            if href.indexOf(VIEW_BASE_URL) != 0
+                return
+            href = href[VIEW_BASE_URL.length..]
+            ev.preventDefault()
+            Backbone.history.navigate href, true
+
+    set_category: (category) ->
+        @$el.find('li').removeClass 'active'
+        @$el.find('li.' + category).addClass 'active'
+        @active_category = category
+
+class PolicymakerListItemView extends Backbone.View
+    tagName: 'a'
     className: 'org-box'
-    template: $("#policymaker-list-template").html()
+    template: $("#policymaker-list-item-template").html()
 
     format_title: ->
         name = @model.get 'name'
@@ -83,7 +138,7 @@ class PolicymakerView extends Backbone.View
                 hyphen = '-'
             else
                 hyphen = ''
-            
+
             name = name[0..lk_idx-1] + hyphen + '<br/>' + name[lk_idx..]
         return name
     render: ->
@@ -92,52 +147,148 @@ class PolicymakerView extends Backbone.View
         model.icon = 'search'
         html = _.template @template, model
         @$el.addClass @model.get_category()
+        @$el.attr 'href', @model.get_view_url()
         @$el.append html
         return @
 
-render_pm_section = (list, heading, big) ->
-    $container = $(".policymaker-list")
-    if heading
-        $container.append $("<h2>#{heading}</h2>")
-    row_idx = 0
-    $row = $("<div class='row'></div>")
-    list.forEach (m) ->
-        view = new PolicymakerView {model: m}
-        view.render()
-        $el = view.$el
-        $row.append view.$el
-        row_idx++
-        if big
-            $el.addClass 'span9'
-            $container.append $row
-            $row = $("<div class='row'></div>")
-            row_idx = 0
-        else
-            $el.addClass 'span3'
-            if row_idx == 3
+class PolicymakerListView extends Backbone.View
+    tagName: 'div'
+    className: 'policymaker-list'
+
+    render_pm_section: (list, heading, big) ->
+        list = _.sortBy list, (m) -> m.get 'name'
+        $container = @$el
+        if heading
+            $container.append $("<h2>#{heading}</h2>")
+        row_idx = 0
+        $row = $("<div class='row'></div>")
+        list.forEach (m) ->
+            view = new PolicymakerListItemView {model: m}
+            view.render()
+            $el = view.$el
+            $row.append view.$el
+            row_idx++
+            if big
+                $el.addClass 'span9'
                 $container.append $row
-                row_idx = 0
                 $row = $("<div class='row'></div>")
-    if row_idx
-        $container.append $row
+                row_idx = 0
+            else
+                $el.addClass 'span3'
+                if row_idx == 3
+                    $container.append $row
+                    row_idx = 0
+                    $row = $("<div class='row'></div>")
+        if row_idx
+            $container.append $row
 
-render_policymakers = (list) ->
-    council = list.filter (m) -> m.get_category() == 'council'
-    render_pm_section council, null, true
+    render: ->
+        council = @collection.filter (m) -> m.get_category() == 'council'
+        @render_pm_section council, null, true
 
-    gov = list.filter (m) -> m.get_category() == 'government'
-    render_pm_section gov, null, true
+        gov = @collection.filter (m) -> m.get_category() == 'government'
+        @render_pm_section gov, null, true
 
-    committees = list.filter (m) -> m.get_category() == 'committee'
-    render_pm_section committees, "Lautakunnat", false
+        committees = @collection.filter (m) -> m.get_category() == 'committee'
+        @render_pm_section committees, "Lautakunnat", false
 
-    boards = list.filter (m) -> m.get_category() == 'board'
-    render_pm_section boards, "Johtokunnat", true
+        boards = @collection.filter (m) -> m.get_category() == 'board'
+        @render_pm_section boards, "Johtokunnat", true
 
-    others = list.filter (m) -> m.get_category() == 'other'
-    render_pm_section others, "Muut", true
+        others = @collection.filter (m) -> m.get_category() == 'other'
+        @render_pm_section others, "Muut", true
+
+class PolicymakerDetailsView extends Backbone.View
+    tagName: 'div'
+    className: 'policymaker-details'
+    template: _.template $("#policymaker-details-template").html()
+
+    initialize: ->
+        @listenTo @model.meeting_list, 'reset', @render_meetings
+        @listenTo @model.meeting_list, 'reset', @_select_meeting
+
+    format_date: (date) ->
+        m = moment date
+        return m.format DATE_FORMAT
+
+    render: ->
+        model = @model.toJSON()
+        html = @template model
+        @$el.html html
+        return @
+
+    render_meetings: ->
+        list = @model.meeting_list
+        $list_el = @$el.find('.meeting-list').first()
+        template = _.template $("#policymaker-meeting-list-item-template").html()
+        list.each (meeting) =>
+            model = meeting.toJSON()
+            model.date_str = @format_date meeting.get('date')
+            html = $.trim(template model)
+            $list_el.append $(html)
+
+    render_meeting_details: ->
+        meeting = @selected_meeting
+        template = _.template $("#policymaker-meeting-details-template").html()
+        model = meeting.toJSON()
+        model.date_str = @format_date meeting.get('date')
+        agenda_items = []
+        meeting.agenda_item_list.each (ai) ->
+            m = ai.toJSON()
+            agenda_items.push m
+        model.agenda_items = agenda_items
+        html = $.trim template(model)
+        @$el.find('.meeting-details').first().html html
+
+    _select_meeting: ->
+        if @selected_meeting
+            @stopListening @selected_meeting.agenda_item_list
+
+        # If meeting id is not specified, choose the first (latest) meeting.
+        if @selected_meeting_id
+            filtered = @model.meeting_list.filter (m) -> m.get('id') == @selected_meeting_id
+            meeting = filtered[0]
+        else
+            meeting = @model.meeting_list.models[0]
+
+        @listenTo meeting.agenda_item_list, 'reset', @render_meeting_details
+        @selected_meeting = meeting
+        meeting.fetch_agenda_items()
+
+    select_meeting: (@selected_meeting_id) ->
+        @model.fetch_meetings()
 
 policymaker_list = new PolicymakerList policymakers
-pm_nav_view = new PolicymakerListNavView {collection: policymaker_list}
-pm_nav_view.render()
-render_policymakers policymaker_list
+nav_view = new PolicymakerListNavView {collection: policymaker_list}
+nav_view.render()
+
+list_view = new PolicymakerListView {collection: policymaker_list}
+
+class PolicymakerRouter extends Backbone.Router
+    routes:
+        "": "pm_list"
+        ":slug/": "pm_details"
+    pm_list: ->
+        $("#content-container > h1").html "Päättäjät"
+        document.title = "Päättäjät"
+        nav_view.set_category 'list'
+        list_view.render()
+        $(".policymaker-content").empty()
+        $(".policymaker-content").append list_view.$el
+
+    pm_details: (slug) ->
+        pm = policymaker_list.filter (m) -> m.get('slug') == slug
+        pm = pm[0]
+        nav_view.set_category pm.get_category()
+        $("#content-container > h1").html pm.get('name')
+        document.title = pm.get 'name'
+        details_view = new PolicymakerDetailsView model: pm
+        # Choose the latest meeting by default
+        details_view.render()
+        details_view.select_meeting()
+        $(".policymaker-content").empty()
+        $(".policymaker-content").append details_view.$el
+
+router = new PolicymakerRouter
+
+Backbone.history.start {pushState: true, root: "/policymaker/"}

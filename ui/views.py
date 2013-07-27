@@ -64,4 +64,4 @@ def policymaker_details(request, slug):
     pm = get_object_or_404(Policymaker, slug=slug)
     args = {}
     args['policymaker'] = pm
-    return policymaker_view(request, 'policymaker_details.html', args)
+    return policymaker_view(request, 'policymaker_list.html', args)
