@@ -1,0 +1,4 @@
+{{ object.subject }}
+{% for content in object.contentsection_set.all %}
+{{ content.text|striptags }}
+{% endfor %}

@@ -1,0 +1,3 @@
+{% for ai in object.agendaitem_set.all %}{{ ai.subject }}
+{% for content in ai.contentsection_set.all %}{{ content.text|striptags }}{% endfor %}
+{% endfor %}

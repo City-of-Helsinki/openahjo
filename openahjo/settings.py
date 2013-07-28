@@ -143,6 +143,8 @@ INSTALLED_APPS = (
     'compressor',
     'mptt',
     'south',
+    'haystack',
+
     'ahjodoc',
     'ui',
 )
@@ -174,6 +176,12 @@ LOGGING = {
             'propagate': True,
         },
     }
+}
+
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
+    },
 }
 
 TASTYPIE_SWAGGER_API_MODULE = 'openahjo.urls.v1_api'

@@ -65,6 +65,7 @@ class Issue(models.Model):
                             help_text='Unique slug (generated from register_id)')
     subject = models.CharField(max_length=500, help_text='One-line description for issue')
     category = models.ForeignKey(Category, db_index=True, help_text='Issue category')
+    last_modified_time = models.DateTimeField(auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
