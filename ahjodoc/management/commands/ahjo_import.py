@@ -45,17 +45,19 @@ class Command(BaseCommand):
         text_list.append(info['subject'])
         for kw in info['keywords']:
             text_list.append(kw)
-        markers = self.geocoder.geocode_from_text_list(text_list)
-        if not markers:
-            pass
-        if markers:
-            for m in markers:
-                try:
-                    igeom = IssueGeometry.objects.get(issue=issue, name=m['name'])
-                except IssueGeometry.DoesNotExist:
-                    igeom = IssueGeometry(issue=issue, name=m['name'])
-                igeom.geometry = m['geometry']
+        geom_list = self.geocoder.geocode_from_text_list(text_list)
+        for g in geom_list:
+            args = dict(type=g['type'], name=g['name'])
+            try:
+                igeom = IssueGeometry.objects.get(**args)
+            except IssueGeometry.DoesNotExist:
+                args['geometry'] = g['geometry']
+                igeom = IssueGeometry(**args)
                 igeom.save()
+            issue.geometries.add(igeom)
+            # Assume geometry doesn't change.
+            #igeom.geometry = g['geometry']
+            #igeom.save()
 
     def store_issue(self, meeting, meeting_doc, info, adoc):
         try:

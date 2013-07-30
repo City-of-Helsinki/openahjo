@@ -48,7 +48,7 @@ class CategoryResource(ModelResource):
         orm_filters = super(CategoryResource, self).build_filters(filters)
         if filters and 'input' in filters:
             orm_filters.update(self.query_to_filters(filters['input']))
-        return orm_filters            
+        return orm_filters
 
     def apply_filters(self, request, filters):
         qs = super(CategoryResource, self).apply_filters(request, filters)
@@ -166,9 +166,10 @@ class IssueResource(ModelResource):
                 text = text[0:1000]
             bundle.data['summary'] = strip_tags(text)
         geometries = []
-        for geom in obj.issuegeometry_set.all():
+        for geom in obj.geometries.all():
             d = json.loads(geom.geometry.geojson)
             d['name'] = geom.name
+            d['category'] = geom.type
             geometries.append(d)
         bundle.data['geometries'] = geometries
         return bundle

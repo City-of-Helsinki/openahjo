@@ -67,6 +67,8 @@ class Issue(models.Model):
     category = models.ForeignKey(Category, db_index=True, help_text='Issue category')
     last_modified_time = models.DateTimeField(auto_now=True, null=True)
 
+    geometries = models.ManyToManyField('IssueGeometry')
+
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
             self.slug = slugify(unicode(self.register_id))
@@ -75,11 +77,19 @@ class Issue(models.Model):
         return "%s: %s" % (self.register_id, self.subject)
 
 class IssueGeometry(models.Model):
-    issue = models.ForeignKey(Issue)
-    name = models.CharField(max_length=100)
-    geometry = models.GeometryField()    
+    TYPES = (
+        ('address', 'Address'),
+        ('plan', 'Plan'),
+        ('district', 'District'),
+    )
+    name = models.CharField(max_length=100, db_index=True)
+    type = models.CharField(max_length=20, choices=TYPES, db_index=True)
+    geometry = models.GeometryField()
 
     objects = models.GeoManager()
+
+    class Meta:
+        unique_together = (('name', 'type'),)
 
 class AgendaItem(models.Model):
     PASSED = "PASSED_UNCHANGED"

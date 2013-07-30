@@ -38,16 +38,19 @@ class AhjoGeocoder(object):
             return None
 
         pnt = self.convert_from_gk25(e['coord_n'], e['coord_e'])
-        return {'name': '%s %d' % (e['street'], num), 'geometry': pnt}
+        return {'name': '%s %d' % (e['street'], num), 'geometry': pnt, 'type': 'address'}
 
     def geocode_plan(self, plan_id):
         plan = self.plan_map.get(plan_id)
         if not plan:
             if plan_id not in self.no_match_plans:
-                self.logger.warning("No plan fonud for plan id %s" % plan_id)
+                self.logger.warning("No plan found for plan id %s" % plan_id)
                 self.no_match_plans.append(plan_id)
             return
-        return {'name': 'Kaava %s' % plan_id, 'geometry': plan['geometry']}
+        return {'name': plan_id, 'geometry': plan['geometry'], 'type': 'plan'}
+
+    def geocode_district(self, text):
+        return
 
     def geocode_from_text(self, text):
         if not isinstance(text, unicode):
@@ -74,24 +77,26 @@ class AhjoGeocoder(object):
                 continue
             num = int(m.groups()[0])
 
-            pnt = self.geocode_address(street_name, num)
-            if pnt:
-                geometries[pnt['name']] = pnt
+            geom = self.geocode_address(street_name, num)
+            if geom:
+                geom_id = "%s/%s" % (geom['type'], geom['name'])
+                geometries[geom_id] = geom
 
         m = re.match(r'^(\d{3,5})\.[a-zA-Z]$', text)
         if m:
             geom = self.geocode_plan(m.groups()[0])
             if geom:
-                geometries[geom['name']] = geom
-        
+                geom_id = "%s/%s" % (geom['type'], geom['name'])
+                geometries[geom_id] = geom
+
         return geometries
 
     def geocode_from_text_list(self, text_list):
-        points = {}
+        geometries = {}
         for text in text_list:
-            p = self.geocode_from_text(text)
-            points.update(p)
-        return [pnt for name, pnt in points.iteritems()]
+            g = self.geocode_from_text(text)
+            geometries.update(g)
+        return [geom for geom_id, geom in geometries.iteritems()]
 
     def load_address_database(self, csv_file):
         reader = csv.reader(csv_file, delimiter=',')
