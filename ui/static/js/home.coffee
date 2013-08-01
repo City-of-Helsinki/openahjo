@@ -1,6 +1,8 @@
+pm_list = new PolicymakerList pm_list_json
 
 recent_items = []
-latest_meetings = []
+latest_meetings_list = new MeetingList null, policymaker_list: pm_list
+
 
 format_date = (date_in) ->
     return moment(date_in, 'YYYY-MM-DD').format('L')
@@ -46,11 +48,14 @@ render_recent_items = ->
 
 render_latest_meetings = ->
     $list_el = $(".latest-meetings ul")
-    for item in latest_meetings
+    item_list = []
+    latest_meetings_list.each (meeting) ->
+        item = meeting.toJSON()
         item.date_str = format_date item.date
-        item.view_url = format_view_url 'meeting-details', item.id
+        item.view_url = meeting.get_view_url()
+        item_list.push item
     template = "<li><a href='<%= view_url %>'><%= policymaker_name %> <%= number %>/<%= year %> (<%= date_str %>)</a></li>"
-    render_list_elements $list_el, latest_meetings, template
+    render_list_elements $list_el, item_list, template
 
 params = 
     order_by: '-meeting__date'
@@ -60,11 +65,9 @@ $.getJSON API_PREFIX + 'v1/agenda_item/', params, (data) ->
     recent_items = data.objects
     render_recent_items()
 
-params =
+_.extend latest_meetings_list.filters,
     order_by: '-date'
     limit: 10
     minutes: true
-
-$.getJSON API_PREFIX + 'v1/meeting/', params, (data) ->
-    latest_meetings = data.objects
-    render_latest_meetings()
+latest_meetings_list.on 'reset', render_latest_meetings
+latest_meetings_list.fetch reset: true
