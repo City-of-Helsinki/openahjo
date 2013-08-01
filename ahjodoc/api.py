@@ -1,17 +1,21 @@
 import json
 import urlparse
 import os
+from django.conf.urls.defaults import url
 from django.contrib.gis.geos import Polygon
+from django.core.paginator import Paginator, InvalidPage
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.db.models import Count, Sum
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.exceptions import InvalidFilterError
+from tastypie.exceptions import InvalidFilterError, BadRequest
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
+from tastypie.utils import trailing_slash
 from ahjodoc.models import *
+from haystack.query import SearchQuerySet
 
 CACHE_TIMEOUT = 600
 
@@ -135,6 +139,11 @@ def build_bbox_filter(bbox_val, field_name):
 class IssueResource(ModelResource):
     category = fields.ToOneField(CategoryResource, 'category')
 
+    def prepend_urls(self):
+        return [
+            url(r"^(?P<resource_name>%s)/search%s$" % (self._meta.resource_name, trailing_slash()), self.wrap_view('get_search'), name="api_get_search"),
+        ]
+
     def apply_filters(self, request, applicable_filters):
         ret = super(IssueResource, self).apply_filters(request, applicable_filters)
         if 'issuegeometry__in' in applicable_filters:
@@ -149,10 +158,51 @@ class IssueResource(ModelResource):
             orm_filters['issuegeometry__in'] = geom_list
         return orm_filters
 
+    def get_search(self, request, **kwargs):
+        self.method_check(request, allowed=['get'])
+        self.is_authenticated(request)
+        self.throttle_check(request)
+
+        try:
+            page_count = min(int(request.GET.get('limit', 20)), 500)
+            page_nr = int(request.GET.get('page', 1))
+            if page_count <= 0 or page_nr <= 0:
+                raise ValueError()
+        except ValueError:
+            raise BadRequest("'limit' and 'page' must be positive integers")
+
+        sqs = SearchQuerySet().models(Issue).load_all().auto_query(request.GET.get('q', '')).highlight()
+        paginator = Paginator(sqs, page_count)
+        try:
+            page = paginator.page(page_nr)
+        except InvalidPage:
+            raise Http404("Sorry, no results on that page.")
+
+        objects = []
+
+        for result in page.object_list:
+            bundle = self.build_bundle(obj=result.object, request=request)
+            bundle = self.full_dehydrate(bundle)
+            if 'text' in result.highlighted:
+                bundle.data['search_highlighted'] = result.highlighted['text']
+            objects.append(bundle)
+
+        total_count = sqs.count()
+
+        object_list = {
+            'objects': objects,
+            'meta': {'page': page_nr, 'limit': page_count, 'total_count': total_count}
+        }
+
+        self.log_throttled_access(request)
+        return self.create_response(request, object_list)
+
     def dehydrate(self, bundle):
         obj = bundle.obj
         bundle.data['category_origin_id'] = obj.category.origin_id
         bundle.data['category_name'] = obj.category.name
+        bundle.data['top_category_name'] = obj.category.get_root().name
+
         content_filter = ContentSection.objects.filter(agenda_item__issue=obj).order_by('-agenda_item__meeting__date')
         content = content_filter.filter(type="summary")
         if not content:
@@ -165,6 +215,7 @@ class IssueResource(ModelResource):
             if len(text) > 1000:
                 text = text[0:1000]
             bundle.data['summary'] = strip_tags(text)
+
         geometries = []
         for geom in obj.geometries.all():
             d = json.loads(geom.geometry.geojson)
@@ -173,6 +224,7 @@ class IssueResource(ModelResource):
             geometries.append(d)
         bundle.data['geometries'] = geometries
         return bundle
+
     class Meta:
         queryset = Issue.objects.all().select_related('category')
         resource_name = 'issue'
