@@ -27,8 +27,10 @@
             DEBUG = {{ DEBUG }};
 
             VIEW_URLS = {
+                'issue-list': "{% url 'ui.views.issue_list' %}",
                 'issue-details': "{% url 'ui.views.issue_details' slug='ID' %}",
-                'meeting-details': "{% url 'ui.views.meeting_details' slug='ID'  %}",
+                'policymaker-list': "{% url 'ui.views.policymaker_list' %}",
+                'policymaker-details': "{% url 'ui.views.policymaker_details' slug='ID' %}",
             }
         </script>
 
@@ -51,7 +53,9 @@
         <script src="{% static "js/vendor/leaflet.js" %}"></script>
         <script src="{% static "js/vendor/leaflet-pip.min.js" %}"></script>
         {% endcompress %}
-        <script src="{% static "js/vendor/typeahead.min.js" %}"></script>
+        {% compress js %}
+        <script type="text/coffeescript" src="{% static "js/models.coffee" %}"></script>
+        {% endcompress %}
         {% block extra_head %}{% endblock %}
     </head>
     <body>

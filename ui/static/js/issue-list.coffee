@@ -1,3 +1,79 @@
+class IssueListItemView extends Backbone.View
+    tagName: 'li'
+    className: 'issue'
+    template: _.template $("#issue-list-item-template").html()
+
+    render: ->
+        model = @model.toJSON()
+        model.label_list = []
+        html = $($.trim(@template model))
+        @$el.html html
+        return @
+
+class IssueListView extends Backbone.View
+    el: '#issue-list-items-container'
+
+    initialize: ->
+        @listenTo @collection, 'reset', @render
+        @listenTo @collection, 'add', @render_one
+        $(window).on 'scroll', @handle_scroll
+
+    handle_scroll: (ev) =>
+        if @fetching or not @rendered
+            return
+
+        trigger_point = 100
+        pixels_left = $(document).height() - ($(window).height() + $(window).scrollTop())
+        if pixels_left > trigger_point
+            return
+
+        @fetching = true
+        @collection.fetchNext
+            success: => @fetching = false
+            error: => @fetching = false
+
+    render_one: (issue) ->
+        view = new IssueListItemView model: issue
+        @$list.append view.render().$el
+
+    render: ->
+        @$el.empty()
+        @$list = $("<ul></ul>")
+        @$list.addClass 'issue-list-items'
+        @collection.each (issue) =>
+            @render_one issue
+        @$el.append @$list
+        @rendered = true
+        return @
+
+class CategorySelectView extends Backbone.View
+    el: '#category-filter .category-list'
+
+    make_li: (cat, $parent) ->
+        $li = $("<li><a tabindex='-1' href='#'>#{cat.get 'origin_id'} #{cat.get 'name'}</a></li>")
+        if cat.children and cat.children.length
+            $li.addClass "dropdown-submenu"
+            $list_el = $("<ul class='dropdown-menu'></ul>")
+            $li.append $list_el
+            for kitten in cat.children
+                @make_li kitten, $list_el
+        $parent.append $li
+
+    render: ->
+        @$el.empty()
+        root_list = @collection.filter (cat) -> cat.get('level') == 0
+        _.each root_list, (cat) =>
+            @make_li cat, @$el
+
+cat_list = new CategoryList
+cat_list.reset cat_list_json
+category_select_view = new CategorySelectView collection: cat_list
+category_select_view.render()
+
+issue_list = new IssueList
+issue_list_view = new IssueListView collection: issue_list
+issue_list.fetch reset: true
+
 ###
 map = L.map('map').setView [60.170833, 24.9375], 12
 L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
@@ -140,7 +216,6 @@ $(".category-input input").on 'typeahead:autocompleted', (ev, datum) ->
     refresh_issues()
 
 refresh_issues()
-###
 
 params =
     level__lte: 1
@@ -174,3 +249,4 @@ $.getJSON API_PREFIX + 'v1/category/', params, (data) ->
 
     for cat in top_cats
         $el = make_li cat, $filter_list_el
+###

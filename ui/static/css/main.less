@@ -181,6 +181,7 @@ h1 {
         h2 {
             margin-top: 0px;
             color: @box_text_color;
+            text-transform: uppercase;
             font-weight: 900;
         }
         p {
@@ -226,13 +227,12 @@ h1 {
         li {
             &:first-child {
                 border-top: 1px solid @news_color_2;
-            }                
+            }
             border-bottom: 1px solid @news_color_2;
             a {
                 color: @news_color_2;
             }
         }
-            
     }
     .latest-meetings {
         color: @header_color;
@@ -243,7 +243,7 @@ h1 {
         li {
             &:first-child {
                 border-top: 1px solid @header_color;
-            }                
+            }
             border-bottom: 1px solid @header_color;
             a {
                 color: @header_color;
@@ -314,7 +314,10 @@ h1 {
     }
 }
 
-#issue-list-items {
+ul.issue-list-items {
+    list-style: none;
+    margin-left: 0;
+
     li {
         background-color: @issue_list_item_bg_color;
         overflow: hidden;

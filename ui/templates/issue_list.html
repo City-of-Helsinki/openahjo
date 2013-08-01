@@ -18,7 +18,7 @@
             <div id="category-filter" class="input-prepend">
                 <div class="btn-group">
                     <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu category-list">
                     </ul>
                 </div>
                 <input class="span3" type="text">
@@ -45,8 +45,8 @@
     </div>
 </div></div>
 
-<div class="row"><div class="span10 offset1" id="issue-list-items">
-    <ul class="unstyled">
+<div class="row"><div class="span10 offset1" id="issue-list-items-container">
+    <ul class="issue-list-items">
         <li class="issue">
             <div class="subject">Lausunto kiinteistölautakunnalle osoitteeseen Elimäenkatu 23 suunniteltujen Stadin ammattiopiston tilapäisten lisätilojen vuokrausta koskevasta hankesuunnitelmasta</div>
             <div class="district"><span class="label label-inverse">Malminkartano</span></div>
@@ -61,6 +61,19 @@
         </li>
     </ul>
 </div></div>
+
+<script id="issue-list-item-template" type="text/template">
+    <div class="subject"><%- subject %></div>
+    <div class="labels">
+        <% _.each(label_list, function(label) { %>
+            <span class="label label-<%- label.class %>"><%- label.text %></span>
+        <% }); %>
+    </div>
+</script>
+
+<script type="text/javascript">
+    cat_list_json = {{ cat_list_json|safe }};
+</script>
 
 {% compress js %}
 <script type="text/coffeescript" src="{% static 'js/issue-list.coffee' %}"></script>
