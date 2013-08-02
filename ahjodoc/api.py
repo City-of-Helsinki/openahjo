@@ -237,6 +237,12 @@ class IssueResource(ModelResource):
             d['category'] = geom.type
             geometries.append(d)
         bundle.data['geometries'] = geometries
+
+        districts = []
+        for d in obj.districts.all():
+            districts.append({'name': d.name, 'type': d.type})
+        bundle.data['districts'] = districts
+
         return bundle
 
     class Meta:

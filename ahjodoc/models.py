@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.gis.db import models
 from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
+from munigeo.models import District
 
 class Policymaker(models.Model):
     name = models.CharField(max_length=100, help_text='Name of policymaker')
@@ -68,6 +69,7 @@ class Issue(models.Model):
     last_modified_time = models.DateTimeField(auto_now=True, null=True)
 
     geometries = models.ManyToManyField('IssueGeometry')
+    districts = models.ManyToManyField(District)
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
@@ -119,7 +121,8 @@ class AgendaItem(models.Model):
     index = models.PositiveIntegerField(help_text='Item number on the agenda')
     subject = models.CharField(max_length=500, help_text='One-line description for agenda item')
     from_minutes = models.BooleanField(help_text='Do the contents come from the minutes document?')
-    last_modified_time = models.DateTimeField(db_index=True, help_text='Time of last modification')
+    last_modified_time = models.DateTimeField(db_index=True, auto_now=True, help_text='Time of last modification')
+    origin_last_modified_time = models.DateTimeField(db_index=True, null=True, help_text='Time of last modification in data source')
     resolution = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, null=True, help_text="Type of resolution made")
 
     def get_absolute_url(self):

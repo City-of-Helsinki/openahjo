@@ -144,6 +144,7 @@ INSTALLED_APPS = (
     'mptt',
     'south',
     'haystack',
+    'munigeo',
 
     'ahjodoc',
     'ui',

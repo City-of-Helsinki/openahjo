@@ -10,6 +10,7 @@ from optparse import make_option
 from django.core.management.base import BaseCommand
 from django import db
 from django.conf import settings
+from munigeo.models import District
 
 from ahjodoc.scanner import AhjoScanner
 from ahjodoc.doc import AhjoDocument, ParseError
@@ -17,9 +18,6 @@ from ahjodoc.models import *
 from ahjodoc.geo import AhjoGeocoder
 from ahjodoc.video import get_videos_for_meeting, open_video, get_video_frame
 from ahjodoc.utils import download_file
-
-#parser.add_argument('--config', dest='config', action='store', help='config file location (YAML format)')
-#parser.add_argument()
 
 class Command(BaseCommand):
     help = "Import OpenAHJO documents"
@@ -47,6 +45,8 @@ class Command(BaseCommand):
         for kw in info['keywords']:
             text_list.append(kw)
         geom_list = self.geocoder.geocode_from_text_list(text_list)
+
+        districts = {}
         for g in geom_list:
             args = dict(type=g['type'], name=g['name'])
             try:
@@ -59,6 +59,16 @@ class Command(BaseCommand):
             # Assume geometry doesn't change.
             #igeom.geometry = g['geometry']
             #igeom.save()
+            if igeom.type == 'district':
+                continue
+            # workaround for invalid plan geometry
+            if g['type'] == 'plan' and g['name'] == '12079':
+                continue
+            d_list = District.objects.filter(borders__contains=igeom.geometry)
+            for d in d_list:
+                districts[d.pk] = d
+
+        issue.districts = districts.values()
 
     def store_issue(self, meeting, meeting_doc, info, adoc):
         try:
@@ -84,7 +94,7 @@ class Command(BaseCommand):
         agenda_item.subject = info['subject']
         agenda_item.index = info['number']
         agenda_item.from_minutes = meeting_doc.type == 'minutes'
-        agenda_item.last_modified_time = meeting_doc.last_modified_time
+        agenda_item.origin_last_modified_time = meeting_doc.last_modified_time
         agenda_item.resolution = info.get('resolution')
         agenda_item.save()
 

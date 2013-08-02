@@ -39,7 +39,6 @@ class @IssueSearchList extends Backbone.Tastypie.Collection
                 delete @filters[filter_name]
         else
             @filters[filter_name] = val
-        console.log @filters
 
 class @AgendaItem extends Backbone.Tastypie.Model
 

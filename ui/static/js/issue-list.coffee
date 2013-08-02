@@ -23,7 +23,20 @@ class IssueListItemView extends Backbone.View
                 text = text[0..j-1] + '...'
             model.search_highlighted = text
 
-        model.label_list = []
+        labels = []
+        labels.push
+            text: @model.get 'top_category_name'
+            'class': 'info'
+
+        districts = {}
+        for d in @model.get 'districts'
+            districts[d.name] = d
+        for d of districts
+            labels.push
+                text: d
+                'class': 'inverse'
+
+        model.label_list = labels
         model.view_url = @model.get_view_url()
         html = $($.trim(@template model))
         @$el.html html
@@ -108,6 +121,7 @@ class CategorySelectView extends Backbone.View
         el = ev.currentTarget
         cat_id = $(el).data 'cat-id'
         cat = @collection.findWhere id: cat_id
+        $("#category-filter input").val "#{cat.get 'origin_id'} #{cat.get 'name'}"
         issue_list_view.set_filter 'category', cat.get 'id'
 
     render: ->
