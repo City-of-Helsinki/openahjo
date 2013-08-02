@@ -66,14 +66,14 @@
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_fi.txt" enablePositionIncrements="true" />
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="fi.nationallibrary.ndl.solrvoikko.VoikkoFilterFactory" expandCompounds="true"/>
+        <filter class="fi.nationallibrary.ndl.solrvoikko.VoikkoFilterFactory" expandCompounds="false"/>
       </analyzer>
       <analyzer type="query">
         <tokenizer class="solr.StandardTokenizerFactory"/>
         <filter class="solr.StopFilterFactory" ignoreCase="true" words="lang/stopwords_fi.txt" enablePositionIncrements="true" />
         <!-- <filter class="solr.SynonymFilterFactory" synonyms="synonyms.txt" ignoreCase="true" expand="true"/> -->
         <filter class="solr.LowerCaseFilterFactory"/>
-        <filter class="fi.nationallibrary.ndl.solrvoikko.VoikkoFilterFactory" expandCompounds="true"/>
+        <filter class="fi.nationallibrary.ndl.solrvoikko.VoikkoFilterFactory" expandCompounds="false"/>
       </analyzer>
     </fieldType>
 

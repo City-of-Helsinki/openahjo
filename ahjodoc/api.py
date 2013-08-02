@@ -7,6 +7,7 @@ from django.core.paginator import Paginator, InvalidPage
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.db.models import Count, Sum
+from django.http import Http404
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.exceptions import InvalidFilterError, BadRequest
@@ -171,7 +172,20 @@ class IssueResource(ModelResource):
         except ValueError:
             raise BadRequest("'limit' and 'page' must be positive integers")
 
-        sqs = SearchQuerySet().models(Issue).load_all().auto_query(request.GET.get('q', '')).highlight()
+        sqs = SearchQuerySet().models(Issue).load_all()
+        query = request.GET.get('q', '').strip()
+        if query:
+            sqs = sqs.auto_query(query).highlight()
+
+        category = request.GET.get('category', '').strip()
+        if category:
+            try:
+                cat_nr = int(category)
+            except ValueError:
+                raise BadRequest("'category' must be a positive integer")
+            # Search in all ancestor categories, too
+            sqs = sqs.filter(categories=cat_nr)
+
         paginator = Paginator(sqs, page_count)
         try:
             page = paginator.page(page_nr)
@@ -183,8 +197,8 @@ class IssueResource(ModelResource):
         for result in page.object_list:
             bundle = self.build_bundle(obj=result.object, request=request)
             bundle = self.full_dehydrate(bundle)
-            if 'text' in result.highlighted:
-                bundle.data['search_highlighted'] = result.highlighted['text']
+            if result.highlighted and 'text' in result.highlighted:
+                bundle.data['search_highlighted'] = result.highlighted['text'][0]
             objects.append(bundle)
 
         total_count = sqs.count()

@@ -5,7 +5,26 @@ class IssueListItemView extends Backbone.View
 
     render: ->
         model = @model.toJSON()
+        text = model.search_highlighted
+        if text
+            cut_amount = 200
+            i = text.indexOf '<em'
+            if i > cut_amount
+                j = i - cut_amount
+                # split on word boundaries
+                while j > 0 and /[^\s]/.test text[j]
+                    j--
+                text = '... ' + text[j+1..]
+            i = text.indexOf '/em>'
+            if text.length - i > cut_amount
+                j = i + cut_amount
+                while j < text.length and /[^\s]/.test text[j]
+                    j++
+                text = text[0..j-1] + '...'
+            model.search_highlighted = text
+
         model.label_list = []
+        model.view_url = @model.get_view_url()
         html = $($.trim(@template model))
         @$el.html html
         return @
@@ -22,13 +41,21 @@ class IssueListView extends Backbone.View
         if @fetching or not @rendered
             return
 
+        if @collection.length >= @collection.meta.total_count
+            return
+
         trigger_point = 100
         pixels_left = $(document).height() - ($(window).height() + $(window).scrollTop())
         if pixels_left > trigger_point
             return
 
         @fetching = true
-        @collection.fetchNext
+        @page++
+        @collection.fetch
+            data:
+                page: @page
+            add: true
+            remove: false
             success: => @fetching = false
             error: => @fetching = false
 
@@ -36,7 +63,22 @@ class IssueListView extends Backbone.View
         view = new IssueListItemView model: issue
         @$list.append view.render().$el
 
+    set_filter: (type, query) ->
+        @rendered = false
+        @collection.set_filter type, query
+        @collection.fetch reset: true
+
+    set_filters: (filters) ->
+        @rendered = false
+        for type of filters
+            @collection.set_filter type, filters[type]
+        @collection.fetch reset: true
+
     render: ->
+        @page = 1
+        res_count = @collection.meta.total_count
+        $("#result-count .count").html res_count
+        $("#result-count").show()
         @$el.empty()
         @$list = $("<ul></ul>")
         @$list.addClass 'issue-list-items'
@@ -48,9 +90,11 @@ class IssueListView extends Backbone.View
 
 class CategorySelectView extends Backbone.View
     el: '#category-filter .category-list'
+    events:
+        'click li a': 'select_category'
 
     make_li: (cat, $parent) ->
-        $li = $("<li><a tabindex='-1' href='#'>#{cat.get 'origin_id'} #{cat.get 'name'}</a></li>")
+        $li = $("<li><a tabindex='-1' data-cat-id='#{cat.get 'id'}' href='#'>#{cat.get 'origin_id'} #{cat.get 'name'}</a></li>")
         if cat.children and cat.children.length
             $li.addClass "dropdown-submenu"
             $list_el = $("<ul class='dropdown-menu'></ul>")
@@ -58,6 +102,13 @@ class CategorySelectView extends Backbone.View
             for kitten in cat.children
                 @make_li kitten, $list_el
         $parent.append $li
+
+    select_category: (ev) ->
+        ev.preventDefault()
+        el = ev.currentTarget
+        cat_id = $(el).data 'cat-id'
+        cat = @collection.findWhere id: cat_id
+        issue_list_view.set_filter 'category', cat.get 'id'
 
     render: ->
         @$el.empty()
@@ -70,9 +121,24 @@ cat_list.reset cat_list_json
 category_select_view = new CategorySelectView collection: cat_list
 category_select_view.render()
 
-issue_list = new IssueList
+issue_list = new IssueSearchList
 issue_list_view = new IssueListView collection: issue_list
-issue_list.fetch reset: true
+
+filters = {}
+text_filter = $("#text-filter").val()
+if text_filter
+    filters.text = text_filter
+
+issue_list_view.set_filters filters
+
+$("#text-filter").change (ev) ->
+    q = $.trim $(@).val()
+    if q
+        issue_list_view.set_filter 'text', q
+    else
+        issue_list_view.set_filter 'text', null
+
+
 
 ###
 map = L.map('map').setView [60.170833, 24.9375], 12

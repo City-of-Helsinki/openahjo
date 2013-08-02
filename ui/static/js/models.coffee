@@ -16,10 +16,30 @@ class @CategoryList extends Backbone.Tastypie.Collection
         return @filter (m) -> return m.get('parent') == parent.id
 
 class @Issue extends Backbone.Tastypie.Model
+    get_view_url: ->
+        return VIEW_URLS['issue-details'].replace 'ID', @get 'slug'
 
 class @IssueList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/issue/'
     model: Issue
+
+class @IssueSearchList extends Backbone.Tastypie.Collection
+    urlRoot: API_PREFIX + 'v1/issue/search/'
+    model: Issue
+
+    set_filter: (type, val) ->
+        if type == 'text'
+            filter_name = 'q'
+        else if type in ['category']
+            filter_name = type
+        else
+            throw "Unknown filter type: #{type}"
+        if not val
+            if filter_name of @filters
+                delete @filters[filter_name]
+        else
+            @filters[filter_name] = val
+        console.log @filters
 
 class @AgendaItem extends Backbone.Tastypie.Model
 

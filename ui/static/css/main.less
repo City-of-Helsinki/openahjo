@@ -308,6 +308,7 @@ h1 {
         font-weight: 700;
         font-size: 24px;
         margin-top: 10px;
+        display: none;
     }
     .btn-toolbar {
         margin: 0;
@@ -319,12 +320,18 @@ ul.issue-list-items {
     margin-left: 0;
 
     li {
+        a:hover {
+            text-decoration: none;
+        }
         background-color: @issue_list_item_bg_color;
         overflow: hidden;
         border: 1px solid @border_color;
         .border-radius(3px);
         padding: 6px 15px 6px 15px;
         margin-bottom: 10px;
+        header {
+            .clearfix();
+        }
         .subject {
             font-weight: 600;
             color: @issue_list_item_text_color;
@@ -332,13 +339,18 @@ ul.issue-list-items {
             width: 500px;
             margin-right: 20px
         }
-        .district {
-            width: 110px;
+        .labels {
+            width: 220px;
             float: left;
         }
-        .category {
-            width: 110px;
-            float: left;
+        .content-excerpt {
+            font-size: 80%;
+            display: block;
+            margin-bottom: 0px;
+            color: #555;
+            em {
+                color: @issue_list_item_text_color;
+            }
         }
     }
 }

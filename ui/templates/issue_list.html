@@ -36,7 +36,7 @@
 </div>
 
 <div class="row"><div class="span10 offset1" id="issue-list-results">
-    <header id="result-count">Löytyi <span class="count">123</span> kpl</header>
+    <header id="result-count">Löytyi <span class="count"></span> kpl</header>
     <div class="btn-toolbar pull-right">
         <div class="btn-group">
             <button class="btn"><i class="icon-list"></i> Lista</button>
@@ -46,29 +46,22 @@
 </div></div>
 
 <div class="row"><div class="span10 offset1" id="issue-list-items-container">
-    <ul class="issue-list-items">
-        <li class="issue">
-            <div class="subject">Lausunto kiinteistölautakunnalle osoitteeseen Elimäenkatu 23 suunniteltujen Stadin ammattiopiston tilapäisten lisätilojen vuokrausta koskevasta hankesuunnitelmasta</div>
-            <div class="district"><span class="label label-inverse">Malminkartano</span></div>
-            <div class="category"><span class="label label-info">Kansainvälinen toiminta ja maahanmuuttopolitiikka</span></div>
-            <div style="clear: both;"></div>
-        </li>
-        <li class="issue">
-            <div class="subject">Lausunto kiinteistölautakunnalle osoitteeseen Elimäenkatu 23 suunniteltujen Stadin ammattiopiston tilapäisten lisätilojen vuokrausta koskevasta hankesuunnitelmasta</div>
-            <div class="district"><span class="label label-inverse">Malminkartano</span><span class="label label-inverse">Kulosaari</span></div>
-            <div class="category"><span class="label label-info">Kansainvälinen toiminta ja maahanmuuttopolitiikka</span></div>
-            <div style="clear: both;"></div>
-        </li>
-    </ul>
 </div></div>
 
 <script id="issue-list-item-template" type="text/template">
-    <div class="subject"><%- subject %></div>
-    <div class="labels">
-        <% _.each(label_list, function(label) { %>
-            <span class="label label-<%- label.class %>"><%- label.text %></span>
-        <% }); %>
-    </div>
+    <a href="<%= view_url %>">
+    <header>
+        <div class="subject"><%- subject %></div>
+        <div class="labels">
+            <% _.each(label_list, function(label) { %>
+                <span class="label label-<%- label.class %>"><%- label.text %></span>
+            <% }); %>
+        </div>
+    </header>
+    <% if (typeof search_highlighted != 'undefined') { %>
+    <p class="content-excerpt"><%= search_highlighted %></p>
+    <% } %>
+    </a>
 </script>
 
 <script type="text/javascript">
