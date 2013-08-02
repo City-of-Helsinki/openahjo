@@ -22,8 +22,9 @@ def clean_text(text):
 class AhjoDocument(object):
     ATTACHMENT_EXTS = ('pdf', 'xls', 'ppt', 'doc', 'docx')
 
-    def __init__(self, verbosity=1):
+    def __init__(self, verbosity=1, options={}):
         self.verbosity = verbosity
+        self.options = options
         self.logger = logging.getLogger(__name__)
         pass
 
@@ -307,8 +308,9 @@ class AhjoDocument(object):
             os.makedirs(storage_dir)
         f_path = os.path.join(storage_dir, f_name)
         if os.path.exists(f_path):
-            if os.path.getsize(f_path) != zip_info.file_size:
-                raise ParseError("Size mismatch with attachment '%s': %d vs. %d" % (f_name, os.path.getsize(f_path), zip_info.file_size))
+            if not self.options.get('ignore-attachment-size', False):
+                if os.path.getsize(f_path) != zip_info.file_size:
+                    raise ParseError("Size mismatch with attachment '%s': %d vs. %d" % (f_name, os.path.getsize(f_path), zip_info.file_size))
             self.logger.info("Skipping existing attachment '%s'" % f_name)
             return
         self.logger.info("Extracting attachment '%s' to '%s'" % (att['name'], f_name))

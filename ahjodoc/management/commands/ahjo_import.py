@@ -32,6 +32,7 @@ class Command(BaseCommand):
         make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
         make_option('--no-videos', dest='no_videos', action='store_true', help='do not import meeting videos'),
         make_option('--force-policymakers', dest='force_policymakers', action='store_true', help='force importing of policymakers'),
+        make_option('--ignore-attachment-size', dest='ignore-attachment-size', action='store_true', help='disable attachment size checks')
     )
 
     def __init__(self):
@@ -159,7 +160,7 @@ class Command(BaseCommand):
         doc.meeting_nr = info['meeting_nr']
         doc.origin_url = info['url']
 
-        adoc = AhjoDocument(verbosity=self.verbosity)
+        adoc = AhjoDocument(verbosity=self.verbosity, options=self.options)
         zipf = self.scanner.download_document(info)
         try:
             adoc.import_from_zip(zipf)
