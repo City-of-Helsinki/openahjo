@@ -3,15 +3,15 @@ VIEW_BASE_URL = API_PREFIX + 'policymaker/'
 
 PM_VIEW_INFO =
     'Kslk':
-        hyphen_names: ['Kaupunki-', 'suunnittelu-', 'lautakunta']
+        hyphen_names: ['Kaupunki&shy;suunnittelu&shy;lautakunta']
     'Sotelk':
-        hyphen_names: ['Sosiaali-', 'ja terveys-', 'lautakunta']
+        hyphen_names: ['Sosiaali- ja terveys&shy;lautakunta']
     'Tplk':
-        hyphen_names: ['Teknisen', 'palvelun', 'lautakunta']
+        hyphen_names: ['Teknisen palvelun lautakunta']
     'Vakalk':
-        hyphen_names: ['Varhais-', 'kasvatus-', 'lautakunta']
+        hyphen_names: ['Varhais&shy;kasvatus&shy;lautakunta']
     'Kklk':
-        hyphen_names: ['Kulttuuri- ja', 'kirjasto-', 'lautakunta']
+        hyphen_names: ['Kulttuuri- ja kirjasto&shy;lautakunta']
 
 class PolicymakerListNavView extends Backbone.View
     el: '.policymaker-nav'
@@ -71,7 +71,7 @@ class PolicymakerListItemView extends Backbone.View
         if abbrev of PM_VIEW_INFO
             vi = PM_VIEW_INFO[abbrev]
             if 'hyphen_names' of vi
-                return vi.hyphen_names.join('<br/>')
+                return vi.hyphen_names
         lk_idx = name.indexOf 'lautakunta'
         if lk_idx >= 0
             prev_char = name[lk_idx-1]
@@ -80,7 +80,7 @@ class PolicymakerListItemView extends Backbone.View
             else
                 hyphen = ''
 
-            name = name[0..lk_idx-1] + hyphen + '<br/>' + name[lk_idx..]
+            name = name[0..lk_idx-1] + '&shy;' + name[lk_idx..]
         return name
     render: ->
         model = @model.toJSON()

@@ -271,7 +271,7 @@ class IssueGeometryResource(ModelResource):
 class AgendaItemResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
     issue = fields.ToOneField(IssueResource, 'issue', full=True)
-    attachments = fields.ToManyField('ahjodoc.api.AttachmentResource', 'attachment_set', full_list=False, full_detail=True, null=True)
+    attachments = fields.ToManyField('ahjodoc.api.AttachmentResource', 'attachment_set', full=True, null=True)
 
     def dehydrate(self, bundle):
         obj = bundle.obj
@@ -285,7 +285,7 @@ class AgendaItemResource(ModelResource):
         return bundle
 
     class Meta:
-        queryset = AgendaItem.objects.all().select_related('issue').select_related('category')
+        queryset = AgendaItem.objects.all().select_related('issue').select_related('category').select_related('attachments')
         resource_name = 'agenda_item'
         filtering = {
             'meeting': ['exact', 'in'],
