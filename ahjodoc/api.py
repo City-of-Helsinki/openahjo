@@ -17,6 +17,7 @@ from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from tastypie.utils import trailing_slash
 from ahjodoc.models import *
 from haystack.query import SearchQuerySet
+from haystack.utils.geo import Point as HaystackPoint
 
 CACHE_TIMEOUT = 600
 
@@ -126,7 +127,7 @@ class MeetingDocumentResource(ModelResource):
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
-def build_bbox_filter(bbox_val, field_name):
+def poly_from_bbox(bbox_val):
     points = bbox_val.split(',')
     if len(points) != 4:
         raise InvalidFilterError("bbox must be in format 'left,bottom,right,top'")
@@ -135,6 +136,10 @@ def build_bbox_filter(bbox_val, field_name):
     except ValueError:
         raise InvalidFilterError("bbox values must be floating point")
     poly = Polygon.from_bbox(points)
+    return poly
+
+def build_bbox_filter(bbox_val, field_name):
+    poly = poly_from_bbox(bbox_val)
     return {"%s__within" % field_name: poly}
 
 class IssueResource(ModelResource):
@@ -185,6 +190,18 @@ class IssueResource(ModelResource):
                 raise BadRequest("'category' must be a positive integer")
             # Search in all ancestor categories, too
             sqs = sqs.filter(categories=cat_nr)
+
+        district = request.GET.get('district', '').strip()
+        if district:
+            sqs = sqs.filter(districts=district)
+
+        bbox = request.GET.get('bbox', '').strip()
+        if bbox:
+            poly = poly_from_bbox(bbox)
+            e = poly.extent
+            bottom_left = HaystackPoint(e[0], e[1])
+            top_right = HaystackPoint(e[2], e[3])
+            sqs = sqs.within('location', bottom_left, top_right)
 
         paginator = Paginator(sqs, page_count)
         try:

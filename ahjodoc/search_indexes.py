@@ -16,6 +16,7 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
     category = indexes.IntegerField(faceted=True)
     categories = MultiValueIntegerField(faceted=True)
     districts = indexes.MultiValueField(faceted=True)
+    location = indexes.LocationField()
 
     def get_updated_field(self):
         return 'last_modified_time'
@@ -29,6 +30,12 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_districts(self, obj):
         districts = obj.districts.all()
         return [x.name for x in districts]
+
+    def prepare_location(self, obj):
+        for g in obj.geometries.all():
+            if g.geometry.geom_type == 'Point':
+                return "%f,%f" % (g.geometry.y, g.geometry.x)
+        return None
 
     def get_model(self):
         return Issue

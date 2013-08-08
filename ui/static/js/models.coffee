@@ -30,7 +30,7 @@ class @IssueSearchList extends Backbone.Tastypie.Collection
     set_filter: (type, val) ->
         if type == 'text'
             filter_name = 'q'
-        else if type in ['category']
+        else if type in ['category', 'bbox']
             filter_name = type
         else
             throw "Unknown filter type: #{type}"

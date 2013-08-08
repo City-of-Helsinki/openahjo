@@ -42,13 +42,30 @@ class IssueListItemView extends Backbone.View
         @$el.html html
         return @
 
+class IssueListCountView extends Backbone.View
+    el: "#result-count"
+
+    initialize: ->
+        @listenTo @collection, 'reset', @render
+
+    render: ->
+        res_count = @collection.meta.total_count
+        $("#result-count .count").html res_count
+        $("#result-count").show()
+
 class IssueListView extends Backbone.View
-    el: '#issue-list-items-container'
+    tagName: 'ul'
+    className: 'issue-list-items'
 
     initialize: ->
         @listenTo @collection, 'reset', @render
         @listenTo @collection, 'add', @render_one
         $(window).on 'scroll', @handle_scroll
+        @issue_views = []
+
+    remove: ->
+        super()
+        $(window).off 'scroll', @handle_scroll
 
     handle_scroll: (ev) =>
         if @fetching or not @rendered
@@ -74,37 +91,79 @@ class IssueListView extends Backbone.View
 
     render_one: (issue) ->
         view = new IssueListItemView model: issue
-        @$list.append view.render().$el
-
-    set_filter: (type, query) ->
-        @rendered = false
-        @collection.set_filter type, query
-        @collection.fetch reset: true
-
-    set_filters: (filters) ->
-        @rendered = false
-        for type of filters
-            @collection.set_filter type, filters[type]
-        @collection.fetch reset: true
+        @issue_views.push view
+        @$el.append view.render().$el
 
     render: ->
+        for view in @issue_views
+            view.remove()
+        @issue_views = []
         @page = 1
-        res_count = @collection.meta.total_count
-        $("#result-count .count").html res_count
-        $("#result-count").show()
-        @$el.empty()
-        @$list = $("<ul></ul>")
-        @$list.addClass 'issue-list-items'
         @collection.each (issue) =>
             @render_one issue
-        @$el.append @$list
-        @rendered = true
+        @list_rendered = true
         return @
 
+    disable: ->
+        @disabled = true
+
+class IssueMapView extends Backbone.View
+    tagName: 'div'
+    className: 'map'
+
+    initialize: (opts) ->
+        @geometries = []
+        @listenTo @collection, 'reset', @render
+        @listenTo @collection, 'add', @render_one
+
+        opts.parent_el.append @el
+
+        @map = L.map(@el).setView [60.170833, 24.9375], 12
+        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+            maxZoom: 18
+            key: 'BC9A493B41014CAABB98F0471D759707'
+            style: 998
+        ).addTo @map
+
+        @map.on 'moveend', @map_move
+
+    render_one: (issue) =>
+        for geom_json in issue.get 'geometries'
+            if geom_json.type != 'Point'
+                continue
+            geom = L.geoJson geom_json
+            geom.bindPopup "<b>#{geom_json.name}</b><br><a href='#{issue.get_view_url()}'>#{issue.get 'subject'}</a>"
+            geom.addTo @map
+            geom_json.geometry = geom
+            @geometries.push geom
+
+    remove_one: (issue) =>
+        for geom_json in issue.get 'geometries'
+            if not geom_json.geometry
+                continue
+            @map.removeLayer geom_json.geometry
+            delete geom_json.geometry
+
+    get_map_bounds: ->
+        return @map.getBounds().toBBoxString()
+    map_move: (ev) =>
+        @trigger "map-move", @get_map_bounds()
+
+    render: ->
+        for geom in @geometries
+            @map.removeLayer geom
+        @geometries = []
+        @collection.each @render_one
+
 class CategorySelectView extends Backbone.View
-    el: '#category-filter .category-list'
+    el: '#category-filter'
     events:
-        'click li a': 'select_category'
+        'click .category-list li a': 'select_category'
+
+    initialize: (opts) ->
+        @listenTo @collection, 'reset', @render
+        @parent_view = opts.parent_view
 
     make_li: (cat, $parent) ->
         $li = $("<li><a tabindex='-1' data-cat-id='#{cat.get 'id'}' href='#'>#{cat.get 'origin_id'} #{cat.get 'name'}</a></li>")
@@ -116,60 +175,117 @@ class CategorySelectView extends Backbone.View
                 @make_li kitten, $list_el
         $parent.append $li
 
-    select_category: (ev) ->
+    select_category: (ev) =>
         ev.preventDefault()
         el = ev.currentTarget
         cat_id = $(el).data 'cat-id'
         cat = @collection.findWhere id: cat_id
         $("#category-filter input").val "#{cat.get 'origin_id'} #{cat.get 'name'}"
-        issue_list_view.set_filter 'category', cat.get 'id'
+        @parent_view.set_filter 'category', cat.get 'id'
 
     render: ->
-        @$el.empty()
+        $list = @$el.find '.category-list'
+        $list.empty()
         root_list = @collection.filter (cat) -> cat.get('level') == 0
         _.each root_list, (cat) =>
-            @make_li cat, @$el
-
-cat_list = new CategoryList
-cat_list.reset cat_list_json
-category_select_view = new CategorySelectView collection: cat_list
-category_select_view.render()
-
-issue_list = new IssueSearchList
-issue_list_view = new IssueListView collection: issue_list
-
-filters = {}
-text_filter = $("#text-filter").val()
-if text_filter
-    filters.text = text_filter
-
-issue_list_view.set_filters filters
-
-$("#text-filter").change (ev) ->
-    q = $.trim $(@).val()
-    if q
-        issue_list_view.set_filter 'text', q
-    else
-        issue_list_view.set_filter 'text', null
+            @make_li cat, $list
 
 
+class IssueSearchView extends Backbone.View
+    el: "#content-container"
+
+    initialize: (opts) ->
+        @cat_list = new CategoryList opts.cat_models
+        @cat_select_view = new CategorySelectView
+            collection: @cat_list
+            parent_view: @
+        @cat_select_view.render()
+
+        if not @issue_list
+            @issue_list = new IssueSearchList
+
+        @count_view = new IssueListCountView collection: @issue_list
+
+        @$el.find("#text-filter").change @handle_text_filter
+
+        $(".list-tab-selector .select-list").click @select_list
+        $(".list-tab-selector .select-map").click @select_map
+
+    handle_text_filter: (ev) =>
+        el = $(ev.target)
+        q = $.trim el.val()
+        if q
+            @set_filter 'text', q
+        else
+            @set_filter 'text', null
+
+    select_list: ->
+        router.navigate "/", trigger: true
+    select_map: ->
+        router.navigate "map/", trigger: true
+
+    select: (view_type) ->
+        if view_type == @view_type
+            return
+        if @result_view
+            @result_view.remove()
+
+        filters = {}
+
+        parent_el = @$el.find('#issue-list-items-container')
+        if view_type == 'list'
+            @result_view = new IssueListView collection: @issue_list
+            @$el.find(".list-tab-selector .select-list").addClass "active"
+            @$el.find(".list-tab-selector .select-map").removeClass "active"
+            @view_type = 'list'
+            parent_el.append @result_view.el
+            filters.bbox = null
+        else
+            @result_view = new IssueMapView collection: @issue_list, parent_el: parent_el
+            @$el.find(".list-tab-selector .select-map").addClass "active"
+            @$el.find(".list-tab-selector .select-list").removeClass "active"
+            @view_type = 'map'
+            @listenTo @result_view, 'map-move', @map_move
+            filters.bbox = @result_view.get_map_bounds()
+
+        text_filter = $("#text-filter").val()
+        if text_filter
+            filters.text = text_filter
+        else
+            filters.text = null
+
+        @set_filters filters
+
+    map_move: (args) ->
+        @set_filter 'bbox', args
+
+    set_filter: (type, query) ->
+        @issue_list.set_filter type, query
+        @issue_list.fetch reset: true
+
+    set_filters: (filters) ->
+        for type of filters
+            @issue_list.set_filter type, filters[type]
+        @issue_list.fetch reset: true
+
+class IssueRouter extends Backbone.Router
+    routes:
+        "": "issue_list"
+        "map/": "issue_map"
+
+    issue_list: ->
+        search_view.select 'list'
+
+    issue_map: ->
+        search_view.select 'map'
+
+
+search_view = new IssueSearchView cat_models: cat_list_json
+
+router = new IssueRouter
+Backbone.history.start {pushState: true, root: "/issue/"}
 
 ###
-map = L.map('map').setView [60.170833, 24.9375], 12
-L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
-    attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-    maxZoom: 18
-    key: 'BC9A493B41014CAABB98F0471D759707'
-    style: 998
-).addTo(map);
-window.my_map = map
-
-active_borders = null
-active_category = null
-
-issues = []
-issue_template = Handlebars.compile $("#issue-list-template").html()
-
 geometries = []
 refresh_issues = ->
     params = {limit: 100}
@@ -254,8 +370,6 @@ $(".district-input .close").on 'click', (ev) ->
     $(".district-input input").val ''
     ev.preventDefault()
 
-map.on 'moveend', (ev) ->
-    refresh_issues()
 
 input_category_list = null
 
