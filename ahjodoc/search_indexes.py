@@ -37,6 +37,21 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
                 return "%f,%f" % (g.geometry.y, g.geometry.x)
         return None
 
+    def prepare_text(self, obj):
+        field = self.fields['text']
+        ret = field.prepare(obj)
+        lines = ret.split('\n')
+        # remove duplicate lines
+        seen = set()
+        result = []
+        dupes = False
+        for line in lines:
+            if line not in seen:
+                result.append(line)
+                seen.add(line)
+        ret = '\n'.join(result)
+        return ret
+
     def get_model(self):
         return Issue
 
