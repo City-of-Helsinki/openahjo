@@ -190,6 +190,17 @@ class CategorySelectView extends Backbone.View
         _.each root_list, (cat) =>
             @make_li cat, $list
 
+class PolicymakerSelectView extends Backbone.View
+    el: "#policymaker-filter"
+    render: ->
+        @$el.empty()
+        @collection.each (pm) =>
+            opt_el = $("<option value='#{pm.get 'id'}'>#{pm.get 'name'}</option>")
+            @$el.append opt_el
+        @$el.chosen(CHOSEN_DEFAULTS).change @select_category
+
+    select_category: (ev) =>
+        console.log ev
 
 class IssueSearchView extends Backbone.View
     el: "#content-container"
@@ -200,6 +211,11 @@ class IssueSearchView extends Backbone.View
             collection: @cat_list
             parent_view: @
         @cat_select_view.render()
+
+        @pm_list = new PolicymakerList opts.pm_models
+        @pm_select_view = new PolicymakerSelectView
+            collection: @pm_list
+        @pm_select_view.render()
 
         if not @issue_list
             @issue_list = new IssueSearchList
@@ -280,7 +296,9 @@ class IssueRouter extends Backbone.Router
         search_view.select 'map'
 
 
-search_view = new IssueSearchView cat_models: cat_list_json
+search_view = new IssueSearchView
+    cat_models: cat_list_json
+    pm_models: pm_list_json
 
 router = new IssueRouter
 Backbone.history.start {pushState: true, root: "/issue/"}

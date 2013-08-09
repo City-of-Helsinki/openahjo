@@ -3,6 +3,10 @@ from django.conf import settings
 from ahjodoc.models import *
 from ahjodoc.api import *
 
+# Cache the JSON encodings for some rarely changing data here.
+policymaker_json = None
+category_json = None
+
 def get_js_paths():
     prefix = getattr(settings, 'URL_PREFIX', '')
     debug = "true" if settings.DEBUG else "false"
@@ -17,6 +21,10 @@ def render_view(request, template, args={}):
     return render_to_response(template, args)
 
 def get_policymakers(request):
+    global policymaker_json
+
+    if policymaker_json:
+        return policymaker_json
     res = PolicymakerResource()
     req_bundle = res.build_bundle(request=request)
     pm_list = Policymaker.objects.filter(abbreviation__isnull=False)
@@ -25,13 +33,14 @@ def get_policymakers(request):
         bundle = res.build_bundle(obj=obj, request=request)
         bundles.append(res.full_dehydrate(bundle, for_list=True))
     json = res.serialize(None, bundles, "application/json")
+    policymaker_json = json
     return json
 
-def home_view(request):
-    args = {'pm_list_json': get_policymakers(request)}
-    return render_view(request, 'home.html', args)
+def get_categories(request):
+    global category_json
 
-def issue_view(request, template, args={}):
+    if category_json:
+        return category_json
     res = CategoryResource()
     req_bundle = res.build_bundle(request=request)
     cat_list = Category.objects.filter(level__lte=1)
@@ -40,12 +49,22 @@ def issue_view(request, template, args={}):
         bundle = res.build_bundle(obj=obj, request=request)
         bundles.append(res.full_dehydrate(bundle, for_list=True))
     json = res.serialize(None, bundles, "application/json")
+    category_json = json
+    return json
 
-    args['cat_list_json'] = json
+def home_view(request):
+    args = {'pm_list_json': get_policymakers(request)}
+    return render_view(request, 'home.html', args)
+
+def issue_view(request, template, args={}):
+    args['cat_list_json'] = get_categories(request)
+    args['pm_list_json'] = get_policymakers(request)
 
     return render_view(request, template, args)
 
 def issue_list(request):
+    return issue_view(request, 'issue_list.html')
+def issue_list_map(request):
     return issue_view(request, 'issue_list.html')
 
 def issue_details(request, slug):

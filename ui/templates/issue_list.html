@@ -15,6 +15,13 @@
                     <input type="text" id="text-filter" placeholder="Syötä teksti...">
                 </div>
             </div>
+            <div class="control-group">
+                <label class="span2" style="margin-left: 0" for="text-filter">Päättäjät</label>
+                <div class="controls">
+                    <select id="policymaker-filter" class="input-xxlarge" data-placeholder="Syötä päättäjä..." multiple>
+                    </select>
+                </div>
+            </div>
             <div id="category-filter" class="input-prepend">
                 <div class="btn-group">
                     <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
@@ -66,7 +73,10 @@
 
 <script type="text/javascript">
     cat_list_json = {{ cat_list_json|safe }};
+    pm_list_json = {{ pm_list_json|safe }};
 </script>
+
+{% include "_map_include.html" %}
 
 {% compress js %}
 <script type="text/coffeescript" src="{% static 'js/issue-list.coffee' %}"></script>
