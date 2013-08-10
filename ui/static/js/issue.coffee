@@ -1,54 +1,3 @@
-DATE_FORMAT = 'D.M.YYYY'
-TRANSLATIONS = {
-    "draft resolution": "Päätösesitys"
-    "presenter": "Esittelijä"
-    "resolution": "Päätös"
-    "summary": "Yhteenveto"
-}
-RESOLUTIONS_EN =
-    'PASSED': 'Passed as drafted'
-    'PASSED_VOTED': 'Passed after a vote'
-    'PASSED_REVISED': 'Passed revised by presenter'
-    'PASSED_MODIFIED': 'Passed modified'
-    'REJECTED': 'Rejected'
-    'NOTED': 'Noted as informational'
-    'RETURNED': 'Returned to preparation'
-    'REMOVED': 'Removed from agenda'
-    'TABLED': 'Tabled'
-    'ELECTION': 'Election'
-RESOLUTIONS_FI =
-    'PASSED': 'Ehdotuksen mukaan'
-    'PASSED_VOTED': 'Ehdotuksen mukaan äänestyksin'
-    'PASSED_REVISED': 'Esittelijän muutetun ehdotuksen mukaan'
-    'PASSED_MODIFIED': 'Esittelijän ehdotuksesta poiketen'
-    'REJECTED': 'Hylättiin'
-    'NOTED': 'Merkittiin tiedoksi'
-    'RETURNED': 'Palautettiin'
-    'REMOVED': 'Poistettiin'
-    'TABLED': 'Pöydättiin'
-    'ELECTION': 'Vaali'
-RESOLUTIONS_ICONS =
-    'PASSED': 'ok'
-    'PASSED_VOTED': 'hand-up'
-    'PASSED_REVISED': 'ok-circle'
-    'PASSED_MODIFIED': 'ok-sign'
-    'REJECTED': 'trash'
-    'NOTED': 'exclamation-sign'
-    'RETURNED': 'repeat'
-    'REMOVED': 'remove'
-    'TABLED': 'inbox'
-    'ELECTION': 'group'
-
-active_agenda_item = null
-active_issue = null
-agenda_item_list = []
-
-item_template = _.template $("#item-template").html()
-meeting_template = _.template $("#meeting-template").html()
-
-map = null
-map_markers = []
-
 render_item = (agenda_item) ->
     agenda_item.meeting_template = meeting_template
     item_html = item_template agenda_item
@@ -100,10 +49,6 @@ format_agenda_item = (ai) ->
         ai.resolution_str = RESOLUTIONS_FI[ai.resolution]
         ai.resolution_icon = RESOLUTIONS_ICONS[ai.resolution]
     ai.has_non_public_attachments = false
-    for att in ai.attachments
-        if not att.public
-            ai.has_non_public_attachments = true
-            break
     for c in ai.content
         c.type_str = TRANSLATIONS[c.type]
 

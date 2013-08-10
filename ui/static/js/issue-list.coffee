@@ -1,3 +1,46 @@
+DATE_FORMAT = 'D.M.YYYY'
+
+TRANSLATIONS = {
+    "draft resolution": "Päätösesitys"
+    "presenter": "Esittelijä"
+    "resolution": "Päätös"
+    "summary": "Yhteenveto"
+}
+RESOLUTIONS_EN =
+    'PASSED': 'Passed as drafted'
+    'PASSED_VOTED': 'Passed after a vote'
+    'PASSED_REVISED': 'Passed revised by presenter'
+    'PASSED_MODIFIED': 'Passed modified'
+    'REJECTED': 'Rejected'
+    'NOTED': 'Noted as informational'
+    'RETURNED': 'Returned to preparation'
+    'REMOVED': 'Removed from agenda'
+    'TABLED': 'Tabled'
+    'ELECTION': 'Election'
+RESOLUTIONS_FI =
+    'PASSED': 'Ehdotuksen mukaan'
+    'PASSED_VOTED': 'Ehdotuksen mukaan äänestyksin'
+    'PASSED_REVISED': 'Esittelijän muutetun ehdotuksen mukaan'
+    'PASSED_MODIFIED': 'Esittelijän ehdotuksesta poiketen'
+    'REJECTED': 'Hylättiin'
+    'NOTED': 'Merkittiin tiedoksi'
+    'RETURNED': 'Palautettiin'
+    'REMOVED': 'Poistettiin'
+    'TABLED': 'Pöydättiin'
+    'ELECTION': 'Vaali'
+RESOLUTIONS_ICONS =
+    'PASSED': 'ok'
+    'PASSED_VOTED': 'hand-up'
+    'PASSED_REVISED': 'ok-circle'
+    'PASSED_MODIFIED': 'ok-sign'
+    'REJECTED': 'trash'
+    'NOTED': 'exclamation-sign'
+    'RETURNED': 'repeat'
+    'REMOVED': 'remove'
+    'TABLED': 'inbox'
+    'ELECTION': 'group'
+
+
 class IssueListItemView extends Backbone.View
     tagName: 'li'
     className: 'issue'
@@ -101,7 +144,7 @@ class IssueListView extends Backbone.View
         @page = 1
         @collection.each (issue) =>
             @render_one issue
-        @list_rendered = true
+        @rendered = true
         return @
 
     disable: ->
@@ -212,21 +255,28 @@ class PolicymakerSelectView extends Backbone.View
 
 class IssueSearchView extends Backbone.View
     el: "#content-container"
+    template: $("#issue-search-template").html()
 
     initialize: (opts) ->
-        @cat_list = new CategoryList opts.cat_models
+        content = $.trim @template
+        @$el.html content
+
+        @pm_list = opts.pm_list
+        @cat_list = opts.cat_list
+
         @cat_select_view = new CategorySelectView
             collection: @cat_list
             parent_view: @
         @cat_select_view.render()
 
-        @pm_list = new PolicymakerList opts.pm_models
         @pm_select_view = new PolicymakerSelectView
             collection: @pm_list
             parent_view: @
         @pm_select_view.render()
 
-        if not @issue_list
+        if opts.issue_list
+            @issue_list = opts.issue_list
+        else
             @issue_list = new IssueSearchList
 
         @count_view = new IssueListCountView collection: @issue_list
@@ -293,181 +343,129 @@ class IssueSearchView extends Backbone.View
             @issue_list.set_filter type, filters[type]
         @issue_list.fetch reset: true
 
+
+class IssueDetailsView extends Backbone.View
+    el: "#content-container"
+    template: _.template $("#item-details-template").html()
+    meeting_template: _.template $("#meeting-template").html()
+
+    initialize: (opts) ->
+        @pm_list = opts.pm_list
+        @listenTo @model.agenda_item_list, 'reset', @render
+
+    select_agenda_item: (@meeting_id) ->
+        @render()
+        return
+
+    render: ->
+        if not @model.agenda_item_list.length
+            @model.fetch_agenda_items()
+            return
+
+        if @meeting_id
+            @current_ai = @model.agenda_item_list.find_by_slug @meeting_id, @pm_list
+            if not @current_ai
+                throw "Agenda item with slug #{@meeting_id} not found"
+        else
+            @current_ai = @model.agenda_item_list.at(0)
+
+        future_list = []
+        past_list = []
+        now = moment()
+        current_ai_data = null
+        @model.agenda_item_list.each (ai) =>
+            meeting_date = moment ai.get('meeting').date
+
+            data = ai.toJSON()
+            data.meeting.date_str = meeting_date.format DATE_FORMAT
+            if ai.id == @current_ai.id
+                data.is_active = true
+                current_ai_data = data
+            else
+                data.is_active = false
+            if data.resolution
+                data.resolution_str = RESOLUTIONS_FI[data.resolution]
+                data.resolution_icon = RESOLUTIONS_ICONS[data.resolution]
+
+            pm = @pm_list.get data.meeting.policymaker
+            m = data.meeting
+            m.icon = pm.get_icon()
+            m.view_url = pm.get_view_url() + "#{m.year}/#{m.number}/"
+
+            for c in data.content
+                c.type_str = TRANSLATIONS[c.type]
+
+            if meeting_date > now
+                future_list.push data
+            else
+                past_list.push data
+
+        data = @model.toJSON()
+        data.future_list = future_list
+        data.past_list = past_list
+        data.current = current_ai_data
+
+        data.meeting_template = @meeting_template
+        html = $.trim(@template data)
+        @$el.html html
+
+        @$el.find(".decision-history li").click (ev) =>
+            if ev.target.tagName == 'A'
+                return true
+            ai_id = $(ev.currentTarget).data 'agenda-item-id'
+            ai = @model.agenda_item_list.findWhere id: ai_id
+            router.navigate "#{@model.get 'slug'}/#{ai.get_slug @pm_list}/",
+                trigger: true
+                replace: true
+
+
 class IssueRouter extends Backbone.Router
     routes:
         "": "issue_list"
         "map/": "issue_map"
+        ":issue/": "issue_details"
+        ":issue/:meeting/": "issue_details"
+
+    initialize: ->
+        @current_view = null
+        @cat_list = new CategoryList cat_list_json
+        @pm_list = new PolicymakerList pm_list_json
+
+    ensure_view: (type, model) ->
+        if type == 'search'
+            if not @current_view instanceof IssueSearchView
+                @current_view.remove()
+            @current_view = new IssueSearchView
+                cat_list: @cat_list
+                pm_list: @pm_list
+            @issue_list = @current_view.issue_list
+        else
+            if not @current_view instanceof IssueDetailsView
+                @current_view.remove()
+            @current_view = new IssueDetailsView
+                model: model
+                cat_list: @cat_list
+                pm_list: @pm_list
 
     issue_list: ->
-        search_view.select 'list'
+        @ensure_view 'search'
+        @current_view.select 'list'
 
     issue_map: ->
-        search_view.select 'map'
+        @ensure_view 'search'
+        @current_view.select 'map'
 
+    issue_details: (issue, meeting) ->
+        model = @issue_list.findWhere slug: issue
+        @ensure_view 'details', model
+        @current_view.select_agenda_item meeting
 
-search_view = new IssueSearchView
-    cat_models: cat_list_json
-    pm_models: pm_list_json
 
 router = new IssueRouter
+
+if typeof issue_json != 'undefined'
+    issue_list = new IssueList [issue_json]
+    issue_list.at(0).agenda_item_list.reset ai_list_json, silent: true
+    router.issue_list = issue_list
+
 Backbone.history.start {pushState: true, root: "/issue/"}
-
-###
-geometries = []
-refresh_issues = ->
-    params = {limit: 100}
-
-    if active_borders
-        bounds = active_borders.getBounds()
-    else if not active_category?
-        # If no other filters set, use map bounds as default.
-        bounds = map.getBounds()
-    else
-        bounds = null
-    if bounds?
-        params['bbox'] = bounds.toBBoxString()
-
-    if active_category?
-        params['category'] = active_category
-
-    list_el = $("#issue-list")
-    $.getJSON API_PREFIX + 'v1/issue/', params, (data) ->
-        issues = []
-        list_el.empty()
-        for m in geometries
-            map.removeLayer m
-        geometries = []
-        for issue in data.objects
-            #if not issue.geometries.length
-            #    continue
-            issue.details_uri = "#{API_PREFIX}issue/#{issue.slug}/"
-            for geom_json in issue.geometries
-                geom = L.geoJson geom_json
-                if geom_json.type == 'Point'
-                    ll = geom.getBounds().getCenter()
-                    #ll = new L.LatLng coords[1], coords[0]
-                    if active_borders
-                        if not leafletPip.pointInLayer(ll, active_borders).length
-                            continue
-                issue.in_bounds = true
-                geom.bindPopup "<b>#{geom_json.name}</b><br><a href='#{issue.details_uri}'>#{issue.subject}</a>"
-                geom.addTo map
-                geometries.push geom
-            if active_borders? and not issue.in_bounds
-                continue
-            issue_html = issue_template issue
-            issues.push issue
-            list_el.append $($.trim(issue_html))
-
-input_district_map = null
-
-$(".district-input input").typeahead
-    limit: 5
-    remote:
-        url: GEOCODER_API_URL + 'v1/district/?limit=5&input=%QUERY'
-        filter: (data) ->
-            objs = data.objects
-            datums = []
-            for obj in objs
-                d = {value: obj.name, id: obj.id, borders: obj.borders, name: obj.name}
-                datums.push d
-            input_district_map = objs
-            return datums
-
-$(".district-input input").on 'typeahead:selected', (ev, datum) ->
-    if active_borders
-        map.removeLayer active_borders
-    borders = L.geoJson datum.borders,
-        style:
-            weight: 2
-            color: "red"
-    borders.bindPopup datum.name
-    borders.addTo map
-    active_borders = borders
-    map.fitBounds borders.getBounds()
-    refresh_issues()
-    close_btn = $(".district-input .close")
-    close_btn.parent().show()
-
-$(".district-input .close").on 'click', (ev) ->
-    map.removeLayer active_borders
-    active_borders = null
-    refresh_issues()
-    $(this).parent().hide()
-    $(".district-input input").val ''
-    ev.preventDefault()
-
-
-input_category_list = null
-
-"""
-$(".category-input input").typeahead
-    source: (query, process_cb) ->
-        $.getJSON(API_PREFIX + 'v1/category/', {input: query, issues: 1}, (data) ->
-            objs = data.objects
-            ret = []
-            for obj in objs
-                ret.push "#{obj.name} (#{obj.num_issues})"
-            input_category_list = objs
-            process_cb ret
-        )
-"""
-
-category_suggestion_template = Handlebars.compile """
-{{value}} <strong>({{num_issues}})</strong>
-"""
-$(".category-input input").typeahead
-    template: category_suggestion_template
-    limit: 10
-    remote:
-        url: API_PREFIX + 'v1/category/?issues=1&limit=10&input=%QUERY'
-        filter: (data) ->
-            objs = data.objects
-            datums = []
-            for obj in objs
-                d = {value: obj.name, num_issues: obj.num_issues, id: obj.id}
-                datums.push d
-            return datums
-
-$(".category-input input").on 'typeahead:selected', (ev, datum) ->
-    active_category = datum.id
-    refresh_issues()
-$(".category-input input").on 'typeahead:autocompleted', (ev, datum) ->
-    active_category = datum.id
-    refresh_issues()
-
-refresh_issues()
-
-params =
-    level__lte: 1
-    limit: 1000
-
-$.getJSON API_PREFIX + 'v1/category/', params, (data) ->
-    cats = _.sortBy data.objects, (x) -> "#{x.level} #{x.origin_id}"
-    top_cats = []
-    for cat in data.objects
-        if cat.level == 0
-            cat.children = []
-            top_cats.push cat
-            continue
-        parent_id = parseInt(cat.parent.split("/").slice(-2)[0])
-        for top_cat in top_cats
-            if top_cat.id == parent_id
-                top_cat.children.push cat
-                break
-
-    $filter_list_el = $("#category-filter ul")
-
-    make_li = (cat, $parent) ->
-        $el = $("<li><a tabindex='-1' href='#'>#{cat.origin_id} #{cat.name}</a></li>")
-        if cat.children
-            $el.addClass "dropdown-submenu"
-            $list_el = $("<ul class='dropdown-menu'></ul>")
-            $el.append $list_el
-            for kitten in cat.children
-                make_li kitten, $list_el
-        $parent.append $el
-
-    for cat in top_cats
-        $el = make_li cat, $filter_list_el
-###

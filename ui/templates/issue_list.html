@@ -3,8 +3,9 @@
 {% block title %}Asiat{% endblock %}
 
 {% block content %}
-<h1>Selaa asioita</h1>
 
+<script id="issue-search-template" type="text/template">
+<h1>Selaa asioita</h1>
 <div class="row">
     <div class="span10 offset1">
         <div id="issue-list-filter">
@@ -54,6 +55,7 @@
 
 <div class="row"><div class="span10 offset1" id="issue-list-items-container">
 </div></div>
+</script>
 
 <script id="issue-list-item-template" type="text/template">
     <a href="<%= view_url %>">
@@ -71,9 +73,173 @@
     </a>
 </script>
 
+<script id="item-details-template" type="text/template">
+<h1>Asia</h1>
+<div class="item-details row">
+    <div class="navigate-column span4">
+        <% if (future_list.length) { %>
+        <div class="future-hearings meeting-list">
+            <h2 class="header-bar">Tulevat käsittelyt</h2>
+            <ul class="unstyled vertical-list">
+                <% _.each(future_list, function(ai) { %>
+                <%= meeting_template(ai) %>
+                <% }); %>
+            </ul>
+        </div>
+        <% } %>
+        <% if (past_list.length) { %>
+        <div class="decision-history meeting-list">
+            <h2 class="header-bar">Käsittelyhistoria</h2>
+            <ul class="unstyled vertical-list">
+                <% _.each(past_list, function(ai) { %>
+                <%= meeting_template(ai) %>
+                <% }); %>
+            </ul>
+        </div>
+        <% } %>
+    </div>
+    <div class="span5">
+        <div class="content-column">
+            <header><h1><%= current.subject %></h1></header>
+            <div class="content">
+                <% _.each(current.content, function(item) { %>
+                    <h2><%= item.type_str %></h2>
+                    <%= item.text %>
+                <% }); %>
+            </div>
+        </div>
+    </div>
+    <div class="meta-column span3">
+        <div class="identifiers clearfix section">
+            <div class="icon">
+                <i class="icon-paperclip"></i>
+            </div>
+            <div class="data">
+                <span class="id-label">Diaarinumero</span>
+                <span class="id-value archive-id"><%= register_id %></span>
+            </div>
+        </div>
+        <div class="labels section">
+            <span class="label label-info">Hallintoasiat</span>
+            <span class="label label-inverse">Kluuvi</span>
+        </div>
+        <% if (current.attachments.length) { %>
+        <h2 class="header-bar">Liitteet</h2>
+        <ol class="attachment-list">
+        <% _.each(current.attachments, function (att) {
+            if (att.public) { %>
+        <li value=<%= att.number %> class="public"><div class="icon"><i class="icon-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
+        <%   } else { %>
+        <li value=<%= att.number %> class="non-public"><div class="icon"><i class="icon-eye-close"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
+        <%   }
+            }); %>
+        </ol>
+        <% } %>
+        <% if (current.has_non_public_attachments) { %>
+        <p class="non-public-info">
+    Päätösasiakirjoissa on mainittu liitteitä, joita ei julkaista internetissä. Pois jätetään liitteet, jotka sisältävät salassa pidettäviä tietoja, tai joissa olevien tietojen julkistaminen voi vaarantaa yksityisyyden suojan tai elinkeinonharjoittajan liike- tai ammattisalaisuuden, tai joita ei ole teknisistä
+    syistä saatu sähköiseen muotoon. (Julkisuuslaki § 621/1999, Sähköisen viestinnän tietosuojalaki § 516/2004, Henkilötietolaki § 523/1999, Sosiaalihuollon asiakaslaki § 812/2000, Potilaslaki § 785/1992, Laki julkisista hankinnoista § 348/2007)
+        </p>
+        <% } %>
+    </div>
+</div>
+</script>
+
+<script id="meeting-template" type="text/template">
+<li data-agenda-item-id="<%= id %>" <% if (is_active) { %>class="active"<% } %>>
+    <div class="policymaker-icon"><i class="icon-<%= meeting.icon %>"></i></div>
+    <div class="text">
+        <span class="policymaker"><%= meeting.policymaker_name %></span>
+        <span class="meeting"><%= meeting.number %>/<%= meeting.date_str %></span>
+        <div class="meeting-link">
+            <a class="browse-link" href="<%= meeting.view_url %>">Kokouksen muut päätökset</a>
+        </div>
+    </div>
+    <% if (resolution) { %>
+    <div class="resolution">
+        <i class="icon-<%= resolution_icon %>" title="<%= resolution_str %>"></i>
+    </div>
+    <% } %>
+</li>
+</script>
+
+<script id="item-template" type="text/template">
+<div class="navigate-column span4">
+    <% if (future_list.length) { %>
+    <div class="future-hearings meeting-list">
+        <h2 class="header-bar">Tulevat käsittelyt</h2>
+        <ul class="unstyled vertical-list">
+            <% _.each(past_list, function(ai) { %>
+              <%= meeting_template(ai) %>
+            <% }); %>
+        </ul>
+    </div>
+    <% } %>
+    <% if (past_list.length) { %>
+    <div class="decision-history meeting-list">
+        <h2 class="header-bar">Käsittelyhistoria</h2>
+        <ul class="unstyled vertical-list">
+            <% _.each(past_list, function(ai) { %>
+              <%= meeting_template(ai) %>
+            <% }); %>
+        </ul>
+    </div>
+    <% } %>
+</div>
+<div class="span5">
+    <div class="content-column">
+        <header><h1><%= current.subject %></h1></header>
+        <div class="content">
+            <% _.each(current.content, function(item) { %>
+                <h2><%= item.type_str %></h2>
+                <%= item.text %>
+            <% }); %>
+        </div>
+    </div>
+</div>
+<div class="meta-column span3">
+    <div class="identifiers clearfix section">
+        <div class="icon">
+            <i class="icon-paperclip"></i>
+        </div>
+        <div class="data">
+            <span class="id-label">Diaarinumero</span>
+            <span class="id-value archive-id"><%= register_id %></span>
+        </div>
+    </div>
+    <div class="labels section">
+        <span class="label label-info">Hallintoasiat</span>
+        <span class="label label-inverse">Kluuvi</span>
+    </div>
+    <% if (current.attachments.length) { %>
+    <h2 class="header-bar">Liitteet</h2>
+    <ol class="attachment-list">
+      <% _.each(current.attachments, function (att) {
+           if (att.public) { %>
+      <li value=<%= att.number %> class="public"><div class="icon"><i class="icon-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
+      <%   } else { %>
+      <li value=<%= att.number %> class="non-public"><div class="icon"><i class="icon-eye-close"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
+      <%   }
+         }); %>
+    </ol>
+    <% } %>
+    <% if (current.has_non_public_attachments()) { %>
+    <p class="non-public-info">
+Päätösasiakirjoissa on mainittu liitteitä, joita ei julkaista internetissä. Pois jätetään liitteet, jotka sisältävät salassa pidettäviä tietoja, tai joissa olevien tietojen julkistaminen voi vaarantaa yksityisyyden suojan tai elinkeinonharjoittajan liike- tai ammattisalaisuuden, tai joita ei ole teknisistä
+syistä saatu sähköiseen muotoon. (Julkisuuslaki § 621/1999, Sähköisen viestinnän tietosuojalaki § 516/2004, Henkilötietolaki § 523/1999, Sosiaalihuollon asiakaslaki § 812/2000, Potilaslaki § 785/1992, Laki julkisista hankinnoista § 348/2007)
+    </p>
+    <% } %>
+</div>
+</script>
+
+
 <script type="text/javascript">
     cat_list_json = {{ cat_list_json|safe }};
     pm_list_json = {{ pm_list_json|safe }};
+{% if issue_json %}
+    ai_list_json = {{ ai_list_json|safe }};
+    issue_json = {{ issue_json|safe }};
+{% endif %}
 </script>
 
 {% include "_map_include.html" %}

@@ -16,6 +16,17 @@ class @CategoryList extends Backbone.Tastypie.Collection
         return @filter (m) -> return m.get('parent') == parent.id
 
 class @Issue extends Backbone.Tastypie.Model
+    initialize: ->
+        @agenda_item_list = new AgendaItemList
+        @agenda_item_list.filters['issue'] = @get 'id'
+        @agenda_item_list.filters['limit'] = 1000
+
+    fetch_agenda_items: ->
+        if @agenda_item_list.length
+            @agenda_item_list.trigger 'reset'
+            return
+        @agenda_item_list.fetch reset: true
+
     get_view_url: ->
         return VIEW_URLS['issue-details'].replace 'ID', @get 'slug'
 
@@ -23,9 +34,8 @@ class @IssueList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/issue/'
     model: Issue
 
-class @IssueSearchList extends Backbone.Tastypie.Collection
+class @IssueSearchList extends IssueList
     urlRoot: API_PREFIX + 'v1/issue/search/'
-    model: Issue
 
     set_filter: (type, val) ->
         if type == 'text'
@@ -41,10 +51,49 @@ class @IssueSearchList extends Backbone.Tastypie.Collection
             @filters[filter_name] = val
 
 class @AgendaItem extends Backbone.Tastypie.Model
+    get_slug: (pm_list) ->
+        meeting = @get 'meeting'
+        pm = pm_list.get meeting.policymaker
+        slug = "#{pm.get 'slug'}-#{meeting.year}-#{meeting.number}"
+        return slug
+    get_view_url: (issue, pm_list) ->
+        slug = @get_slug pm_list
+        return issue.get_view_url() + slug + '/'
+    has_non_public_attachments: ->
+        for att in ai.attachments
+            if not att.public
+                return true
+        return false
 
 class @AgendaItemList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/agenda_item/'
     model: AgendaItem
+
+    comparator: (ai1, ai2) ->
+        string_diff = (s1, s2) ->
+            if s1 < s2
+                return -1
+            if s1 == s2
+                return 0
+            return 1
+        diff = string_diff ai1.get('meeting').date, ai2.get('meeting').date
+        if diff == 0
+            diff = string_diff ai1.get('index'), ai2.get('index')
+        return -diff
+
+    find_by_slug: (slug, pm_list) ->
+        parts = slug.split('-')
+        pm_slug = parts[0]
+        year = parseInt parts[1]
+        number = parseInt parts[2]
+        pm = pm_list.findWhere slug: pm_slug
+        ai = @find (ai) ->
+            meeting = ai.get 'meeting'
+            if meeting.policymaker != pm.id
+                return false
+            if meeting.year != year or meeting.number != number
+                return false
+            return true
 
 class @Meeting extends Backbone.Tastypie.Model
     get_view_url: ->
@@ -69,6 +118,39 @@ class @MeetingList extends Backbone.Tastypie.Collection
     initialize: (models, opts)->
         @policymaker_list = opts.policymaker_list
 
+POLICYMAKERS =
+    'Aslk': icon: 'home'
+    'Asuntk': icon: 'home'
+    'Zoojk': icon: 'bug'
+    'Oivajk': icon: 'group'
+    'Koja': icon: 'briefcase'
+    'Sote': icon: 'medkit'
+    'Khs': icon: 'legal'
+    'Museojk': icon: 'asterisk'
+    'Kvsto': icon: 'microphone'
+    'Kslk': icon: 'eraser'
+    'Kvlk': icon: 'ticket'
+    'Klk': icon: 'building'
+    'Kklk': icon: 'picture'
+    'HKLjk': icon: 'road'
+    'LILK': icon: 'trophy'
+    'Nlk': icon: 'smile'
+    'SKJ': icon: 'pencil'
+    'OLK': icon: 'pencil'
+    'Palmiajk': icon: 'leaf'
+    'PELK': icon: 'fire-extinguisher'
+    'Sotelk': icon: 'medkit'
+    'Soslk': icon: 'medkit'
+    'Stojk': icon: 'book'
+    'Taimujk': icon: 'asterisk'
+    'Talpajk': icon: 'euro'
+    'Talk': icon: 'eye-open'
+    'Tplk': icon: 'cog'
+    'Tervlk': icon: 'medkit'
+    'Vakalk': icon: 'smile'
+    'Ytlk': icon: 'wrench'
+    'Ylk': icon: 'leaf'
+
 class @Policymaker extends Backbone.Tastypie.Model
     initialize: ->
         @meeting_list = new MeetingList null, policymaker_list: @collection
@@ -91,6 +173,10 @@ class @Policymaker extends Backbone.Tastypie.Model
         if name.indexOf('johtokunta') >= 0 or name.indexOf(' jk') >= 0
             return 'board'
         return 'other'
+
+    get_icon: ->
+        pm_info = POLICYMAKERS[@get 'abbreviation']
+        return pm_info.icon
 
     fetch_meetings: ->
         if @meeting_list.length

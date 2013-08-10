@@ -26,7 +26,6 @@ def get_policymakers(request):
     if policymaker_json:
         return policymaker_json
     res = PolicymakerResource()
-    req_bundle = res.build_bundle(request=request)
     pm_list = Policymaker.objects.filter(abbreviation__isnull=False)
     bundles = []
     for obj in pm_list:
@@ -42,7 +41,6 @@ def get_categories(request):
     if category_json:
         return category_json
     res = CategoryResource()
-    req_bundle = res.build_bundle(request=request)
     cat_list = Category.objects.filter(level__lte=1)
     bundles = []
     for obj in cat_list:
@@ -67,11 +65,36 @@ def issue_list(request):
 def issue_list_map(request):
     return issue_view(request, 'issue_list.html')
 
-def issue_details(request, slug):
+def issue_details(request, slug, pm_slug=None, year=None, number=None):
     issue = get_object_or_404(Issue, slug=slug)
+
     args = {}
     args['issue'] = issue
-    return issue_view(request, 'issue_details.html', args)
+    if pm_slug:
+        filter_args = {
+            'issue': issue,
+            'meeting__policymaker__slug': pm_slug,
+            'meeting__year': year,
+            'meeting__number': number
+        }
+        agenda_item = get_object_or_404(AgendaItem, **filter_args)
+
+    res = IssueResource()
+    bundle = res.build_bundle(obj=issue, request=request)
+    data = res.full_dehydrate(bundle, for_list=False)
+    json = res.serialize(None, data, "application/json")
+    args['issue_json'] = json
+
+    res = AgendaItemResource()
+    pm_list = AgendaItem.objects.filter(issue=issue)
+    bundles = []
+    for obj in pm_list:
+        bundle = res.build_bundle(obj=obj, request=request)
+        bundles.append(res.full_dehydrate(bundle, for_list=False))
+    json = res.serialize(None, bundles, "application/json")
+    args['ai_list_json'] = json
+
+    return issue_view(request, 'issue_list.html', args)
 
 def policymaker_view(request, template, args={}):
     args['pm_list_json'] = get_policymakers(request)

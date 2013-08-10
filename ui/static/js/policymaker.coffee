@@ -85,7 +85,7 @@ class PolicymakerListItemView extends Backbone.View
     render: ->
         model = @model.toJSON()
         model.title = @format_title()
-        model.icon = 'search'
+        model.icon = @model.get_icon()
         html = _.template @template, model
         @$el.addClass @model.get_category()
         @$el.attr 'href', @model.get_view_url()
