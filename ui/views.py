@@ -61,9 +61,9 @@ def issue_view(request, template, args={}):
     return render_view(request, template, args)
 
 def issue_list(request):
-    return issue_view(request, 'issue_list.html')
+    return issue_view(request, 'issue.html')
 def issue_list_map(request):
-    return issue_view(request, 'issue_list.html')
+    return issue_view(request, 'issue.html')
 
 def issue_details(request, slug, pm_slug=None, year=None, number=None):
     issue = get_object_or_404(Issue, slug=slug)
@@ -94,7 +94,7 @@ def issue_details(request, slug, pm_slug=None, year=None, number=None):
     json = res.serialize(None, bundles, "application/json")
     args['ai_list_json'] = json
 
-    return issue_view(request, 'issue_list.html', args)
+    return issue_view(request, 'issue.html', args)
 
 def policymaker_view(request, template, args={}):
     args['pm_list_json'] = get_policymakers(request)
@@ -102,7 +102,7 @@ def policymaker_view(request, template, args={}):
     return render_view(request, template, args)
 
 def policymaker_list(request):
-    return policymaker_view(request, 'policymaker_list.html')
+    return policymaker_view(request, 'policymaker.html')
 
 def policymaker_details(request, slug, year=None, number=None):
     pm = get_object_or_404(Policymaker, slug=slug)
@@ -111,4 +111,4 @@ def policymaker_details(request, slug, year=None, number=None):
     if year:
         args['meeting_year'] = year
         args['meeting_number'] = number
-    return policymaker_view(request, 'policymaker_list.html', args)
+    return policymaker_view(request, 'policymaker.html', args)
