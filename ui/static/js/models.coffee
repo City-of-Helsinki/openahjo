@@ -78,7 +78,7 @@ class @AgendaItemList extends Backbone.Tastypie.Collection
             return 1
         diff = string_diff ai1.get('meeting').date, ai2.get('meeting').date
         if diff == 0
-            diff = string_diff ai1.get('index'), ai2.get('index')
+            return ai1.get('index') - ai2.get('index')
         return -diff
 
     find_by_slug: (slug, pm_list) ->
