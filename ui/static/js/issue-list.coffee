@@ -192,6 +192,9 @@ class CategorySelectView extends Backbone.View
 
 class PolicymakerSelectView extends Backbone.View
     el: "#policymaker-filter"
+    initialize: (opts) ->
+        @parent_view = opts.parent_view
+
     render: ->
         @$el.empty()
         @collection.each (pm) =>
@@ -200,7 +203,12 @@ class PolicymakerSelectView extends Backbone.View
         @$el.chosen(CHOSEN_DEFAULTS).change @select_category
 
     select_category: (ev) =>
-        console.log ev
+        val = @$el.val()
+        if val
+            pm_list = (parseInt x for x in @$el.val()).join ','
+        else
+            pm_list = null
+        @parent_view.set_filter 'policymaker', pm_list
 
 class IssueSearchView extends Backbone.View
     el: "#content-container"
@@ -215,6 +223,7 @@ class IssueSearchView extends Backbone.View
         @pm_list = new PolicymakerList opts.pm_models
         @pm_select_view = new PolicymakerSelectView
             collection: @pm_list
+            parent_view: @
         @pm_select_view.render()
 
         if not @issue_list

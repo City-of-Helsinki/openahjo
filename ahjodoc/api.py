@@ -203,6 +203,15 @@ class IssueResource(ModelResource):
             top_right = HaystackPoint(e[2], e[3])
             sqs = sqs.within('location', bottom_left, top_right)
 
+        policymaker = request.GET.get('policymaker', '').strip()
+        if policymaker:
+            pm_list = policymaker.split(',')
+            try:
+                pm_list = [int(x) for x in pm_list]
+            except ValueError:
+                raise BadRequest("'policymaker' must be a list of positive integers")
+            sqs = sqs.filter(policymakers__in=pm_list)
+
         paginator = Paginator(sqs, page_count)
         try:
             page = paginator.page(page_nr)

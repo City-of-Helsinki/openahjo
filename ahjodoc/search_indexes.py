@@ -17,6 +17,7 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
     categories = MultiValueIntegerField(faceted=True)
     districts = indexes.MultiValueField(faceted=True)
     location = indexes.LocationField()
+    policymakers = MultiValueIntegerField(faceted=True)
 
     def get_updated_field(self):
         return 'last_modified_time'
@@ -26,6 +27,11 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
     def prepare_categories(self, obj):
         cat_tree = obj.category.get_ancestors(include_self=True)
         return [x.pk for x in cat_tree]
+
+    def prepare_policymakers(self, obj):
+        ai_list = obj.agendaitem_set.all()
+        pm_list = set([ai.meeting.policymaker.id for ai in ai_list])
+        return list(pm_list)
 
     def prepare_districts(self, obj):
         districts = obj.districts.all()

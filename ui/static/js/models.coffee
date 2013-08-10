@@ -30,7 +30,7 @@ class @IssueSearchList extends Backbone.Tastypie.Collection
     set_filter: (type, val) ->
         if type == 'text'
             filter_name = 'q'
-        else if type in ['category', 'bbox']
+        else if type in ['category', 'bbox', 'policymaker']
             filter_name = type
         else
             throw "Unknown filter type: #{type}"
@@ -101,3 +101,13 @@ class @Policymaker extends Backbone.Tastypie.Model
 class @PolicymakerList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/policymaker/'
     model: Policymaker
+
+    comparator: (pm) ->
+        cat = pm.get_category()
+        PRIORITIES =
+            'council': 0
+            'government': 1
+            'committee': 2
+            'board': 2
+            'other': 2
+        return "#{PRIORITIES[cat]} #{pm.get 'name'}"
