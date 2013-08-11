@@ -412,7 +412,7 @@ class IssueDetailsView extends IssueView
         html = $.trim(@template data)
         @$el.html html
 
-        @$el.find(".decision-history li").click (ev) =>
+        @$el.find(".meeting-list li").click (ev) =>
             if ev.target.tagName == 'A'
                 return true
             ai_id = $(ev.currentTarget).data 'agenda-item-id'

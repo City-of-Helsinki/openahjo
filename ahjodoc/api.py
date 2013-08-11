@@ -177,7 +177,7 @@ class IssueResource(ModelResource):
         except ValueError:
             raise BadRequest("'limit' and 'page' must be positive integers")
 
-        sqs = SearchQuerySet().models(Issue).load_all()
+        sqs = SearchQuerySet().models(Issue).load_all().order_by('-latest_date')
         query = request.GET.get('q', '').strip()
         if query:
             sqs = sqs.auto_query(query).highlight()

@@ -12,6 +12,7 @@ class FacetMultiValueIntegerField(indexes.FacetField, MultiValueIntegerField):
     pass
 
 class IssueIndex(indexes.SearchIndex, indexes.Indexable):
+    latest_date = indexes.DateField()
     text = indexes.CharField(document=True, use_template=True)
     category = indexes.IntegerField(faceted=True)
     categories = MultiValueIntegerField(faceted=True)
@@ -21,6 +22,10 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
 
     def get_updated_field(self):
         return 'last_modified_time'
+
+    def prepare_latest_date(self, obj):
+        ai_list = obj.agendaitem_set.order_by('-meeting__date').select_related('meeting')
+        return ai_list[0].meeting.date
 
     def prepare_category(self, obj):
         return obj.category.pk
