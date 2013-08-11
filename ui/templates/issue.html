@@ -120,8 +120,9 @@
             </div>
         </div>
         <div class="labels section">
-            <span class="label label-info">Hallintoasiat</span>
-            <span class="label label-inverse">Kluuvi</span>
+            <% _.each(label_list, function(label) { %>
+                <span class="label label-<%- label.class %>"><%- label.text %></span>
+            <% }); %>
         </div>
         <% if (current.attachments.length) { %>
         <h2 class="header-bar">Liitteet</h2>

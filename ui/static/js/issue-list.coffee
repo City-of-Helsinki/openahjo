@@ -40,8 +40,23 @@ RESOLUTIONS_ICONS =
     'TABLED': 'inbox'
     'ELECTION': 'group'
 
+class IssueView extends Backbone.View
+    make_labels: ->
+        labels = []
+        labels.push
+            text: @model.get 'top_category_name'
+            'class': 'info'
 
-class IssueListItemView extends Backbone.View
+        districts = {}
+        for d in @model.get 'districts'
+            districts[d.name] = d
+        for d of districts
+            labels.push
+                text: d
+                'class': 'inverse'
+        return labels
+
+class IssueListItemView extends IssueView
     tagName: 'li'
     className: 'issue'
     template: _.template $("#issue-list-item-template").html()
@@ -66,20 +81,7 @@ class IssueListItemView extends Backbone.View
                 text = text[0..j-1] + '...'
             model.search_highlighted = text
 
-        labels = []
-        labels.push
-            text: @model.get 'top_category_name'
-            'class': 'info'
-
-        districts = {}
-        for d in @model.get 'districts'
-            districts[d.name] = d
-        for d of districts
-            labels.push
-                text: d
-                'class': 'inverse'
-
-        model.label_list = labels
+        model.label_list = @make_labels()
         model.view_url = @model.get_view_url()
         html = $($.trim(@template model))
         @$el.html html
@@ -344,7 +346,7 @@ class IssueSearchView extends Backbone.View
         @issue_list.fetch reset: true
 
 
-class IssueDetailsView extends Backbone.View
+class IssueDetailsView extends IssueView
     el: "#content-container"
     template: _.template $("#item-details-template").html()
     meeting_template: _.template $("#meeting-template").html()
@@ -404,6 +406,7 @@ class IssueDetailsView extends Backbone.View
         data.future_list = future_list
         data.past_list = past_list
         data.current = current_ai_data
+        data.label_list = @make_labels()
 
         data.meeting_template = @meeting_template
         html = $.trim(@template data)
