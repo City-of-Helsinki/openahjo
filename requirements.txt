@@ -18,3 +18,4 @@ django-haystack
 pysolr
 -e git+https://github.com/juyrjola/munigeo#egg=django-munigeo
 geopy
+Markdown

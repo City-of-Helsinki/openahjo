@@ -179,6 +179,7 @@ class PolicymakerDetailsView extends Backbone.View
         template = _.template $("#policymaker-meeting-details-template").html()
         model = meeting.toJSON()
         model.date_str = @format_date meeting.get('date')
+        model.policymaker = @model.toJSON()
 
         agenda_items = []
         meeting.agenda_item_list.each (ai) ->
@@ -203,6 +204,28 @@ class PolicymakerDetailsView extends Backbone.View
         @$el.find('.back-fwd a').click (ev) ->
             if router.navigate_to_link @
                 ev.preventDefault()
+
+        @$el.find('.description-link').click (ev) =>
+            ev.preventDefault()
+            tab = @$el.find('.description-tab')
+            if tab.hasClass 'active'
+                return
+
+            @$el.find('.tab-pane').hide().removeClass 'active'
+            tab.fadeIn 100
+            tab.addClass 'active'
+
+        @$el.find('.meeting-link').click (ev) =>
+            ev.preventDefault()
+            tab = @$el.find('.meeting-details-tab')
+            if tab.hasClass 'active'
+                return
+
+            @$el.find('.tab-pane').hide().removeClass 'active'
+            tab.fadeIn 100
+            tab.addClass 'active'
+
+        @$el.find('.meeting-details-tab').fadeIn(100)
 
     _select_meeting: ->
         meeting_list = @model.meeting_list

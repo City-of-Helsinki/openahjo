@@ -31,38 +31,46 @@
 </script>
 
 <script type="text/template" id="policymaker-meeting-details-template">
-<nav>
-    <h3>Kokous</h3>
-    <div class="back-fwd">
-        <% if (prev_meeting) { %>
-        <a class="previous-meeting" href="<%= prev_meeting %>">‹‹ edellinen kokous</a>
-        <% } else { %>
-        <span class="disabled">‹‹ edellinen kokous</span>
-        <% } %> |
-        <% if (next_meeting) { %>
-        <a class="next-meeting" href="<%= next_meeting %>">seuraava kokous ››</a>
-        <% } else { %>
-        <span class="disabled">seuraava kokous ››</span>
-        <% } %>
-    </div>
-</nav>
-<article>
-    <header>
-        <h1><%- policymaker_name %> <%- number %>/<%- year %></h1>
-        <time datetime="<%- date %>"><%- date_str %></time>
-    </header>
-    <ol>
-        <% _.each(agenda_items, function (ai) { %>
-        <li><a href="<%= ai.permalink %>">
-            <header class="item-header">
-                <div class="index"><%- ai.index %></div>
-                <div class="subject"><%- ai.subject %></div>
+<div class="tab-content">
+    <div class="meeting-details-tab tab-pane">
+        <nav>
+            <h3>Kokous</h3>
+            <div class="back-fwd">
+                <% if (prev_meeting) { %>
+                <a class="previous-meeting" href="<%= prev_meeting %>">‹‹ edellinen kokous</a>
+                <% } else { %>
+                <span class="disabled">‹‹ edellinen kokous</span>
+                <% } %> |
+                <% if (next_meeting) { %>
+                <a class="next-meeting" href="<%= next_meeting %>">seuraava kokous ››</a>
+                <% } else { %>
+                <span class="disabled">seuraava kokous ››</span>
+                <% } %>
+            </div>
+        </nav>
+        <article>
+            <header>
+                <h1><%- policymaker_name %> <%- number %>/<%- year %></h1>
+                <time datetime="<%- date %>"><%- date_str %></time>
             </header>
-            <% if (ai.summary) { %><p><%- ai.summary %></p><% } %>
-        </a></li>
-        <% }); %>
-    </ol>
-</article>
+            <ol>
+                <% _.each(agenda_items, function (ai) { %>
+                <li><a href="<%= ai.permalink %>">
+                    <header class="item-header">
+                        <div class="index"><%- ai.index %></div>
+                        <div class="subject"><%- ai.subject %></div>
+                    </header>
+                    <% if (ai.summary) { %><p><%- ai.summary %></p><% } %>
+                </a></li>
+                <% }); %>
+            </ol>
+        </article>
+    </div>
+    <div class="description-tab tab-pane">
+        <h2>Tehtävät</h2>
+        <%= policymaker.summary %>
+    </div>
+</div>
 </script>
 
 {% endblock %}

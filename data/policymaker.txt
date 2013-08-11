@@ -1,4 +1,4 @@
-[Aslk] # Asuntolautakunta
+[Asuntolautakunta]
 Asuntolautakunnan tehtävänä on huolehtia kaupungin asuntohallintotehtävistä.
 
 Lautakunnan tehtävänä on sen lisäksi, mitä erikseen on säädetty tai määrätty, ellei tehtävä kuulu muulle viranomaiselle,
@@ -8,25 +8,25 @@ Lautakunnan tehtävänä on sen lisäksi, mitä erikseen on säädetty tai mää
 - Huolehtia kaupunginhallituksen lautakunnalle erikseen määräämistä muista tehtävistä.
 
 
-[Asuntk] # Asuntotuotantotoimikunta
+[Asuntotuotantotoimikunta]
 Helsingin kaupungin asuntotuotantotoimikunta ja sen alainen asuntotuotantotoimisto vastaavat niiltä tilatun kaupungin oman asuntotuotannon ja korjausrakentamisen johtamisesta, valvomisesta, kehittämisestä ja rakennuttamisesta hyväksyttyjen tavoitteiden mukaisesti.
 
 Lisäksi toimikunta huolehtii sille varattujen tai sopimuksin tulleiden muiden uudisrakentamis- ja peruskorjauskohteiden rakennuttamisesta ja kaupungin omistaminen kiinteistö- ja asunto-osakeyhtiöiden tilaaman teknisen kunnossapidon asiantuntijatehtävistä.
 
 
-[Zoojk] # Eläintarhan johtokunta
+[Eläintarhan johtokunta]
 Helsingin kaupungin eläintarhan johtokunnan tehtävänä on tukea eläintarhatoiminnan toimintaedellytysten kehittämistä ja valvoa, että eläintarhaa kehitetään Maailman akvaario- ja eläintarhajärjestön (WAZA) ja Euroopan akvaario- ja eläintarhajärjestön (EAZA) vahvistamien periaatteiden mukaisesti.
 
 
-[Oivajk] # Henkilöstön kehittämispalvelut-liikelaitoksen jk
+[Henkilöstön kehittämispalvelut-liikelaitoksen jk]
 Oiva Akatemian ylimpänä päätöksentekoelimenä toimii johtokunta, joka huolehtii omalta osaltaan muun muassa Oiva Akatemian suurimmista hankinnoista, investoinneista ja palvelujen hinnoitteluperusteista.
 
 
-[Koja] # Kaupunginhallituksen konsernijaosto
+[Kaupunginhallituksen konsernijaosto]
 Jaoston tehtävänä on seurata Helsingin kaupunkikonsernin toimintaa ja sitä, että konserniin kuuluvat tytäryhtiöt ja säätiöt toimivat valtuuston ja hallituksen asettamien tavoitteiden mukaisesti. Konserniin kuuluu noin kahdeksankymmentä tytäryhtiötä ja säätiötä.
 
 
-[Sote] # Kaupunginhallituksen sosiaali- ja terveysjaosto
+[Kaupunginhallituksen sosiaali- ja terveysjaosto]
 Sosiaali- ja terveysjaoston tehtävät: 
 
 1. päättää sosiaali- ja terveysviraston osastojen toimistotasoisesta yksikköjaosta
@@ -42,16 +42,16 @@ Sosiaali- ja terveysjaoston tehtävät:
 Sosiaali- ja terveysjaoston tehtävänä on lisäksi sosiaali- ja terveystoimen ja varhaiskasvatustoimen johtosääntöjen tultua voimaan huolehtia niistä sosiaali- ja terveyslautakunnalle ja sen jaostoille sekä varhaiskasvatuslautakunnalle kuuluvista tehtävistä, jotka eivät siedä viivytystä. Sosiaali- ja terveysjaosto voi yksittäistapauksessa saattaa toimivaltaansa kuuluvan asian kaupunginhallituksen päätettäväksi.
 
 
-[Khs] # Kaupunginhallitus
+[Kaupunginhallitus]
 Kaupunginhallituksen tehtävänä on päättää sellaisista kaupungin asioista, joita ei ole määrätty muulle viranomaiselle. Kaupunginhallitus johtaa kaupungin hallintoa, valmistelee kaupunginvaltuustossa käsiteltävät asiat sekä vastaa valtuuston päätösten toimeenpanosta ja niiden lainmukaisuuden valvonnasta. Kaupunginhallitus vastaa kaupungin puhevallan käytöstä oikeudessa ja tekee tarpeellisiksi katsomiaan aloitteita kunnallisen toiminnan eri aloilla.
 
 Kaupunginhallitus päättää esimerkiksi vähemmän merkittävien asemakaavojen hyväksymisestä, maa- ja vesialueiden varaamisesta rakentamiseen sekä määrätyistä liikelaitosten toimintaan liittyvistä asioista. Kaupunginhallitus asettaa myös toimikunnat ja neuvottelukunnat valmistelemaan määrättyä asiaa tai suorittamaan tiettyä tehtävää.
 
 
-[Museojk] # Kaupunginmuseon johtokunta
+[Kaupunginmuseon johtokunta]
 
 
-[Kvsto] # Kaupunginvaltuusto
+[Kaupunginvaltuusto]
 Valtuusto vastaa kuntalain 13 §:n mukaisesti mm. kaupungin strategioista ja muista tärkeimmistä tavoitteista, palvelumaksujen perusteista sekä hallinnon järjestämisen perusteista. Valtuusto asettaa tehtäviinsä kaupungin muut toimielimet ja täyttää tärkeimmät virat. Se päättää myös tärkeimmistä taloudellisista asioista, esimerkiksi talousarviosta ja eri toimialojen määrärahoista sekä tuloveroprosentista. 
 
 Valtuusto päättää lisäksi mm. yleiskaavasta ja tärkeimmistä asemakaavoista, oppilaitosten perustamisesta tai lakkauttamisesta sekä määrätyistä sosiaalietuuksista ja terveyspalveluista. Valtuuston toiminnan järjestämisestä ja kokousmenettelystä on säädetty valtuuston työjärjestyksessä.
@@ -59,7 +59,7 @@ Valtuusto päättää lisäksi mm. yleiskaavasta ja tärkeimmistä asemakaavoist
 Valtuusto päättää myös Helsinki kaupunkikonsernin rakenteesta. Kaupunkikonserniin kuuluvat Helsingin kaupungin lisäksi ne yhteisöt, laitokset ja säätiöt, joissa kaupunki käyttää määräysvaltaa.
 
 
-[Kslk] # Kaupunkisuunnittelulautakunta
+[Kaupunkisuunnittelulautakunta]
 Helsingin kaupungin kaupunkisuunnittelulautakunta alaisenaan kaupunkisuunnitteluvirasto ohjaa ja valvoo Helsingin kaupunkisuunnittelua.
 
 Kaupunkisuunnittelulautakunnan tehtävänä on mm.:
@@ -72,7 +72,7 @@ Kaupunkisuunnittelulautakunnan tehtävänä on mm.:
 - tehdä kaupunginhallitukselle esityksiä sekä antaa lausuntoja, selvityksiä ja tietoja toimialaansa kuuluvista asioista
 
 
-[Kvlk] # Keskusvaalilautakunta
+[Keskusvaalilautakunta]
 Helsingin kaupungin keskusvaalilautakunnan tulee toimittaa ne tehtävät, mitkä sille vaalilain mukaan erikseen kuuluvat.
 
 Valtiollisissa vaaleissa keskusvaalilautakunnan tulee huolehtia kaikista vaalien käytännöllisistä valmistelutöistä sekä ennakkoäänestyksen toimittamisesta.
@@ -80,7 +80,7 @@ Valtiollisissa vaaleissa keskusvaalilautakunnan tulee huolehtia kaikista vaalien
 Lisäksi kunnallisvaaleissa keskusvaalilautakunnan tulee mm. tarkastaa ehdokaslistojen julkaisemista koskevat hakemukset ja laatia ehdokaslistojen yhdistelmä, huolehtia kunnallisvaalitulosten ennakkolaskennasta, vaalitoimituksessa annettujen äänten laskemisesta ja vahvistaa vaalin tulos.
 
 
-[Klk] # Kiinteistölautakunta
+[Kiinteistölautakunta]
 Kiinteistölautakunnan tehtävänä on hallita kaupungin maa- ja vesialueita, kiinteistöjä, rakennuksia ja huoneistoja.
 
 Lautakunnan tehtävänä on lisäksi, ellei toisin ole määrätty tai ellei lautakunta ole antanut tehtävää määräämänsä viranhaltijan ratkaistavaksi:
@@ -105,15 +105,15 @@ Lautakunnan tehtävänä on lisäksi, ellei toisin ole määrätty tai ellei lau
 - Huolehtia toimialaansa kuuluvista ja kaupunginhallituksen lautakunnalle erikseen määräämistä muista tehtävistä.
 
 
-[Kklk] # Kulttuuri- ja kirjastolautakunta
+[Kulttuuri- ja kirjastolautakunta]
 Kulttuurikeskuksen ja Helsingin kaupunginkirjaston toimintaa ohjaa kulttuuri- ja kirjastolautakunta. Lautakunta päättää avustuksista ja apurahoista sekä tekee kulttuuripoliittisia linjauksia ja jakaa mm. vuosittain myönnettävän Helsingin kaupungin kulttuuripalkinnon.
 
 
-[HKLjk] # Liikennelaitos -liikelaitoksen johtokunta (HKL)
+[Liikennelaitos -liikelaitoksen johtokunta (HKL)]
 HKL-liikelaitoksen johtokunta (ent. joukkoliikennelautakunta) päättää HKL:n liikenteen tuottajatoimintoihin kuuluvista asioista sekä joukkoliikenteen infran (mm. radat ja varikot) ylläpidosta ja rakentamisesta.
 
 
-[LILK] # Liikuntalautakunta
+[Liikuntalautakunta]
 Lautakunnan tehtävänä on, ellei toisin ole määrätty:
 
 1. Valvoa, että virasto toimii vahvistetun talousarvion puitteissa sekä kaupunginvaltuuston ja kaupunginhallituksen asettamien tavoitteiden mukaisesti.
@@ -131,17 +131,17 @@ Lautakunnan tehtävänä on, ellei toisin ole määrätty:
 13. Päättää liikuntapaikkojen nimistä.
 
 
-[Nlk] # Nuorisolautakunta
+[Nuorisolautakunta]
 Helsingin kaupungin nuorisolautakunta ohjaa, tukee ja kehittää nuorisotyötä. Lautakunta muun muassa päättää nuorisotoimen toimintalinjoista ja nuorisoasiainkeskuksen tulostavoitteista. Lautakunta myös valvoo, että virasto toimii vahvistetun talousarvion puitteissa.
 
 
-[SKJ] # Opetuslautakunnan suomenkielinen jaosto
+[Opetuslautakunnan suomenkielinen jaosto]
 Jaostot tekevät lautakunnalle esityksen talousarvioehdotukseksi sekä vahvistavat opetussuunnitelmat ja kieliohjelmat. Jaostot päättävät oppilaaksioton perusteista, lukiokoulutuksen koulukohtaisista mitoituksista sekä ammatillisen toisen asteen koulutuksen järjestämisestä ja mitoituksista. Ne myös päättävät opetustoimeen kuuluvien oppilaitosten nimistä, toimipaikoista ja peruskoulujen oppilaaksiottoalueista.
 
 Jaostot päättävät opettajakunnasta ja peruskoulun oppilaskunnasta sekä niiden tehtävistä. Ne päättävät myös peruskoulujen, lukioiden ja aikuislukioiden työn aloittamisesta sekä lomien ajankohdista ja vapaapäivistä. Jaostoilla on myös muita tehtäviä.
 
 
-[OLK] # Opetuslautakunta
+[Opetuslautakunta]
 Opetuslautakunta linjaa opetusviraston toiminnan päätavoitteet. Lautakunta mm. päättää opetusviraston talousarvioesityksestä ja asettaa virastolle tulostavoitteita. Lautakunta hyväksyy jaostojen esityksestä kaupunginhallituksen vahvistamissa rajoissa tilahankkeita koskevat suunnitelmat ja päättää hankinnoista sekä vahvistaa ne rajat, joiden mukaan virkamiehet voivat päättää hankinnoista.
 
 Opetuslautakunta tekee jaostojen ehdotuksesta esityksen kaupunginhallitukselle lukiokoulutuksen ja ammatillisen koulutuksen kokonaismitoituksesta Helsingissä. Lautakunta päättää myös oppilaskuljetusten periaatteista.
@@ -149,7 +149,7 @@ Opetuslautakunta tekee jaostojen ehdotuksesta esityksen kaupunginhallitukselle l
 Lautakunnalla on myös muita tehtäviä. Tarvittaessa lautakunta voi asettaa määrättyä asiaa valmistelemaan tilapäisen jaoston.
 
 
-[Palmiajk] # Palmia-liikelaitoksen jk
+[Palmia-liikelaitoksen jk]
 Johtokunnan tehtävät:
 
 1. päättää liikelaitoksen jakautumisesta osastotasoisiin yksiköihin
@@ -163,23 +163,23 @@ Johtokunnan tehtävät:
 9. päättää kaupunginhallituksen vahvistamissa rajoissa huonetilojen vuokralle ottamisesta sekä hyväksyy perusteet, joiden mukaan viranhaltija päättää vuokralle ottamisesta
 10. päättää palvelujen hinnoitteluperusteet.
 
-[PELK] # Pelastuslautakunta
+[Pelastuslautakunta]
 Helsingin kaupungin pelastuslautakunta ja sen alainen Helsingin kaupungin pelastuslaitos huolehtivat pelastustoimesta ja kiireellisestä sairaankuljetuksesta sekä niille erikseen määrätyistä tai sovituista tehtävistä kaupunginvaltuuston ja kaupunginhallituksen hyväksymien tavoitteiden mukaisesti.
 
 Lautakunta ja laitos huolehtivat kiireellisestä sairaankuljetuksesta siinä laajuudessa kuin terveyslautakunta ja -keskus ovat antaneet sen niiden tehtäväksi.
 
 
-[Sotelk] # Sosiaali- ja terveyslautakunta
+[Sosiaali- ja terveyslautakunta]
 Sosiaali- ja terveyslautakunnan tehtävänä on huolehtia Helsingin kaupungin sosiaali- ja terveystoimesta lasten päivähoitoa lukuun ottamatta kaupunginvaltuuston ja kaupunginhallituksen hyväksymien tavoitteiden mukaisesti.
 
-[Soslk] # Sosiaalilautakunta
-[Stojk] # Suomenkielisen työväenopiston jk
+[Sosiaalilautakunta]
+[Suomenkielisen työväenopiston jk]
 Työväenopiston johtokunta määrittelee opiston toimintalinjat, painopisteet sekä tavoitteet siten, että ne ovat sopusoinnussa kaupungin tavoitteiden kanssa. Johtokunta ohjaa opiston toimintaa sekä valvoo, että tavoitteet saavutetaan vahvistetun talousarvion ja muiden suunnitelmien mukaan.
 
-[Taimujk] # Taidemuseon johtokunta
+[Taidemuseon johtokunta]
 Johtosäännön mukaisesti Helsingin taidemuseon johtokunta ja sen alainen Helsingin taidemuseo vastaavat kaupungin kuvataidepolitiikasta ja taidemuseotoiminnasta sekä muista niille määrätyistä tehtävistä hyväksyttyjen tavoitteiden mukaisesti.
 
-[Talpajk] # Taloushallintopalvelu-liikelaitoksen jk
+[Taloushallintopalvelu-liikelaitoksen jk]
 Johtokunta vastaa Taloushallintopalvelu-liikelaitoksen hallinnon ja toiminnan sekä sisäisen valvonnan järjestämisestä. Johtokunnan tehtävänä on mm.
 
 - päättää liikelaitoksen toiminnan kehittämisestä
@@ -190,24 +190,24 @@ Johtokunta vastaa Taloushallintopalvelu-liikelaitoksen hallinnon ja toiminnan se
 - päättää palvelujen hinnoitteluperusteista
 
 
-[Talk] # Tarkastuslautakunta
+[Tarkastuslautakunta]
 Tarkastuslautakunta huolehtii Helsingin kaupungin ja kaupunkikonsernin hallinnon ja talouden tarkastuksen järjestämisestä ja kuntalain mukaisen arvioinnin suorittamisesta. Lautakunnassa on 9 jäsentä ja kullakin henkilökohtainen varajäsen. Puheenjohtajan ja varapuheenjohtajan tulee olla kaupunginvaltuutettuja.
 
 Lautakunta valmistelee kaupunginvaltuuston päätettäviksi hallinnon ja talouden tarkastusta koskevat asiat, mm. kaupungin tilintarkastajan valinnan. Lautakunta arvioi vuosittain, ovatko valtuuston kaupungille ja kaupunkikonsernille asettamat toiminnalliset ja taloudelliset tavoitteet toteutuneet. Tarkastuslautakunta on suoraan kaupunginvaltuuston alainen. Lautakunta antaa arviointikertomuksen kaupunginvaltuustolle toukokuun loppuun mennessä.
 
 Lautakunta seuraa kaupungin ja kaupunkikonsernin hallintoa ja taloutta sekä niissä tapahtuvia muutoksia. Se hyväksyy suunnitelman kaupunkikonsernin tytäryhtiöiden ja säätiöiden tilintarkastuksen järjestämisestä, nimeää ehdokkaat näiden tilintarkastajiksi sekä yhteensovittaa kaupungin ja kaupunkikonsernin tilintarkastuksen.
 
-[Tplk] # Teknisen palvelun lautakunta
+[Teknisen palvelun lautakunta]
 Helsingin kaupungin teknisen palvelun lautakunta kehittää ja valvoo rakentamispalvelun eli Staran, hankintakeskuksen sekä Helsingin tukkutorin toimintaa.
 
 
-[Tervlk] # Terveyslautakunta
+[Terveyslautakunta]
 
 
-[Vakalk] # Varhaiskasvatuslautakunta
+[Varhaiskasvatuslautakunta]
 
 
-[Ytlk] # Yleisten töiden lautakunta
+[Yleisten töiden lautakunta]
 Rakennusvirasto vastaa Helsingin katujen ja viheralueiden suunnittelusta, rakentamisesta ja kunnossapidosta sekä pysäköinninvalvonnasta. Se myös suunnittelee ja rakennuttaa kaupungin toimitiloja.
 
 Yleisten töiden lautakunta ohjaa ja valvoo rakennusviraston toimintaa. Lautakunnan tehtävänä on mm.:
@@ -217,7 +217,7 @@ Yleisten töiden lautakunta ohjaa ja valvoo rakennusviraston toimintaa. Lautakun
 - päättää viraston rakennushankkeista sekä suurimmista hankinnoista.
 
 
-[Ylk] # Ympäristölautakunta
+[Ympäristölautakunta]
 Helsingin kaupungin ympäristölautakunta edistää, ohjaa ja valvoo ympäristönsuojelua sekä elinympäristön terveellisyyttä, turvallisuutta ja viihtyisyyttä.
 
 Lisäksi ympäristölautakunta huolehtii elintarvike- ja kemikaalivalvonnasta sekä eläinlääkintähuollosta ja eläinsuojelusta Helsingissä.

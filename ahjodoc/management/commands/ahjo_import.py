@@ -6,6 +6,7 @@ import csv
 import logging
 import datetime
 import difflib
+import markdown
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from django import db
@@ -348,6 +349,27 @@ class Command(BaseCommand):
             cat, c = Category.objects.get_or_create(origin_id=cat_id, defaults=defaults)
             print "%-15s %s" % (cat_id, cat_name)
 
+    def _import_pm_desc(self):
+        f = open(os.path.join(self.data_path, 'policymaker.txt'), 'r')
+        desc = {}
+        active = None
+        for l in f.readlines():
+            l = l.decode('utf8')
+            if l[0] == '[':
+                l = l.strip('[]\n')
+                desc[l] = []
+                active = desc[l]
+            else:
+                active.append(l.strip())
+        for name, lines in desc.items():
+            content = '\n'.join(lines).strip()
+            if not content:
+                del desc[name]
+                continue
+            content = markdown.markdown(content)
+            desc[name] = content
+        return desc
+
     def import_policymakers(self):
         ORG_TYPES = {
             1: 'Valtuusto',
@@ -367,6 +389,9 @@ class Command(BaseCommand):
 
         if not self.options['force_policymakers'] and Policymaker.objects.count():
             return
+
+        desc = self._import_pm_desc()
+
         f = open(os.path.join(self.data_path, 'organisaatiokoodit.csv'), 'r')
         reader = csv.reader(f)
         # skip header
@@ -381,8 +406,12 @@ class Command(BaseCommand):
             # Only choose the political policymakers
             if org_type not in (1, 2, 3, 4, 5):
                 continue
+            org_name = org_name.decode('utf8')
             defaults = {'name': org_name}
-            comm, c = Policymaker.objects.get_or_create(origin_id=org_id, defaults=defaults)
+            pm, c = Policymaker.objects.get_or_create(origin_id=org_id, defaults=defaults)
+            if org_name in desc:
+                pm.summary = desc[org_name]
+                pm.save()
             print "%10s %55s %15s" % (org_id, org_name, ORG_TYPES[int(org_type)])
 
     def handle(self, **options):
@@ -391,6 +420,19 @@ class Command(BaseCommand):
         self.options = options
         self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
         self.geocoder = AhjoGeocoder()
+
+        self.import_policymakers()
+        self.import_categories()
+        self.scanner = AhjoScanner(verbosity=self.verbosity)
+        doc_list = self.scanner.scan_documents(cached=options['cached'])
+        media_dir = settings.MEDIA_ROOT
+        self.scanner.doc_store_path = os.path.join(media_dir, settings.AHJO_PATHS['zip'])
+        self.xml_path = os.path.join(media_dir, settings.AHJO_PATHS['xml'])
+        self.attachment_path = os.path.join(media_dir, settings.AHJO_PATHS['attachment'])
+        self.video_path = os.path.join(media_dir, settings.AHJO_PATHS['video'])
+        for path in (self.xml_path, self.attachment_path, self.video_path):
+            if not os.path.exists(path):
+                os.makedirs(path)
 
         plan_path = os.path.join(self.data_path, 'plans')
         if os.path.isdir(plan_path):
@@ -410,19 +452,6 @@ class Command(BaseCommand):
         else:
             print "Address database not found; address geocoding not available."
             self.geocode_addresses = False
-
-        self.import_policymakers()
-        self.import_categories()
-        self.scanner = AhjoScanner(verbosity=self.verbosity)
-        doc_list = self.scanner.scan_documents(cached=options['cached'])
-        media_dir = settings.MEDIA_ROOT
-        self.scanner.doc_store_path = os.path.join(media_dir, settings.AHJO_PATHS['zip'])
-        self.xml_path = os.path.join(media_dir, settings.AHJO_PATHS['xml'])
-        self.attachment_path = os.path.join(media_dir, settings.AHJO_PATHS['attachment'])
-        self.video_path = os.path.join(media_dir, settings.AHJO_PATHS['video'])
-        for path in (self.xml_path, self.attachment_path, self.video_path):
-            if not os.path.exists(path):
-                os.makedirs(path)
 
         for info in doc_list:
             if options['meeting_id']:
