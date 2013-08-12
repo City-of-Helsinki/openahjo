@@ -60,7 +60,7 @@ class @AgendaItem extends Backbone.Tastypie.Model
         slug = @get_slug pm_list
         return issue.get_view_url() + slug + '/'
     has_non_public_attachments: ->
-        for att in ai.attachments
+        for att in @get 'attachments'
             if not att.public
                 return true
         return false

@@ -380,6 +380,7 @@ class IssueDetailsView extends IssueView
 
             data = ai.toJSON()
             data.meeting.date_str = meeting_date.format DATE_FORMAT
+            data.has_non_public_attachments = ai.has_non_public_attachments()
             if ai.id == @current_ai.id
                 data.is_active = true
                 current_ai_data = data
