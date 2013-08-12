@@ -307,4 +307,4 @@ class PolicymakerRouter extends Backbone.Router
 
 router = new PolicymakerRouter
 
-Backbone.history.start {pushState: true, root: "/policymaker/"}
+Backbone.history.start {pushState: true, root: VIEW_URLS['policymaker-list']}

@@ -424,10 +424,10 @@ class IssueDetailsView extends IssueView
 
 class IssueRouter extends Backbone.Router
     routes:
-        "": "issue_list"
-        "map/": "issue_map"
-        ":issue/": "issue_details"
-        ":issue/:meeting/": "issue_details"
+        "": "issue_list_view"
+        "map/": "issue_map_view"
+        ":issue/": "issue_details_view"
+        ":issue/:meeting/": "issue_details_view"
 
     initialize: ->
         @current_view = null
@@ -450,15 +450,15 @@ class IssueRouter extends Backbone.Router
                 cat_list: @cat_list
                 pm_list: @pm_list
 
-    issue_list: ->
+    issue_list_view: ->
         @ensure_view 'search'
         @current_view.select 'list'
 
-    issue_map: ->
+    issue_map_view: ->
         @ensure_view 'search'
         @current_view.select 'map'
 
-    issue_details: (issue, meeting) ->
+    issue_details_view: (issue, meeting) ->
         model = @issue_list.findWhere slug: issue
         @ensure_view 'details', model
         @current_view.select_agenda_item meeting
@@ -471,4 +471,4 @@ if typeof issue_json != 'undefined'
     issue_list.at(0).agenda_item_list.reset ai_list_json, silent: true
     router.issue_list = issue_list
 
-Backbone.history.start {pushState: true, root: "/issue/"}
+Backbone.history.start {pushState: true, root: VIEW_URLS['issue-list']}
