@@ -124,6 +124,8 @@ class PolicymakerListView extends Backbone.View
             $container.append $row
 
     render: ->
+        @$el.empty()
+
         council = @collection.filter (m) -> m.get_category() == 'council'
         @render_pm_section council, null, true
 
