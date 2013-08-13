@@ -77,8 +77,14 @@ class Command(BaseCommand):
         except Issue.DoesNotExist:
             issue = Issue(register_id=info['register_id'])
 
-        issue.subject = info['subject']
-        print issue.subject
+        if not issue.subject:
+            issue.subject = info['subject']
+        else:
+            # Update subject from earliest meeting
+            ai_list = AgendaItem.objects.filter(issue=issue).order_by('meeting__date')
+            if ai_list:
+                issue.subject = ai_list[0].subject
+        print info['subject']
         s = info['category']
         m = re.match(r"[\d\s]+", s)
         cat_id = s[0:m.end()].strip()
