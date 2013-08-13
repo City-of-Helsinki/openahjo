@@ -27,7 +27,7 @@
 </script>
 
 <script type="text/template" id="policymaker-meeting-list-item-template">
-    <li><a href="<%= view_url %>"><%- number %>/<%- year %> (<%- date_str %>)</a></li>
+    <li<% if (is_selected) { %> class="selected"<% } %>><a href="<%= view_url %>"><%- number %>/<%- year %> (<%- date_str %>)</a></li>
 </script>
 
 <script type="text/template" id="policymaker-meeting-details-template">

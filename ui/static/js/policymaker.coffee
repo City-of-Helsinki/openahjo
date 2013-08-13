@@ -145,8 +145,8 @@ class PolicymakerDetailsView extends Backbone.View
     template: _.template $("#policymaker-details-template").html()
 
     initialize: ->
-        @listenTo @model.meeting_list, 'reset', @render_meeting_list
         @listenTo @model.meeting_list, 'reset', @_select_meeting
+        @listenTo @model.meeting_list, 'reset', @render_meeting_list
 
     format_date: (date) ->
         m = moment date
@@ -164,10 +164,14 @@ class PolicymakerDetailsView extends Backbone.View
         $list_el.empty()
         template = _.template $("#policymaker-meeting-list-item-template").html()
         list.each (meeting) =>
-            model = meeting.toJSON()
-            model.date_str = @format_date meeting.get('date')
-            model.view_url = meeting.get_view_url()
-            $li = $($.trim(template model))
+            data = meeting.toJSON()
+            if meeting.id == @selected_meeting.id
+                data.is_selected = true
+            else
+                data.is_selected = false
+            data.date_str = @format_date meeting.get('date')
+            data.view_url = meeting.get_view_url()
+            $li = $($.trim(template data))
             $li.click (ev) ->
                 link_el = $(@).find('> a')
                 if router.navigate_to_link link_el

@@ -45,7 +45,7 @@ class IssueView extends Backbone.View
         labels = []
         labels.push
             text: @model.get 'top_category_name'
-            'class': 'info'
+            'class': 'category'
 
         districts = {}
         for d in @model.get 'districts'
@@ -53,7 +53,7 @@ class IssueView extends Backbone.View
         for d of districts
             labels.push
                 text: d
-                'class': 'inverse'
+                'class': 'district'
         return labels
 
 class IssueListItemView extends IssueView

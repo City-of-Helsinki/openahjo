@@ -166,7 +166,7 @@ h1 {
         a {
             color: @box_background_color;
             font-size: 28px;
-            font-weight: 900;
+            font-weight: 700;
         }
     }
 }
@@ -189,7 +189,8 @@ h1 {
             margin-top: 0px;
             color: @box_text_color;
             text-transform: uppercase;
-            font-weight: 900;
+            font-weight: 700;
+            line-height: 1em;
         }
         p {
             font-weight: 600;
@@ -280,6 +281,18 @@ h1 {
  * Issue list view                       *
  *****************************************/
 
+.issue-labels {
+    .label {
+        font-weight: bold;
+    }
+    .label-category {
+        background-color: @org_color_3;
+    }
+    .label-district {
+        background-color: #333;
+    }
+}
+
 #issue-list-filter {
     border: 1px solid @border_color;
     .border-radius(3px);
@@ -355,7 +368,7 @@ ul.issue-list-items {
             width: 500px;
             margin-right: 20px
         }
-        .labels {
+        .issue-labels {
             width: 220px;
             float: left;
         }
@@ -394,7 +407,7 @@ ul.issue-list-items {
         padding-bottom: 4px;
         font-size: 22px;
         line-height: 24px;
-        font-weight: 900;
+        font-weight: 700;
     }
     .vertical-list {
         li {
@@ -414,6 +427,7 @@ ul.issue-list-items {
                 .meeting-link {
                     display: block;
                 }
+                font-weight: bold;
             }
             .policymaker-icon {
                 background-color: @page_side_color;
@@ -446,7 +460,7 @@ ul.issue-list-items {
             .meeting-link a {
                 margin-top: 8px;
                 color: @issue_browse_link_color;
-                font-weight: 700;
+                font-weight: normal;
                 text-decoration: underline;
             }
         }
@@ -491,10 +505,10 @@ ul.issue-list-items {
             color: @issue_main_color;
             .icon {
                 float: left;
-                font-size: 24px;
-                width: 32px;
+                font-size: 18px;
+                width: 26px;
                 height: 32px;
-                color: gray;
+                //color: gray;
             }
             .data {
                 float: left;
@@ -517,12 +531,12 @@ ul.issue-list-items {
                     position: relative;
                     float: left;
                     text-align: center;
-                    font-size: 24px;
+                    font-size: 18px;
                     margin-right: 4px;
                     min-height: 24px;
                 }
                 .name {
-                    line-height: 24px;
+                    line-height: 18px;
                     float: left;
                     color: @issue_main_color;
                     width: 220px - 24px - 4px;
@@ -533,7 +547,7 @@ ul.issue-list-items {
                 }
                 &.non-public {
                     .icon {
-                        color: gray;
+                        color: @issue_main_color;
                     }
                 }
             }
@@ -549,6 +563,11 @@ ul.issue-list-items {
 /*****************************************
  * Policymaker views                     *
  *****************************************/
+#content-container > h1.policymaker-heading {
+    margin-bottom: 15px;
+}
+
+
 .policymaker-nav-pill(@color) {
     &> a {
         color: @color;
@@ -604,6 +623,7 @@ ul.issue-list-items {
     .other {
         .policymaker-nav-pill(@org_color_5);
     }
+    margin-bottom: 40px;
 }
 
 .policymaker-content {
@@ -614,7 +634,7 @@ ul.issue-list-items {
     margin-left: 100px;
 
     > h2 {
-        font-weight: 800;
+        font-weight: 700;
         margin-top: 24px;
     }
     .row {
@@ -704,6 +724,9 @@ ul.issue-list-items {
             border-right: 1px solid @border_color;
             padding: 8px;
             cursor: pointer;
+            &.selected {
+                background-color: @meeting_details_bg_color;
+            }
             > a {
                 &:hover {
                     text-decoration: none;
@@ -764,7 +787,7 @@ ul.issue-list-items {
                 cursor: pointer;
                 .item-header {
                     .clearfix;
-                    font-size: 24px;
+                    font-size: 20px;
                     font-weight: 700;
                     color: #333;
                 }
@@ -781,7 +804,7 @@ ul.issue-list-items {
         }
         .description-tab {
             h2 {
-                font-weight: 800;
+                font-weight: 700;
                 margin-top: 0px;
                 line-height: 32px;
             }
