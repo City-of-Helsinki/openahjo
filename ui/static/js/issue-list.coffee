@@ -92,6 +92,10 @@ class IssueListCountView extends Backbone.View
 
     initialize: ->
         @listenTo @collection, 'reset', @render
+        @listenTo @collection, 'request', @clear
+
+    clear: ->
+        $("#result-count").hide()
 
     render: ->
         res_count = @collection.meta.total_count
@@ -133,6 +137,7 @@ class IssueListView extends Backbone.View
             remove: false
             success: => @fetching = false
             error: => @fetching = false
+            spinner: $(".issue-list-spinner")
 
     render_one: (issue) ->
         view = new IssueListItemView model: issue
@@ -338,12 +343,18 @@ class IssueSearchView extends Backbone.View
 
     set_filter: (type, query) ->
         @issue_list.set_filter type, query
-        @issue_list.fetch reset: true
+        @issue_list.reset()
+        @issue_list.fetch
+            reset: true
+            spinner: $(".issue-list-spinner")
 
     set_filters: (filters) ->
         for type of filters
             @issue_list.set_filter type, filters[type]
-        @issue_list.fetch reset: true
+        @issue_list.reset()
+        @issue_list.fetch
+            reset: true
+            spinner: $(".issue-list-spinner")
 
 
 class IssueDetailsView extends IssueView

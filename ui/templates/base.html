@@ -50,11 +50,14 @@
         <script src="{% static "js/vendor/moment.min.js" %}"></script>
         <script src="{% static "js/vendor/moment-fi.min.js" %}"></script>
         <script src="{% static "js/vendor/chosen.jquery.js" %}"></script>
+        <script src="{% static "js/vendor/spin.js" %}"></script>
+        <script src="{% static "js/vendor/jquery.spin.js" %}"></script>
+        {% endcompress %}
         <script type="text/javascript">
             moment.lang('fi');
         </script>
-        {% endcompress %}
         {% compress js %}
+        <script type="text/coffeescript" src="{% static "js/backbone-spinner.coffee" %}"></script>
         <script type="text/coffeescript" src="{% static "js/models.coffee" %}"></script>
         {% endcompress %}
         {% block extra_head %}{% endblock %}
