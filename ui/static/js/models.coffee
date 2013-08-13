@@ -38,12 +38,7 @@ class @IssueSearchList extends IssueList
     urlRoot: API_PREFIX + 'v1/issue/search/'
 
     set_filter: (type, val) ->
-        if type == 'text'
-            filter_name = 'q'
-        else if type in ['category', 'bbox', 'policymaker']
-            filter_name = type
-        else
-            throw "Unknown filter type: #{type}"
+        filter_name = type
         if not val
             if filter_name of @filters
                 delete @filters[filter_name]
@@ -197,3 +192,9 @@ class @PolicymakerList extends Backbone.Tastypie.Collection
             'board': 2
             'other': 2
         return "#{PRIORITIES[cat]} #{pm.get 'name'}"
+
+class @District extends Backbone.Tastypie.Model
+
+class @DistrictList extends Backbone.Tastypie.Collection
+    urlRoot: API_PREFIX + 'v1/district'
+    model: District

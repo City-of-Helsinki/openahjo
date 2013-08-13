@@ -178,7 +178,7 @@ class IssueResource(ModelResource):
             raise BadRequest("'limit' and 'page' must be positive integers")
 
         sqs = SearchQuerySet().models(Issue).load_all().order_by('-latest_date')
-        query = request.GET.get('q', '').strip()
+        query = request.GET.get('text', '').strip()
         if query:
             sqs = sqs.auto_query(query).highlight()
 
@@ -193,7 +193,8 @@ class IssueResource(ModelResource):
 
         district = request.GET.get('district', '').strip()
         if district:
-            sqs = sqs.filter(districts=district)
+            d_list = district.split(',')
+            sqs = sqs.filter(districts__in=d_list)
 
         bbox = request.GET.get('bbox', '').strip()
         if bbox:

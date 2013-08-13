@@ -114,7 +114,7 @@ h1 {
 }
 
 #content-container {
-    > h1 {
+    > h1, .main-heading {
         margin-bottom: 40px;
     }
     background-color: white;
@@ -306,10 +306,15 @@ h1 {
         margin-bottom: 0px;
         margin-top: 5px;
     }
-}
-
-#policymaker-filter {
-    width: 580px;
+    select {
+        width: 580px;
+    }
+    input {
+        width: 566px;
+    }
+    .controls > select, input, .chosen-choices {
+        margin-bottom: 4px;
+    }
 }
 
 #issue-list-results {

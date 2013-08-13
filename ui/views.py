@@ -2,10 +2,12 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.conf import settings
 from ahjodoc.models import *
 from ahjodoc.api import *
+from munigeo.api import DistrictResource
 
 # Cache the JSON encodings for some rarely changing data here.
 policymaker_json = None
 category_json = None
+district_json = None
 
 def get_js_paths():
     prefix = getattr(settings, 'URL_PREFIX', '')
@@ -50,6 +52,25 @@ def get_categories(request):
     category_json = json
     return json
 
+def get_districts(request):
+    global district_json
+
+    if district_json:
+        return district_json
+    res = DistrictResource()
+    obj_list = District.objects.all()
+    bundles = []
+    for obj in obj_list:
+        bundle = res.build_bundle(obj=obj, request=request)
+        data = res.full_dehydrate(bundle, for_list=True)
+        del bundle.data['borders']
+        del bundle.data['municipality']
+        bundles.append(data)
+    json = res.serialize(None, bundles, "application/json")
+    district_json = json
+    return json
+
+
 def home_view(request):
     args = {'pm_list_json': get_policymakers(request)}
     return render_view(request, 'home.html', args)
@@ -57,6 +78,7 @@ def home_view(request):
 def issue_view(request, template, args={}):
     args['cat_list_json'] = get_categories(request)
     args['pm_list_json'] = get_policymakers(request)
+    args['district_list_json'] = get_districts(request)
 
     return render_view(request, template, args)
 

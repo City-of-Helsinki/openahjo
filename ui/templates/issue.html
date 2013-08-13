@@ -4,8 +4,10 @@
 
 {% block content %}
 
+<div id="subpage-content-container"></div>
+
 <script id="issue-search-template" type="text/template">
-<h1>Selaa asioita</h1>
+<h1 class="main-heading">Selaa asioita</h1>
 <div class="row">
     <div class="span10 offset1">
         <div id="issue-list-filter">
@@ -16,27 +18,28 @@
                     <input type="text" id="text-filter" placeholder="Syötä teksti...">
                 </div>
             </div>
-            <div id="category-filter" class="input-prepend">
-                <div class="btn-group">
-                    <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
-                    <ul class="dropdown-menu category-list">
-                    </ul>
+            <div class="control-group">
+                <label class="span2" style="margin-left: 0" for="text-filter">Kaupunginosa</label>
+                <div class="controls">
+                    <select id="district-filter" data-placeholder="Syötä kaupunginosa..." multiple>
+                    </select>
                 </div>
-                <input class="span3" type="text">
-            </div>
-            <div id="district-filter" class="input-prepend">
-                <div class="btn-group">
-                    <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Kaupunginosa</button>
-                    <ul class="dropdown-menu">
-                    </ul>
-                </div>
-                <input class="span3" type="text">
             </div>
             <div class="control-group">
                 <label class="span2" style="margin-left: 0" for="text-filter">Päättäjät</label>
                 <div class="controls">
-                    <select id="policymaker-filter" class="input-xxlarge" data-placeholder="Syötä päättäjä..." multiple>
+                    <select id="policymaker-filter" data-placeholder="Syötä päättäjä..." multiple>
                     </select>
+                </div>
+            </div>
+            <div class="control-group">
+                <div id="category-filter" class="input-prepend">
+                    <div class="btn-group">
+                        <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
+                        <ul class="dropdown-menu category-list">
+                        </ul>
+                    </div>
+                    <input class="span3" type="text" disabled>
                 </div>
             </div>
         </div>
@@ -242,6 +245,7 @@ syistä saatu sähköiseen muotoon. (Julkisuuslaki § 621/1999, Sähköisen vies
 <script type="text/javascript">
     cat_list_json = {{ cat_list_json|safe }};
     pm_list_json = {{ pm_list_json|safe }};
+    district_list_json = {{ district_list_json|safe }};
 {% if issue_json %}
     ai_list_json = {{ ai_list_json|safe }};
     issue_json = {{ issue_json|safe }};

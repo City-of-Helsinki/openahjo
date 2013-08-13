@@ -232,6 +232,10 @@ class CategorySelectView extends Backbone.View
         ev.preventDefault()
         el = ev.currentTarget
         cat_id = $(el).data 'cat-id'
+        if not cat_id
+            $("#category-filter input").val ""
+            @parent_view.set_filter 'category', null
+            return
         cat = @collection.findWhere id: cat_id
         $("#category-filter input").val "#{cat.get 'origin_id'} #{cat.get 'name'}"
         @parent_view.set_filter 'category', cat.get 'id'
@@ -239,9 +243,40 @@ class CategorySelectView extends Backbone.View
     render: ->
         $list = @$el.find '.category-list'
         $list.empty()
+        $list.append $("<li><a tabindex='-1' href='#'>Ei tehtäväluokkarajausta</a></li>")
+        $list.append $("<li class='divider'></li>")
         root_list = @collection.filter (cat) -> cat.get('level') == 0
         _.each root_list, (cat) =>
             @make_li cat, $list
+
+class DistrictSelectView extends Backbone.View
+    el: '#district-filter'
+    initialize: (opts) ->
+        @parent_view = opts.parent_view
+    render: ->
+        @$el.empty()
+        district_dict = {}
+        @collection.each (d) =>
+            district_dict[d.get 'name'] = d
+        district_names = []
+        for name of district_dict
+            district_names.push name
+        district_names = _.sortBy district_names, (x) -> x
+
+        @$el.append "<option value=''></option>"
+        _.each district_names, (d) =>
+            opt_el = $("<option value='#{d}'>#{d}</option>")
+            @$el.append opt_el
+        chosen_opts = _.extend {allow_single_deselect: true}, CHOSEN_DEFAULTS
+        @$el.chosen(chosen_opts).change @select_district
+
+    select_district: (ev) =>
+        val = @$el.val()
+        if val
+            d_list = val.join ','
+        else
+            d_list = null
+        @parent_view.set_filter 'district', d_list
 
 class PolicymakerSelectView extends Backbone.View
     el: "#policymaker-filter"
@@ -264,7 +299,7 @@ class PolicymakerSelectView extends Backbone.View
         @parent_view.set_filter 'policymaker', pm_list
 
 class IssueSearchView extends Backbone.View
-    el: "#content-container"
+    el: "#subpage-content-container"
     template: $("#issue-search-template").html()
 
     initialize: (opts) ->
@@ -273,11 +308,17 @@ class IssueSearchView extends Backbone.View
 
         @pm_list = opts.pm_list
         @cat_list = opts.cat_list
+        @district_list = opts.district_list
 
         @cat_select_view = new CategorySelectView
             collection: @cat_list
             parent_view: @
         @cat_select_view.render()
+
+        @district_select_view = new DistrictSelectView
+            collection: @district_list
+            parent_view: @
+        @district_select_view.render()
 
         @pm_select_view = new PolicymakerSelectView
             collection: @pm_list
@@ -361,7 +402,7 @@ class IssueSearchView extends Backbone.View
 
 
 class IssueDetailsView extends IssueView
-    el: "#content-container"
+    el: "#subpage-content-container"
     template: _.template $("#item-details-template").html()
     meeting_template: _.template $("#meeting-template").html()
 
@@ -448,6 +489,7 @@ class IssueRouter extends Backbone.Router
         @current_view = null
         @cat_list = new CategoryList cat_list_json
         @pm_list = new PolicymakerList pm_list_json
+        @district_list = new DistrictList district_list_json
 
     ensure_view: (type, model) ->
         if type == 'search'
@@ -456,6 +498,7 @@ class IssueRouter extends Backbone.Router
             @current_view = new IssueSearchView
                 cat_list: @cat_list
                 pm_list: @pm_list
+                district_list: @district_list
             @issue_list = @current_view.issue_list
         else
             if not @current_view instanceof IssueDetailsView
@@ -464,6 +507,7 @@ class IssueRouter extends Backbone.Router
                 model: model
                 cat_list: @cat_list
                 pm_list: @pm_list
+                district_list: @district_list
 
     issue_list_view: ->
         @ensure_view 'search'
