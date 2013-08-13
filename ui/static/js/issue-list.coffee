@@ -94,7 +94,10 @@ class IssueListCountView extends Backbone.View
         @listenTo @collection, 'reset', @render
         @listenTo @collection, 'request', @clear
 
-    clear: ->
+    clear: =>
+        # Only clear result count if it's not a paging request.
+        if @collection.length != 0
+            return
         $("#result-count").hide()
 
     render: ->
