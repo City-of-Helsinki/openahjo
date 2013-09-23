@@ -21,6 +21,12 @@ SKIP_DOC_LIST = [
 
 SKIP_URL_LIST = [
     'http://openhelsinki.hel.fi/files/Taloushallintopalvelu-liikelaitoksen%20jk_71900/Talpa%202013-05-28%20Talpajk%203%20El%20Su.zip', # Duplicate
+    'http://openhelsinki.hel.fi/files/Kaupunginhallituksen%20konsernijaosto_02978/Halke%202013-08-26%20Koja%2011%20El%20Su.zip', # Wrong meeting id
+    'http://openhelsinki.hel.fi/files/Kaupunginhallituksen%20konsernijaosto_02978/Halke%202013-08-26%20Koja%2011%20Pk%20Su.zip', # Wrong meeting id
+    'http://openhelsinki.hel.fi/files/Kaupunginmuseon%20johtokunta_46113/Museo%202013-08-27%20Museojk%207%20El%20Su.zip', # wrong meeting id
+    'http://openhelsinki.hel.fi/files/Kaupunginmuseon%20johtokunta_46113/Museo%202013-08-27%20Museojk%207%20Pk%20Su.zip', # wrong meeting id
+    'http://openhelsinki.hel.fi/files/Suomenkielisen%20tyovaenopiston%20jk_45100/Sto%202013-08-27%20Stojk%2012%20El%20Su.zip', # wrong meeting id
+    'http://openhelsinki.hel.fi/files/Suomenkielisen%20tyovaenopiston%20jk_45100/Sto%202013-08-27%20Stojk%2012%20Pk%20Su.zip', # wrong meeting id
 ]
 
 CHUNK_SIZE = 32*1024
