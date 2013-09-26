@@ -84,7 +84,6 @@ class Command(BaseCommand):
             ai_list = AgendaItem.objects.filter(issue=issue).order_by('meeting__date')
             if ai_list:
                 issue.subject = ai_list[0].subject
-        print info['subject']
         s = info['category']
         m = re.match(r"[\d\s]+", s)
         cat_id = s[0:m.end()].strip()
@@ -484,7 +483,7 @@ class Command(BaseCommand):
         if self.geocoder.no_match_addresses:
             print "No coordinate match found for addresses:"
             for adr in set(self.geocoder.no_match_addresses):
-                print adr
+                print unicode(adr).encode('utf8')
         if self.geocoder.no_match_plans:
             print "No coordinate match found for plans:"
             for plan in self.geocoder.no_match_plans:
