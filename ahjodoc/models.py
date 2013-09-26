@@ -1,3 +1,5 @@
+import re
+
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.gis.db import models
@@ -71,6 +73,31 @@ class Issue(models.Model):
 
     geometries = models.ManyToManyField('IssueGeometry')
     districts = models.ManyToManyField(District)
+
+    def determine_subject(self):
+        ai_list = AgendaItem.objects.filter(issue=self).order_by('meeting__date')
+        # First try city board
+        for ai in ai_list:
+            if ai.meeting.policymaker.origin_id == '00400':
+                break
+        else:
+            ai = None
+        # Then city council
+        if not ai:
+            for ai in ai_list:
+                if ai.meeting.policymaker.origin_id == '02900':
+                    break
+            else:
+                ai = None
+        # Then just the first one that doesn't include 'lausunto'
+        if not ai:
+            for ai in ai_list:
+                if not 'lausunto' in ai.subject.lower():
+                    break
+            else:
+                ai = ai_list[0]
+
+        return ai.subject
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:

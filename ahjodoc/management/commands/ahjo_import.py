@@ -80,10 +80,8 @@ class Command(BaseCommand):
         if not issue.subject:
             issue.subject = info['subject']
         else:
-            # Update subject from earliest meeting
-            ai_list = AgendaItem.objects.filter(issue=issue).order_by('meeting__date')
-            if ai_list:
-                issue.subject = ai_list[0].subject
+            issue.subject = determine_subject(issue)
+
         s = info['category']
         m = re.match(r"[\d\s]+", s)
         cat_id = s[0:m.end()].strip()

@@ -207,7 +207,18 @@ class AhjoDocument(object):
         if not register_id_el:
             return
 
-        info['subject'] = desc_el.find('Otsikko').text.strip()
+        subject = clean_text(desc_el.find('Otsikko').text)
+        if subject.startswith('V '):
+            # Strip the first word
+            subject = subject.split(' ', 1)[1]
+            # Strip possible date
+            subject = re.sub(r'^\d+\.\d+\.\d+', '', subject)
+            # Strip comma and space
+            subject = re.sub(r'^[, ]+', '', subject)
+        # Strip Kj/Ryj/Kaj...
+        subject = re.sub(r'\w{2,4} ?/ *', '', subject)
+        info['subject'] = subject
+
         if self.verbosity >= 2:
             self.logger.debug('Parsing item: %s' % info['subject'])
         item_nr = index + 1
