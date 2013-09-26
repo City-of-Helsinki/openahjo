@@ -30,7 +30,7 @@ if [ $? -ne 0 ]; then
 fi
 
 if [ ! -z "$VARNISH_BAN_URL" ]; then
-    varnishadm ban req.url ~ "$VARNISH_BAN_URL" >> $LOG_FILE 2>&1
+    varnishadm ban req.url \~ "$VARNISH_BAN_URL" >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]; then
         cat $LOG_FILE
         exit 1
