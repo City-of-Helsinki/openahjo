@@ -1,3 +1,4 @@
+import sys
 import tempfile
 import requests
 import shutil
@@ -10,7 +11,7 @@ def download_file(url, output_fname=None):
 
     resp = requests.get(url, stream=True)
     total_len = int(resp.headers['content-length'])
-    if total_len > 1*1024*1024:
+    if total_len > 1*1024*1024 and sys.stdout.isatty():
         pbar = ProgressBar(maxval=total_len).start()
     else:
         pbar = None

@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+import sys
 import os
 import tempfile
 import shutil
@@ -139,13 +140,18 @@ class AhjoScanner(object):
 
         resp = requests.get(info['url'], stream=True)
         total_len = int(resp.headers['content-length'])
-        pbar = ProgressBar(maxval=total_len).start()
+        if sys.stdout.isatty():
+            pbar = ProgressBar(maxval=total_len).start()
+        else:
+            pbar = None
         bytes_down = 0
         for chunk in resp.iter_content(CHUNK_SIZE):
             outf.write(chunk)
             bytes_down += len(chunk)
-            pbar.update(bytes_down)
-        pbar.finish()
+            if pbar:
+                pbar.update(bytes_down)
+        if pbar:
+            pbar.finish()
         if store_fpath:
             outf.close()
             shutil.move(outf.name, store_fpath)
