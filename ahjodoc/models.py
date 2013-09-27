@@ -95,7 +95,10 @@ class Issue(models.Model):
                 if not 'lausunto' in ai.subject.lower():
                     break
             else:
-                ai = ai_list[0]
+                if len(ai_list):
+                    ai = ai_list[0]
+                else:
+                    return self.subject
 
         return ai.subject
 
