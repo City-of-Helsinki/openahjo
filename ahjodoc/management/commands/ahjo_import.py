@@ -80,7 +80,7 @@ class Command(BaseCommand):
         if not issue.subject:
             issue.subject = info['subject']
         else:
-            issue.subject = determine_subject(issue)
+            issue.subject = issue.determine_subject()
 
         s = info['category']
         m = re.match(r"[\d\s]+", s)
