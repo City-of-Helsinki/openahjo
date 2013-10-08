@@ -71,7 +71,7 @@
         <div class="subject"><%- subject %></div>
         <div class="issue-labels">
             <% _.each(label_list, function(label) { %>
-                <span class="label label-<%- label.class %>"><%- label.text %></span>
+                <span class="label label-<%= label['class'] %>"><%= label.text %></span>
             <% }); %>
         </div>
     </header>
@@ -129,7 +129,7 @@
         </div>
         <div class="issue-labels section">
             <% _.each(label_list, function(label) { %>
-                <span class="label label-<%- label.class %>"><%- label.text %></span>
+                <span class="label label-<%- label['class'] %>"><%- label.text %></span>
             <% }); %>
         </div>
         <% if (current.attachments.length) { %>
