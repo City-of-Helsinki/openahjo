@@ -159,6 +159,15 @@ class AgendaItem(models.Model):
     def get_absolute_url(self):
         return reverse('ui.views.issue_details', kwargs={'slug': self.issue.slug})
 
+    def save(self, *args, **kwargs):
+        ret = super(AgendaItem, self).save(*args, **kwargs)
+        issue = self.issue
+        subject = issue.determine_subject()
+        if subject != issue.subject:
+            issue.subject = subject
+            issue.save()
+        return ret
+
     def __unicode__(self):
         if self.issue:
             return u"%s / #%d: %s (%s)" % (self.meeting, self.index, self.subject,
