@@ -4,6 +4,7 @@ import csv
 import os
 import re
 import logging
+import cPickle
 from noaho import NoAho
 from django.contrib.gis.gdal import DataSource, SpatialReference, CoordTransform
 from django.contrib.gis.geos import GEOSGeometry, Point, Polygon, MultiPolygon, LineString, LinearRing
@@ -12,49 +13,26 @@ from django.conf import settings
 GK25_SRID = 3879
 
 class AhjoGeocoder(object):
+    PLAN_UNIT_SHORT_MATCH = r'^(\d{3,5})/(\d+)(.*)$'
+    PLAN_UNIT_LONG_MATCH = r'^0?91-(\d+)-(\d+)-(\d+)(.*)$'
+
     def __init__(self):
         self.logger = logging.getLogger(__name__)
         self.no_match_addresses = []
         self.no_match_plans = []
         self.plan_map = {}
+        self.plan_unit_map = {}
+        self.street_tree = None
 
     def convert_from_gk25(self, north, east):
         pnt = Point(east, north, srid=GK25_SRID)
         pnt.transform(settings.PROJECTION_SRID)
         return pnt
 
-    def geocode_address(self, street, num):
-        e_list = self.street_hash[street]
-        for e in e_list:
-            if num == e['num']:
-                break
-            if e['num_end'] and e['num'] < num <= e['num_end']:
-                break
-        else:
-            self.logger.warning("No match found for '%s %d'" % (street, num))
-            s = '%s %d' % (e['street'], num)
-            if not s in self.no_match_addresses:
-                self.no_match_addresses.append(s)
-            return None
+    def geocode_address(self, text):
+        if not self.street_tree:
+            return {}
 
-        pnt = self.convert_from_gk25(e['coord_n'], e['coord_e'])
-        return {'name': '%s %d' % (e['street'], num), 'geometry': pnt, 'type': 'address'}
-
-    def geocode_plan(self, plan_id):
-        plan = self.plan_map.get(plan_id)
-        if not plan:
-            if plan_id not in self.no_match_plans:
-                self.logger.warning("No plan found for plan id %s" % plan_id)
-                self.no_match_plans.append(plan_id)
-            return
-        return {'name': plan_id, 'geometry': plan['geometry'], 'type': 'plan'}
-
-    def geocode_district(self, text):
-        return
-
-    def geocode_from_text(self, text):
-        if not isinstance(text, unicode):
-            text = unicode(text).strip()
         STREET_SUFFIXES = ('katu', 'tie', 'kuja', 'polku', 'kaari', 'linja', 'raitti', 'rinne', 'penger', 'ranta', u'väylä')
         for sfx in STREET_SUFFIXES:
             m = re.search(r'([A-Z]\w+%s)\s+(\d+)' % sfx, text)
@@ -77,24 +55,120 @@ class AhjoGeocoder(object):
                 continue
             num = int(m.groups()[0])
 
-            geom = self.geocode_address(street_name, num)
+            e_list = self.street_hash[street_name]
+            for e in e_list:
+                if num == e['num']:
+                    break
+                if e['num_end'] and e['num'] < num <= e['num_end']:
+                    break
+            else:
+                self.logger.warning("No match found for '%s %d'" % (street_name, num))
+                s = '%s %d' % (e['street'], num)
+                if not s in self.no_match_addresses:
+                    self.no_match_addresses.append(s)
+                continue
+
+            geom_id = "%s/%s" % (geom['type'], geom['name'])
+            pnt = self.convert_from_gk25(e['coord_n'], e['coord_e'])
+            geom = {'name': '%s %d' % (e['street'], num), 'geometry': pnt, 'type': 'address'}
+            geometries[geom_id] = geom
+        return geometries
+
+    def geocode_plan(self, plan_id):
+        plan = self.plan_map.get(plan_id)
+        if not plan:
+            if plan_id not in self.no_match_plans:
+                self.logger.warning("No plan found for plan id %s" % plan_id)
+                self.no_match_plans.append(plan_id)
+            return
+        return {'name': plan_id, 'geometry': plan['geometry'], 'type': 'plan'}
+
+    def geocode_plan_unit(self, text, context):
+        print text
+        # If there are more than one '/' characters, it's not a plan unit
+        m = re.match(self.PLAN_UNIT_SHORT_MATCH, text)
+        if m:
+            if text.count('/') > 1:
+                return None
+            block_id, unit_id, rest = m.groups()
+            block_id = int(block_id)
+            unit_id = int(unit_id)
+            district_id = block_id // 1000
+            block_id %= 1000
+            if rest:
+                if rest[0].lower() in ('a', 'b', 'c', 'd', 'e'):
+                    rest = rest[1:]
+                rest = rest.strip()
+                if rest and rest[0] == '-':
+                    range_end = int(re.match('-\s?(\d)+', rest).groups()[0])
+                elif rest.startswith('ja'):
+                    range_end = int(rest[2:])
+                elif rest.lower().startswith('.a'): # Ksv notation
+                    pass
+                elif rest.startswith(':'): # ???
+                    pass
+            # check for '161/3.A' style
+            if not district_id:
+                for l in context['all_text']:
+                    print '\t%s' % l
+                    m = re.match(r'(\d+)\.ko', l, re.I)
+                    if not m:
+                        continue
+                    district_id = int(m.groups()[0])
+                    break
+                if not district_id:
+                    self.logger.warning("No district id found for '%s'" % text)
+                    return None
+        else:
+            m = re.match(self.PLAN_UNIT_LONG_MATCH, text)
+            district_id, block_id, unit_id = [int(x) for x in m.groups()[0:3]]
+            rest = m.groups()[3]
+
+        jhs_id = '091%03d%04d%04d' % (district_id, block_id, unit_id)
+        name = '91-%d-%d-%d' % (district_id, block_id, unit_id)
+        plan_unit = self.plan_unit_map.get(jhs_id, None)
+        if plan_unit:
+            return {'name': name, 'type': 'plan_unit', 'geometry': plan_unit['geometry']}
+        else:
+            self.logger.warning("No plan unit '%s' found" % jhs_id)
+            return None
+
+    def geocode_district(self, text):
+        return
+
+    def geocode_from_text(self, text, context):
+        text = text.strip()
+        if not isinstance(text, unicode):
+            text = unicode(text)
+
+        geometries = {}
+
+        # Check for plan unit IDs
+        m1 = re.match(self.PLAN_UNIT_SHORT_MATCH, text)
+        m2 = re.match(self.PLAN_UNIT_LONG_MATCH, text)
+        if m1 or m2:
+            geom = self.geocode_plan_unit(text, context)
             if geom:
                 geom_id = "%s/%s" % (geom['type'], geom['name'])
                 geometries[geom_id] = geom
+            return geometries
 
-        m = re.match(r'^(\d{3,5})\.[a-zA-Z]$', text)
+        m = re.match(r'^(\d{3,5})\.[pP]$', text)
         if m:
             geom = self.geocode_plan(m.groups()[0])
             if geom:
                 geom_id = "%s/%s" % (geom['type'], geom['name'])
                 geometries[geom_id] = geom
 
+        geometries.update(self.geocode_address(text))
+
         return geometries
 
     def geocode_from_text_list(self, text_list):
         geometries = {}
+        context = {'all_text': text_list}
         for text in text_list:
-            g = self.geocode_from_text(text)
+            g = self.geocode_from_text(text, context)
             geometries.update(g)
         return [geom for geom_id, geom in geometries.iteritems()]
 
@@ -161,7 +235,6 @@ class AhjoGeocoder(object):
                     # if the LineString doesn't form a polygon, skip it.
                     continue
                 poly = Polygon(ring)
-                print type(poly)
             if plan['geometry']:
                 if isinstance(plan['geometry'], Polygon):
                     plan['geometry'] = MultiPolygon(plan['geometry'])
@@ -169,3 +242,48 @@ class AhjoGeocoder(object):
             else:
                 plan['geometry'] = poly
         print "%d plans imported" % idx
+
+    def load_plan_units(self, plan_unit_file):
+        try:
+            picklef = open('plan_units.pickle', 'r')
+            self.plan_unit_map = cPickle.load(picklef)
+            print "%d plan units loaded" % len(self.plan_unit_map)
+            return
+        except IOError:
+            pass
+
+        ds = DataSource(plan_unit_file, encoding='iso8859-1')
+        lyr = ds[0]
+
+        for idx, feat in enumerate(lyr):
+            origin_id = feat['jhstunnus'].as_string().strip()
+            geom = feat.geom
+            geom.srid = GK25_SRID
+            geom.transform(settings.PROJECTION_SRID)
+            if origin_id not in self.plan_unit_map:
+                plan = {'geometry': None}
+                self.plan_unit_map[origin_id] = plan
+            else:
+                plan = self.plan_unit_map[origin_id]
+            poly = GEOSGeometry(geom.wkb, srid=geom.srid)
+            if isinstance(poly, LineString):
+                try:
+                    ring = LinearRing(poly.tuple)
+                except Exception:
+                    self.logger.error("Skipping plan %s, it's linestring doesn't close." % origin_id)
+                    # if the LineString doesn't form a polygon, skip it.
+                    continue
+                poly = Polygon(ring)
+            if plan['geometry']:
+                if isinstance(plan['geometry'], Polygon):
+                    plan['geometry'] = MultiPolygon(plan['geometry'])
+                if isinstance(poly, MultiPolygon):
+                    plan['geometry'].extend(poly)
+                else:
+                    plan['geometry'].append(poly)
+            else:
+                plan['geometry'] = poly
+        print "%d plan units imported" % idx
+
+        picklef = open('plan_units.pickle', 'w')
+        cPickle.dump(self.plan_unit_map, picklef)
