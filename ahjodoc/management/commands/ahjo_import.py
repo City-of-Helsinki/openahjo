@@ -446,6 +446,15 @@ class Command(BaseCommand):
             print "Plan database not found; plan geocoding not available."
             self.geocode_plans = False
 
+        property_path = os.path.join(self.data_path, 'properties')
+        if os.path.isdir(property_path):
+            self.geocoder.load_plan_units(os.path.join(property_path, 'Kaava_kaavayksikko_Voimassa.tab'))
+            self.geocoder.load_properties(os.path.join(property_path, 'GISestx.csv'))
+            self.geocode_plan_units = True
+        else:
+            print "Plan unit database not found; plan unit geocoding not available."
+            self.geocode_plan_units = False
+
         addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
         if os.path.isfile(addr_fname):
             addr_f = open(addr_fname, 'r')
