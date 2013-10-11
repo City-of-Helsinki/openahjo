@@ -43,9 +43,14 @@ class IssueIndex(indexes.SearchIndex, indexes.Indexable):
         return [x.name for x in districts]
 
     def prepare_location(self, obj):
-        for g in obj.geometries.all():
+        geometries = list(obj.geometries.all())
+        for g in geometries:
             if g.geometry.geom_type == 'Point':
                 return "%f,%f" % (g.geometry.y, g.geometry.x)
+        for g in geometries:
+            if g.geometry.geom_type in ('Polygon', 'MultiPolygon'):
+                center = g.geometry.centroid
+                return "%f,%f" % (center.y, center.x)
         return None
 
     def prepare_text(self, obj):
