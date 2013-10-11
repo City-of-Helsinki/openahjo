@@ -20,9 +20,11 @@ class AhjoGeocoder(object):
         self.logger = logging.getLogger(__name__)
         self.no_match_addresses = []
         self.no_match_plans = []
+        self.no_match_plan_units = []
         self.plan_map = {}
         self.plan_unit_map = {}
         self.street_tree = None
+        self.matches = 0
 
     def convert_from_gk25(self, north, east):
         pnt = Point(east, north, srid=GK25_SRID)
@@ -84,7 +86,6 @@ class AhjoGeocoder(object):
         return {'name': plan_id, 'geometry': plan['geometry'], 'type': 'plan'}
 
     def geocode_plan_unit(self, text, context):
-        print text
         # If there are more than one '/' characters, it's not a plan unit
         m = re.match(self.PLAN_UNIT_SHORT_MATCH, text)
         if m:
@@ -110,7 +111,6 @@ class AhjoGeocoder(object):
             # check for '161/3.A' style
             if not district_id:
                 for l in context['all_text']:
-                    print '\t%s' % l
                     m = re.match(r'(\d+)\.ko', l, re.I)
                     if not m:
                         continue
@@ -127,11 +127,20 @@ class AhjoGeocoder(object):
         jhs_id = '091%03d%04d%04d' % (district_id, block_id, unit_id)
         name = '91-%d-%d-%d' % (district_id, block_id, unit_id)
         plan_unit = self.plan_unit_map.get(jhs_id, None)
+        prop = self.property_map.get(jhs_id, None)
+        geometry = None
         if plan_unit:
-            return {'name': name, 'type': 'plan_unit', 'geometry': plan_unit['geometry']}
+            geometry = plan_unit['geometry']
+        elif prop:
+            geometry = prop['geometry']
         else:
-            self.logger.warning("No plan unit '%s' found" % jhs_id)
+            print("No geometry found for '%s'" % jhs_id)
+            self.logger.warning("No geometry found for '%s'" % jhs_id)
+            self.no_match_plan_units.append([text, jhs_id])
             return None
+
+        self.matches += 1
+        return {'name': name, 'type': 'plan_unit', 'geometry': geometry}
 
     def geocode_district(self, text):
         return
@@ -287,3 +296,42 @@ class AhjoGeocoder(object):
 
         picklef = open('plan_units.pickle', 'w')
         cPickle.dump(self.plan_unit_map, picklef)
+
+    def load_properties(self, property_file):
+        try:
+            picklef = open('property_db.pickle', 'r')
+            self.property_map = cPickle.load(picklef)
+            print "%d properties loaded" % len(self.property_map)
+            return
+        except IOError:
+            pass
+
+        f = open(property_file, 'r')
+        reader = csv.reader(f)
+        header = reader.next()
+
+        ident_row = header.index('estx_ident')
+        x_row = header.index('estx_ixm')
+        y_row = header.index('estx_iym')
+        name_row = header.index('estx_enam')
+
+        self.property_map = {}
+        for idx, row in enumerate(reader):
+            x, y = row[x_row], row[y_row]
+            # Discard rows without coordinates
+            if not x or not y:
+                continue
+            x = int(x)
+            y = int(y)
+            if not x or not y:
+                continue
+
+            s = row[ident_row]
+            origin_id = s
+            assert origin_id not in self.property_map
+            pnt = self.convert_from_gk25(y, x)
+            self.property_map[origin_id] = {'geometry': pnt}
+        print "%d properties imported" % idx
+
+        picklef = open('property_db.pickle', 'w')
+        cPickle.dump(self.property_map, picklef)
