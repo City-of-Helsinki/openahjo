@@ -304,7 +304,7 @@ class AhjoGeocoder(object):
                 self.plan_unit_map[key]['geometry'] = geom
 
         picklef = open('plan_units.pickle', 'w')
-        cPickle.dump(self.plan_unit_map, picklef)
+        cPickle.dump(self.plan_unit_map, picklef, protocol=cPickle.HIGHEST_PROTOCOL)
 
     def load_properties(self, property_file):
         try:
@@ -343,4 +343,4 @@ class AhjoGeocoder(object):
         print "%d properties imported" % idx
 
         picklef = open('geo_properties.pickle', 'w')
-        cPickle.dump(self.property_map, picklef)
+        cPickle.dump(self.property_map, picklef, protocol=cPickle.HIGHEST_PROTOCOL)
