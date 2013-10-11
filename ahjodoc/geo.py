@@ -23,6 +23,7 @@ class AhjoGeocoder(object):
         self.no_match_plan_units = []
         self.plan_map = {}
         self.plan_unit_map = {}
+        self.property_map = {}
         self.street_tree = None
         self.matches = 0
 
@@ -70,9 +71,9 @@ class AhjoGeocoder(object):
                     self.no_match_addresses.append(s)
                 continue
 
-            geom_id = "%s/%s" % (geom['type'], geom['name'])
             pnt = self.convert_from_gk25(e['coord_n'], e['coord_e'])
             geom = {'name': '%s %d' % (e['street'], num), 'geometry': pnt, 'type': 'address'}
+            geom_id = "%s/%s" % (geom['type'], geom['name'])
             geometries[geom_id] = geom
         return geometries
 
@@ -294,12 +295,20 @@ class AhjoGeocoder(object):
                 plan['geometry'] = poly
         print "%d plan units imported" % idx
 
+        for key in self.plan_unit_map.keys():
+            geom = self.plan_unit_map[key]['geometry']
+            if not geom.valid:
+                self.logger.warning("geometry for %s not OK, fixing" % key)
+                geom = geom.simplify()
+                assert geom.valid
+                self.plan_unit_map[key]['geometry'] = geom
+
         picklef = open('plan_units.pickle', 'w')
         cPickle.dump(self.plan_unit_map, picklef)
 
     def load_properties(self, property_file):
         try:
-            picklef = open('property_db.pickle', 'r')
+            picklef = open('geo_properties.pickle', 'r')
             self.property_map = cPickle.load(picklef)
             print "%d properties loaded" % len(self.property_map)
             return
@@ -333,5 +342,5 @@ class AhjoGeocoder(object):
             self.property_map[origin_id] = {'geometry': pnt}
         print "%d properties imported" % idx
 
-        picklef = open('property_db.pickle', 'w')
+        picklef = open('geo_properties.pickle', 'w')
         cPickle.dump(self.property_map, picklef)
