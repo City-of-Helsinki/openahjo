@@ -2,6 +2,7 @@
 *.pyc
 .cache
 *.sqlite
+*.pickle
 config.yml
 local_settings.py
 local_update_config
