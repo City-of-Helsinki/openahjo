@@ -488,9 +488,10 @@ class Command(BaseCommand):
                 exit(1)
 
         if self.geocoder.no_match_addresses:
-            print "No coordinate match found for addresses:"
+            s = u"No coordinate match found for addresses:\n"
             for adr in set(self.geocoder.no_match_addresses):
-                print unicode(adr).encode('utf8')
+                s += adr.decode('utf8') + '\n'
+            self.logger.info(s)
         if self.geocoder.no_match_plans:
             print "No coordinate match found for plans:"
             for plan in self.geocoder.no_match_plans:
