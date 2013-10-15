@@ -66,11 +66,14 @@
         <nav class="navbar navbar-static-top">
             <div class="navbar-inner">
                 <div class="container">
-                    <a class="brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET</a>
+                    <a class="brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET <sub>beta</sub></a>
                     <div class="nav-collapse collapse">
                         <ul class="nav">
                             <li><a href="{% url "ui.views.issue_list" %}">Asiat</a></li>
                             <li><a href="{% url "ui.views.policymaker_list" %}">Päättäjät</a></li>
+                        </ul>
+                        <ul class="nav city-link pull-right">
+                            <li><a href="#">Helsinki</a></li>
                         </ul>
                     </div><!--/.nav-collapse -->
                 </div>
@@ -85,7 +88,38 @@
 
         <footer>
             <div class="container muted">
-                <p>&copy; Helsingin kaupunki</p>
+                <div class="row">
+                    <div class="span3">
+                        <h4><a href="{% url "ui.views.issue_list" %}">Asiat</a></h4>
+                        <ul>
+                            <li><a href="{% url "ui.views.issue_list" %}">Haku</a></li>
+                            <li><a href="{% url "ui.views.issue_list_map" %}">Kartalla</a></li>
+                        </ul>
+                    </div>
+                    <div class="span3">
+                        <h4><a href="{% url "ui.views.policymaker_list" %}">Päättäjät</a></h4>
+                        <ul>
+                            <li><a href="{% url "ui.views.policymaker_details" slug='kvsto' %}">Kaupunginvaltuusto</a></li>
+                            <li><a href="{% url "ui.views.policymaker_details" slug='khs' %}">Kaupunginhallitus</a></li>
+                            <li><a href="{% url "ui.views.policymaker_list" %}#lautakunnat">Lautakunnat</a></li>
+                            <li><a href="{% url "ui.views.policymaker_list" %}#johtokunnat">Johtokunnat</a></li>
+                            <li><a href="{% url "ui.views.policymaker_list" %}#muut">Muut</a></li>
+                        </ul>
+                    </div>
+                    <div class="span3">
+                        <h4><a href="{% url "ui.views.issue_list" %}">Tietoa palvelusta</a></h4>
+                        <ul>
+                            <li><a href="{% url "ui.views.issue_list" %}">Yhteystiedot</a></li>
+                            <li><a href="{% url "ui.views.issue_list_map" %}">Palaute</a></li>
+                        </ul>
+                    </div>
+                    <div class="span3">
+                        <ul class="ext-links">
+                            <li><a href="http://www.hel.fi/">&gt; Helsingin kaupunki</a></li>
+                            <li><a href="http://www.hel.fi/paatoksenteko/">&gt; Helsingin kaupungin päätöksenteko</a></li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </footer>
 

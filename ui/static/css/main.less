@@ -1,12 +1,10 @@
 @import "bootstrap/variables.less";
 @import "bootstrap/mixins.less";
 
-@page_side_color: #55C0B4;
 @border_color: #ddd;
 @box_background_color: #E6E6E6;
 @box_text_color: #00363e;
 @header_color: #004D59;
-@news_color_2: #8F3332;
 @issue_list_item_bg_color: #FBF1F3;
 @issue_list_item_text_color: #671C14;
 @issue_main_color: #D15A4D;
@@ -15,13 +13,23 @@
 @meeting_details_bg_color: #e5f7ee;
 
 @pm_navbar_active_color: #005751;
-@org_color_1: #00353d;
-@org_color_2: #004c58;
-@org_color_3: #38a694;
-@org_color_4: #54bfb3;
-@org_color_5: #89e2ce;
-@org_color_6: #bee0da;
+@org_color_1: #00363e;
+@org_color_2: #004d59;
+@org_color_3: #39a795;
+@org_color_4: #66c6b8;
+@org_color_5: #9cdbcb;
+@org_color_6: #bfe1db;
 @org_color_7: #e1eeee;
+
+@issue_color_1: #671c14;
+@issue_color_2: #903332;
+@issue_color_3: #bd5d5a;
+@issue_color_4: #dba3a5;
+@issue_color_5: #ead7da;
+@issue_color_6: #f7edef;
+
+@news_color_2: @issue_color_2;
+@page_side_color: @org_color_5;
 
 @charset "UTF-8";
 
@@ -57,9 +65,34 @@ input[type="color"],
 }
 
 footer {
-    padding-top: 40px;
-    height: 60px;
+    padding-top: 80px;
+    padding-bottom: 80px;
     background-color: @box_text_color;
+    h4 {
+        a {
+            color: @org_color_7;
+        }
+        font-size: 16px;
+        margin: 0;
+    }
+    ul {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        a {
+            color: @org_color_7;
+        }
+    }
+    ul.ext-links {
+        font-size: 16px;
+        font-weight: bold;
+        a {
+            color: @org_color_4;
+        }
+        li {
+            margin-bottom: 1em;
+        }
+    }
     p {
         margin-top: 22px;
     }
@@ -92,6 +125,11 @@ h1 {
     }
     .brand {
         font-weight: 700;
+        sub {
+            font-size: 10px;
+            color: @org_color_2;
+            bottom: 0px;
+        }
     }
     .btn-navbar {
         background-image: none;
@@ -100,6 +138,14 @@ h1 {
     li {
         font-weight: 600;
         font-size: 16px;
+    }
+    .city-link {
+        a {
+            text-transform: uppercase;
+            font-size: 18px;
+            font-weight: 700;
+            color: @org_color_4 !important;
+        }
     }
 }
 
@@ -148,7 +194,7 @@ h1 {
     p {
         font-weight: 600;
         font-size: 16px;
-        color: #BFE1DB;
+        color: @org_color_7;
     }
     .left-side {
         width: 50%;
@@ -163,7 +209,7 @@ h1 {
         text-align: right;
         font-weight: bold;
         a {
-            color: @box_background_color;
+            color: @org_color_7;
             font-size: 28px;
             font-weight: 700;
         }
@@ -174,7 +220,7 @@ h1 {
     margin-bottom: 20px;
     height: 180px;
     .nav-button {
-        background-color: @page_side_color;
+        background-color: @org_color_4;
         height: 100%;
         a:hover {
             text-decoration: none;
@@ -201,7 +247,7 @@ h1 {
 #home-recent-content {
     margin-bottom: 20px;
     .box {
-        background-color: @box_background_color;
+        background-color: @org_color_7;
     }
     article {
         padding: 20px;
