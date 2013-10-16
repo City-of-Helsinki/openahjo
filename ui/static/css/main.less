@@ -1,16 +1,11 @@
 @import "bootstrap/variables.less";
+@import "bootstrap-variables.less";
 @import "bootstrap/mixins.less";
 
+@text_color: #333;
 @border_color: #ddd;
 @box_background_color: #E6E6E6;
 @box_text_color: #00363e;
-@header_color: #004D59;
-@issue_list_item_bg_color: #FBF1F3;
-@issue_list_item_text_color: #671C14;
-@issue_main_color: #D15A4D;
-@issue_bg_color: #F7DFDC;
-@issue_browse_link_color: #025959;
-@meeting_details_bg_color: #e5f7ee;
 
 @pm_navbar_active_color: #005751;
 @org_color_1: #00363e;
@@ -28,8 +23,19 @@
 @issue_color_5: #ead7da;
 @issue_color_6: #f7edef;
 
-@news_color_2: @issue_color_2;
 @page_side_color: @org_color_5;
+@header_color: @org_color_2;
+
+@news_color_2: @issue_color_2;
+
+@issue_list_item_bg_color: @issue_color_6;
+@issue_list_item_text_color: @issue_color_1;
+@meeting_details_bg_color: @org_color_7;
+
+@issue_main_color: @issue_color_3;
+@issue_bg_color: @issue_color_6;
+@issue_browse_link_color: #025959;
+
 
 @charset "UTF-8";
 
@@ -189,6 +195,13 @@ h1 {
         img {
             height: 50px;
             margin-bottom: 8px;
+        }
+        sub {
+            color: @org_color_4;
+            font-weight: 500;
+            font-size: 22px;
+            margin-left: 8px;
+            bottom: -8px;
         }
     }
     p {
@@ -402,7 +415,6 @@ ul.issue-list-items {
         }
         background-color: @issue_list_item_bg_color;
         overflow: hidden;
-        border: 1px solid @border_color;
         .border-radius(3px);
         padding: 6px 15px 6px 15px;
         margin-bottom: 10px;
@@ -514,7 +526,6 @@ ul.issue-list-items {
         }
     }
     .content-column {
-        border: solid 1px @issue_main_color;
         h1, h2, h3 {
             color: #333;
         }
@@ -809,7 +820,7 @@ ul.issue-list-items {
         }
         article {
             background-color: @meeting_details_bg_color;
-            border: 1px solid black;
+            //border: 1px solid black;
             > header {
                 padding: 20px;
                 h1 {
