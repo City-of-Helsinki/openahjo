@@ -100,6 +100,8 @@ class Command(BaseCommand):
         agenda_item.from_minutes = meeting_doc.type == 'minutes'
         agenda_item.origin_last_modified_time = meeting_doc.last_modified_time
         agenda_item.resolution = info.get('resolution')
+        agenda_item.preparer = info.get('preparer')
+        agenda_item.introducer = info.get('introducer')
         agenda_item.save()
 
         for idx, p in enumerate(info['content']):

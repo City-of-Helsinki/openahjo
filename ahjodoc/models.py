@@ -155,6 +155,8 @@ class AgendaItem(models.Model):
     last_modified_time = models.DateTimeField(db_index=True, auto_now=True, help_text='Time of last modification')
     origin_last_modified_time = models.DateTimeField(db_index=True, null=True, help_text='Time of last modification in data source')
     resolution = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, null=True, help_text="Type of resolution made")
+    preparer = models.CharField(max_length=100, null=True, help_text="Name of the person who prepared the issue")
+    introducer = models.CharField(max_length=100, null=True, help_text="Name of the person who introduced the issue in the meeting")
 
     def get_absolute_url(self):
         return reverse('ui.views.issue_details', kwargs={'slug': self.issue.slug})

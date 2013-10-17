@@ -234,6 +234,13 @@ class AhjoDocument(object):
         if resolution_el is not None:
             info['resolution'] = self.RESOLUTION_TYPES[int(resolution_el.attrib['PikapaatosId'])]
 
+        introducer_el = desc_el.find('Esittelija')
+        if introducer_el is not None:
+            info['introducer'] = introducer_el.text.strip()
+        preparer_el = desc_el.find('Valmistelija')
+        if preparer_el is not None:
+            info['preparer'] = preparer_el.text.strip()
+
         self.parse_item_content(info, item_el)
         self.parse_item_attachments(info, item_el)
         self.items.append(info)
