@@ -139,7 +139,8 @@ class Command(BaseCommand):
         try:
             doc = MeetingDocument.objects.get(origin_id=origin_id)
             if not self.options['full_update'] and doc.last_modified_time >= info['last_modified']:
-                self.logger.info("Up-to-date document %s (last modified %s)" % (origin_id, info['last_modified']))
+                if self.verbosity >= 2:
+                    self.logger.info("Up-to-date document %s (last modified %s)" % (origin_id, info['last_modified']))
                 return
             else:
                 print "Re-importing document %s" % origin_id
