@@ -3,6 +3,7 @@
 import os
 import sys
 import logging
+import json
 
 import ogr
 import osr
@@ -23,10 +24,7 @@ class Command(BaseCommand):
         make_option('--output', dest='output', help='output filename'),
     )
 
-    def handle(self, **options):
-        self.logger = logging.getLogger(__name__)
-        self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
-
+    def output_mapinfo(self):
         drv_name = "MapInfo File"
         drv = ogr.GetDriverByName(drv_name)
         if drv is None:
@@ -81,4 +79,30 @@ class Command(BaseCommand):
             check_err(lyr.CreateFeature(feat))
             feat.Destroy()
 
+    def output_geojson(self):
+        agenda_item_list = AgendaItem.objects.filter(issue__geometries__isnull=False).select_related('issue')
+        features = []
+        for ai in agenda_item_list:
+            issue = ai.issue
+            geom_list = issue.geometries.all()
+            for geom in geom_list:
+                g = geom.geometry
+                break
+            geometry = json.loads(g.geojson)
+            props = {'id': ai.id, 'register_id': issue.register_id, 'subject': issue.subject,
+                     'preparer': ai.preparer, 'introducer': ai.introducer,
+                     'geometry_type': geom.type, 'geometry_name': geom.name,
+                     'view_url': "http://dev.hel.fi/openahjo/issue/%s/" % issue.slug.encode('utf8')}
+            feat = {'type': 'Feature', 'properties': props, 'geometry': geometry}
+            features.append(feat)
+        fc = {'type': 'FeatureCollection', 'features': features}
+        f = open(self.options['output'], 'w')
+        f.write(json.dumps(fc, indent=4))
+        f.close()
 
+    def handle(self, **options):
+        self.logger = logging.getLogger(__name__)
+        self.data_path = os.path.join(settings.PROJECT_ROOT, 'data')
+
+        self.options = options
+        self.output_geojson()
