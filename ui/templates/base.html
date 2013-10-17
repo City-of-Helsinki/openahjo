@@ -15,7 +15,7 @@
         <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/bootstrap.less" %}">
         <link rel="stylesheet" href="{% static "css/chosen.less" %}" type="text/less">
         {% endcompress %}
-        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,600italic,700,900' rel='stylesheet' type='text/css'>
+        <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,600italic,700' rel='stylesheet' type='text/css'>
         <link rel="stylesheet" href="{% static "css/leaflet.css" %}">
         <!-- <link rel="stylesheet" href="{% static "css/leaflet.ie.css" %}"> -->
         {% compress css %}
@@ -41,7 +41,7 @@
 
         {% compress js %}
         <script src="{% static "js/vendor/jquery-1.9.1.min.js" %}"></script>
-        <script src="{% static "js/vendor/underscore.min.js" %}"></script>
+        <script src="{% static "js/vendor/underscore.js" %}"></script>
         <script src="{% static "js/vendor/backbone.js" %}"></script>
         <script src="{% static "js/vendor/backbone-tastypie.js" %}"></script>
         <script src="{% static "js/vendor/bootstrap.min.js" %}"></script>
@@ -107,10 +107,9 @@
                         </ul>
                     </div>
                     <div class="span3">
-                        <h4><a href="{% url "ui.views.issue_list" %}">Tietoa palvelusta</a></h4>
+                        <h4><a href="{% url "ui.views.about" %}">Tietoa palvelusta</a></h4>
                         <ul>
-                            <li><a href="{% url "ui.views.issue_list" %}">Yhteystiedot</a></li>
-                            <li><a href="{% url "ui.views.issue_list_map" %}">Palaute</a></li>
+                            <li><a href="{% url "ui.views.about" %}">Yleistä</a></li>
                             <li><a href="http://dev.hel.fi/apis/openahjo/">Palvelun ohjelmointirajapinta (API)</a></li>
                             <li><a href="https://github.com/City-of-Helsinki/openahjo/">Palvelun lähdekoodi</a></li>
                         </ul>
