@@ -134,3 +134,6 @@ def policymaker_details(request, slug, year=None, number=None):
         args['meeting_year'] = year
         args['meeting_number'] = number
     return policymaker_view(request, 'policymaker.html', args)
+
+def about(request):
+    return render_view(request, "about.html")
