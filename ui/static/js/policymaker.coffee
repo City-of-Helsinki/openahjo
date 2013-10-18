@@ -39,7 +39,7 @@ class PolicymakerListNavView extends Backbone.View
                 $li = $("<li class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'>#{c.name} <b class='caret'></b>")
                 $ul = $("<ul class='dropdown-menu'></ul>")
                 $li.append $ul
-                list.forEach (m) ->
+                for m in list
                     $el = $("<li><a href='#{m.get_view_url()}'>#{m.get 'name'}</a></li>")
                     $ul.append $el
             else
@@ -96,14 +96,16 @@ class PolicymakerListView extends Backbone.View
     tagName: 'div'
     className: 'policymaker-list'
 
-    render_pm_section: (list, heading, big) ->
+    render_pm_section: (list, heading, big, anchor) ->
         list = _.sortBy list, (m) -> m.get 'name'
         $container = @$el
         if heading
             $container.append $("<h2>#{heading}</h2>")
         row_idx = 0
         $row = $("<div class='row'></div>")
-        list.forEach (m) ->
+        if anchor
+            $row.attr 'id', anchor
+        for m in list
             view = new PolicymakerListItemView {model: m}
             view.render()
             $el = view.$el
@@ -127,19 +129,19 @@ class PolicymakerListView extends Backbone.View
         @$el.empty()
 
         council = @collection.filter (m) -> m.get_category() == 'council'
-        @render_pm_section council, null, true
+        @render_pm_section council, null, true, 'council'
 
         gov = @collection.filter (m) -> m.get_category() == 'government'
-        @render_pm_section gov, null, true
+        @render_pm_section gov, null, true, 'government'
 
         committees = @collection.filter (m) -> m.get_category() == 'committee'
-        @render_pm_section committees, "Lautakunnat", false
+        @render_pm_section committees, "Lautakunnat", false, 'committee'
 
         boards = @collection.filter (m) -> m.get_category() == 'board'
-        @render_pm_section boards, "Johtokunnat", true
+        @render_pm_section boards, "Johtokunnat", true, 'board'
 
         others = @collection.filter (m) -> m.get_category() == 'other'
-        @render_pm_section others, "Muut", true
+        @render_pm_section others, "Muut", true, 'other'
 
 class PolicymakerDetailsView extends Backbone.View
     tagName: 'div'
@@ -291,8 +293,12 @@ class PolicymakerRouter extends Backbone.Router
         document.title = "Päättäjät"
         nav_view.set_category 'list'
         list_view.render()
-        $(".policymaker-content").empty()
-        $(".policymaker-content").append list_view.$el
+        content_el = $(".policymaker-content")
+        content_el.empty()
+        console.log JSON.stringify list_view.$el
+        console.log JSON.stringify list_view.$el[0]
+        #console.log list_view.$el
+        content_el.append list_view.$el
 
     pm_details: (slug, year, number) ->
         pm = policymaker_list.filter (m) -> m.get('slug') == slug
@@ -313,4 +319,4 @@ class PolicymakerRouter extends Backbone.Router
 
 router = new PolicymakerRouter
 
-Backbone.history.start {pushState: true, root: VIEW_URLS['policymaker-list']}
+Backbone.history.start {pushState: true, hashChange: false, root: VIEW_URLS['policymaker-list']}
