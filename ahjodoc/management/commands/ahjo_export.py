@@ -5,6 +5,8 @@ import sys
 import logging
 import json
 
+from collections import OrderedDict
+
 import ogr
 import osr
 from optparse import make_option
@@ -89,11 +91,16 @@ class Command(BaseCommand):
                 g = geom.geometry
                 break
             geometry = json.loads(g.geojson)
-            props = {'id': ai.id, 'register_id': issue.register_id, 'subject': issue.subject,
-                     'preparer': ai.preparer, 'introducer': ai.introducer,
-                     'geometry_type': geom.type, 'geometry_name': geom.name,
-                     'view_url': "http://dev.hel.fi/openahjo/issue/%s/" % issue.slug.encode('utf8')}
-            feat = {'type': 'Feature', 'properties': props, 'geometry': geometry}
+            meeting = ai.meeting
+            view_url = "http://dev.hel.fi/openahjo/issue/%s/%s-%d-%d/" % (issue.slug.encode('utf8'),
+                    meeting.policymaker.slug, meeting.year, meeting.number)
+            props = [('id', ai.id), ('register_id', issue.register_id), ('subject', ai.subject),
+                     ('policymaker', meeting.policymaker.abbreviation), ('meeting_date', str(meeting.date)),
+                     ('meeting_id', "%d/%d" % (meeting.number, meeting.year)),
+                     ('preparer', ai.preparer), ('introducer', ai.introducer),
+                     ('geometry_type', geom.type), ('geometry_name', geom.name),
+                     ('view_url', view_url)]
+            feat = {'type': 'Feature', 'properties': OrderedDict(props), 'geometry': geometry}
             features.append(feat)
         fc = {'type': 'FeatureCollection', 'features': features}
         f = open(self.options['output'], 'w')
