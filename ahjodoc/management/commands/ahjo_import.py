@@ -11,6 +11,8 @@ from optparse import make_option
 from django.core.management.base import BaseCommand
 from django import db
 from django.conf import settings
+from django.db import transaction
+
 from munigeo.models import District
 
 from ahjodoc.scanner import AhjoScanner
@@ -136,6 +138,7 @@ class Command(BaseCommand):
             obj.name = att['name']
             obj.save()
 
+    @transaction.commit_on_success
     def import_doc(self, info):
         origin_id = info['origin_id']
         try:
