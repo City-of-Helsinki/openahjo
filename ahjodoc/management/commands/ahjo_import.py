@@ -106,6 +106,11 @@ class Command(BaseCommand):
         agenda_item.introducer = info.get('introducer')
         agenda_item.save()
 
+        latest_date = issue.determine_latest_decision_date()
+        if latest_date != issue.latest_decision_date:
+            issue.latest_decision_date = latest_date
+            issue.save()
+
         for idx, p in enumerate(info['content']):
             args = {'agenda_item': agenda_item, 'index': idx}
             try:

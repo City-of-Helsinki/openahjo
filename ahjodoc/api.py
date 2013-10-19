@@ -280,6 +280,7 @@ class IssueResource(ModelResource):
             'slug': ALL,
             'category': ALL_WITH_RELATIONS,
         }
+        ordering = ('latest_decision_date', 'last_modified_time')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)

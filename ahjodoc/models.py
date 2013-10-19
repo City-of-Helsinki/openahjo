@@ -69,6 +69,7 @@ class Issue(models.Model):
                             help_text='Unique slug (generated from register_id)')
     subject = models.CharField(max_length=500, help_text='One-line description for issue')
     category = models.ForeignKey(Category, db_index=True, help_text='Issue category')
+    latest_decision_date = models.DateField(null=True, help_text='Date of the latest meeting where the issue was/will be discussed')
     last_modified_time = models.DateTimeField(auto_now=True, null=True)
 
     geometries = models.ManyToManyField('IssueGeometry')
@@ -101,6 +102,10 @@ class Issue(models.Model):
                     return self.subject
 
         return ai.subject
+
+    def determine_latest_decision_date(self):
+        ai_list = AgendaItem.objects.filter(issue=self).order_by('-meeting__date')
+        return ai_list[0].meeting.date
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
