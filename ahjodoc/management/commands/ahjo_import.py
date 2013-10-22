@@ -32,6 +32,7 @@ class Command(BaseCommand):
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
         make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
         make_option('--no-videos', dest='no_videos', action='store_true', help='do not import meeting videos'),
+        make_option('--no-geocoding', dest='no_geocoding', action='store_true', help='do not perform geocoding'),
         make_option('--force-policymakers', dest='force_policymakers', action='store_true', help='force importing of policymakers'),
         make_option('--ignore-attachment-size', dest='ignore-attachment-size', action='store_true', help='disable attachment size checks')
     )
@@ -449,7 +450,7 @@ class Command(BaseCommand):
                 os.makedirs(path)
 
         plan_path = os.path.join(self.data_path, 'plans')
-        if os.path.isdir(plan_path):
+        if os.path.isdir(plan_path) and not options['no_geocoding']:
             self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_vir_rajaus.TAB'))
             self.geocoder.load_plans(os.path.join(plan_path, 'Lv_rajaus.TAB'))
             self.geocode_plans = True
@@ -458,7 +459,7 @@ class Command(BaseCommand):
             self.geocode_plans = False
 
         property_path = os.path.join(self.data_path, 'properties')
-        if os.path.isdir(property_path):
+        if os.path.isdir(property_path) and not options['no_geocoding']:
             self.geocoder.load_plan_units(os.path.join(property_path, 'Kaava_kaavayksikko_Voimassa.tab'))
             self.geocoder.load_properties(os.path.join(property_path, 'GISestx.csv'))
             self.geocode_plan_units = True
@@ -467,7 +468,7 @@ class Command(BaseCommand):
             self.geocode_plan_units = False
 
         addr_fname = os.path.join(self.data_path, 'pks_osoite.csv')
-        if os.path.isfile(addr_fname):
+        if os.path.isfile(addr_fname) and not options['no_geocoding']:
             addr_f = open(addr_fname, 'r')
             self.geocoder.load_address_database(addr_f)
             addr_f.close()
