@@ -322,7 +322,7 @@ class AgendaItemResource(ModelResource):
             'last_modified_time': ['gt', 'gte', 'lt', 'lte'],
             'from_minutes': ['exact']
         }
-        ordering = ('last_modified_time', 'meeting', 'index')
+        ordering = ('last_modified_time', 'origin_last_modified_time', 'meeting', 'index')
         list_allowed_methods = ['get']
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
