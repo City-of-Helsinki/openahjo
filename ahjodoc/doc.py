@@ -131,7 +131,12 @@ class AhjoDocument(object):
             s = section_el.attrib.get('sisaltosektioTyyppi')
             if not s:
                 self.logger.warning("attribute sisaltosektioTyyppi not found")
-                s = section_el.find('SisaltoOtsikko').attrib['SisaltoOtsikkoTyyppi']
+                subj_el = section_el.find('SisaltoOtsikko')
+                if not subj_el:
+                    continue
+                s = subj_el.attrib['SisaltoOtsikkoTyyppi']
+                if not s:
+                    continue
             if s == '1':
                 s = 'paatos'
             elif s == '2':
@@ -186,26 +191,23 @@ class AhjoDocument(object):
         10: 'ELECTION',
     }
 
-    def parse_item(self, index, item_el):
-        info = {}
-        if self.verbosity >= 3:
-            self.logger.debug(etree.tostring(item_el, encoding='utf8', method='html'))
+    def parse_desc_el(self, item_el, info):
         desc_el = item_el.find('KuvailutiedotOpenDocument')
         if not desc_el:
             raise ParseError("Field KuvailutiedotOpenDocument missing")
         lang_el = desc_el.find('Kieli')
         if lang_el is not None:
-            lang_id = desc_el.find('Kieli').attrib['KieliID']
+            lang_id = lang_el.attrib['KieliID']
         else:
             # Sometimes the language field can go missing...
             lang_id = 'fi-FI'
         if lang_id != 'fi-FI':
             print "Invalid language: %s" % lang_id
-            return
+            return False
         register_id_el = desc_el.find('Dnro')
         # If archive id was not found, skip item.
         if not register_id_el:
-            return
+            return False
 
         subject = clean_text(desc_el.find('Otsikko').text)
         if subject.startswith('V '):
@@ -221,9 +223,7 @@ class AhjoDocument(object):
 
         if self.verbosity >= 2:
             self.logger.debug('Parsing item: %s' % info['subject'])
-        item_nr = index + 1
         info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
-        info['number'] = item_nr
         info['category'] = desc_el.find('Tehtavaluokka').text.strip()
         kw_list = []
         for kw_el in desc_el.findall('Asiasanat'):
@@ -240,10 +240,43 @@ class AhjoDocument(object):
         preparer_el = desc_el.find('Valmistelija')
         if preparer_el is not None:
             info['preparer'] = preparer_el.text.strip()
+        return True
+
+    def parse_item(self, index, item_el, is_top_level=True):
+        info = {}
+        if self.verbosity >= 3:
+            self.logger.debug(etree.tostring(item_el, encoding='utf8', method='html'))
+
+        if is_top_level:
+            if not self.parse_desc_el(item_el, info):
+                return None
+
+        item_nr = index + 1
+        info['number'] = item_nr
 
         self.parse_item_content(info, item_el)
         self.parse_item_attachments(info, item_el)
-        self.items.append(info)
+
+        # If we're parsing a minutes entry, find the agenda item entry in order
+        # to get better decision text content.
+        if 'subject' in info:
+            print info['subject']
+        if is_top_level and self.type == 'minutes':
+            agenda_doc_el = item_el.find('Asiakirja')
+            if agenda_doc_el:
+                ai_content = self.parse_item(index, agenda_doc_el, False)['content']
+                for content_type, content in ai_content:
+                    if content_type == 'draft resolution':
+                        continue
+                    # If we don't have the content type already, augment it
+                    # with the content from the agenda document.
+                    for c in info['content']:
+                        if c[0] == content_type:
+                            break
+                    else:
+                        info['content'].append((content_type, content))
+
+        return info
 
     def parse_from_xml(self, xml_str):
         self.xml_root = etree.fromstring(xml_str)
@@ -263,7 +296,10 @@ class AhjoDocument(object):
         self.items = []
         item_els = self.xml_root.xpath('./%s/Asiakirja' % item_container)
         for idx, item_el in enumerate(item_els):
-            self.parse_item(idx, item_el)
+            info = self.parse_item(idx, item_el)
+            if not info:
+                continue
+            self.items.append(info)
 
     def output_cleaned_xml(self, out_file):
         s = etree.tostring(self.xml_root, encoding='utf8')
