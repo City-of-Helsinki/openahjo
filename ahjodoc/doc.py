@@ -259,8 +259,6 @@ class AhjoDocument(object):
 
         # If we're parsing a minutes entry, find the agenda item entry in order
         # to get better decision text content.
-        if 'subject' in info:
-            print info['subject']
         if is_top_level and self.type == 'minutes':
             agenda_doc_el = item_el.find('Asiakirja')
             if agenda_doc_el:
