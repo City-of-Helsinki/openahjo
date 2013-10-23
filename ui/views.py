@@ -22,11 +22,12 @@ def get_js_paths():
 
 def get_metadata(request, info):
     props = []
-    props.append({'name': 'og:image', 'content': request.build_absolute_uri(static('img/share-image.png'))})
+    props.append({'name': 'og:image', 'content': request.build_absolute_uri(static('img/share-image-154x154.png'))})
     if 'description' in info:
         props.append({'name': 'og:description', 'content': info['description']})
     if 'title' in info:
         props.append({'name': 'og:title', 'content': info['title']})
+    props.append({'name': 'og:url', 'content': request.build_absolute_uri(request.path)})
     return {'meta_properties': props}
 
 def render_view(request, template, args={}):
@@ -85,6 +86,8 @@ def get_districts(request):
 
 def home_view(request):
     args = {'pm_list_json': get_policymakers(request)}
+    args['title'] = 'Helsingin kaupungin Päätökset-palvelu'
+    args['description'] = 'Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset.'
     return render_view(request, 'home.html', args)
 
 def issue_view(request, template, args={}):
