@@ -295,9 +295,6 @@ class PolicymakerRouter extends Backbone.Router
         list_view.render()
         content_el = $(".policymaker-content")
         content_el.empty()
-        console.log JSON.stringify list_view.$el
-        console.log JSON.stringify list_view.$el[0]
-        #console.log list_view.$el
         content_el.append list_view.$el
 
     pm_details: (slug, year, number) ->
