@@ -481,7 +481,7 @@ class IssueDetailsView extends IssueView
 class IssueRouter extends Backbone.Router
     routes:
         "": "issue_list_view"
-        "map/": "issue_map_view"
+        "kartta/": "issue_map_view"
         ":issue/": "issue_details_view"
         ":issue/:meeting/": "issue_details_view"
 
