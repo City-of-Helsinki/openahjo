@@ -451,8 +451,8 @@ class Command(BaseCommand):
 
         plan_path = os.path.join(self.data_path, 'plans')
         if os.path.isdir(plan_path) and not options['no_geocoding']:
-            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_vir_rajaus.TAB'))
-            self.geocoder.load_plans(os.path.join(plan_path, 'Lv_rajaus.TAB'))
+            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_Vireilla.tab'))
+            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_Voimassa.tab'))
             self.geocode_plans = True
         else:
             print "Plan database not found; plan geocoding not available."

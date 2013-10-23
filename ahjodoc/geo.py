@@ -248,10 +248,23 @@ class AhjoGeocoder(object):
             if plan['geometry']:
                 if isinstance(plan['geometry'], Polygon):
                     plan['geometry'] = MultiPolygon(plan['geometry'])
-                plan['geometry'].append(poly)
+                if isinstance(poly, MultiPolygon):
+                    plan['geometry'].extend(poly)
+                else:
+                    plan['geometry'].append(poly)
             else:
                 plan['geometry'] = poly
+
         print "%d plans imported" % idx
+
+        for key in self.plan_map.keys():
+            geom = self.plan_map[key]['geometry']
+            if not geom.valid:
+                self.logger.warning("geometry for %s not OK, fixing" % key)
+                geom = geom.simplify()
+                assert geom.valid
+                self.plan_map[key]['geometry'] = geom
+
 
     def load_plan_units(self, plan_unit_file):
         try:
