@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, get_object_or_404
 from django.conf import settings
 from ahjodoc.models import *
 from ahjodoc.api import *
 from munigeo.api import DistrictResource
+from django.templatetags.static import static
 
 # Cache the JSON encodings for some rarely changing data here.
 policymaker_json = None
@@ -18,8 +20,18 @@ def get_js_paths():
         'DEBUG': debug
     }
 
+def get_metadata(request, info):
+    props = []
+    props.append({'name': 'og:image', 'content': request.build_absolute_uri(static('img/share-image.png'))})
+    if 'description' in info:
+        props.append({'name': 'og:description', 'content': info['description']})
+    if 'title' in info:
+        props.append({'name': 'og:title', 'content': info['title']})
+    return {'meta_properties': props}
+
 def render_view(request, template, args={}):
     args.update(get_js_paths())
+    args.update(get_metadata(request, args))
     return render_to_response(template, args)
 
 def get_policymakers(request):
@@ -83,8 +95,10 @@ def issue_view(request, template, args={}):
     return render_view(request, template, args)
 
 def issue_list(request):
-    return issue_view(request, 'issue.html')
+    args = {'title': 'Asiat', 'description': 'Hae kaupungin päätöksiä.'}
+    return issue_view(request, 'issue.html', args)
 def issue_list_map(request):
+    args = {'title': 'Asiat kartalla', 'description': 'Tarkastele kaupungin päätöksiä kartalla.'}
     return issue_view(request, 'issue.html')
 
 def issue_details(request, slug, pm_slug=None, year=None, number=None):
@@ -100,6 +114,17 @@ def issue_details(request, slug, pm_slug=None, year=None, number=None):
             'meeting__number': number
         }
         agenda_item = get_object_or_404(AgendaItem, **filter_args)
+        args['title'] = agenda_item.subject
+        summary = agenda_item.get_summary()
+    else:
+        args['title'] = issue.subject
+        summary = issue.determine_summary()
+
+    if summary:
+        # Get first sentences
+        s = summary.split('.')
+        desc = '.'.join(s[0:3])
+        args['description'] = desc + '.'
 
     res = IssueResource()
     bundle = res.build_bundle(obj=issue, request=request)

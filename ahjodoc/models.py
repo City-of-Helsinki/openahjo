@@ -6,6 +6,17 @@ from django.contrib.gis.db import models
 from django.utils.text import slugify
 from mptt.models import MPTTModel, TreeForeignKey
 from munigeo.models import District
+from django.utils.html import strip_tags
+
+
+def truncate_chars(value, max_length):
+    if len(value) > max_length:
+        truncd_val = value[:max_length]
+        if not len(value) == max_length+1 and value[max_length+1] != " ":
+            truncd_val = truncd_val[:truncd_val.rfind(" ")]
+        return  truncd_val + "..."
+    return value
+
 
 class Policymaker(models.Model):
     name = models.CharField(max_length=100, help_text='Name of policymaker')
@@ -75,37 +86,46 @@ class Issue(models.Model):
     geometries = models.ManyToManyField('IssueGeometry')
     districts = models.ManyToManyField(District)
 
-    def determine_subject(self):
+    def find_most_descriptive_agenda_item(self):
         ai_list = AgendaItem.objects.filter(issue=self).order_by('meeting__date')
+
         # First try city board
         for ai in ai_list:
             if ai.meeting.policymaker.origin_id == '00400':
-                break
-        else:
-            ai = None
-        # Then city council
-        if not ai:
-            for ai in ai_list:
-                if ai.meeting.policymaker.origin_id == '02900':
-                    break
-            else:
-                ai = None
-        # Then just the first one that doesn't include 'lausunto'
-        if not ai:
-            for ai in ai_list:
-                if not 'lausunto' in ai.subject.lower():
-                    break
-            else:
-                if len(ai_list):
-                    ai = ai_list[0]
-                else:
-                    return self.subject
+                return ai
 
-        return ai.subject
+        # Then city council
+        for ai in ai_list:
+            if ai.meeting.policymaker.origin_id == '02900':
+                return ai
+
+        # Then just the first one that doesn't include 'lausunto'
+        for ai in ai_list:
+            if not 'lausunto' in ai.subject.lower():
+                return ai
+
+        # Finally just the latest agenda item
+        if len(ai_list):
+            return ai_list[0]
+        else:
+            return None
+
+    def determine_subject(self):
+        ai = self.find_most_descriptive_agenda_item()
+        if ai:
+            return ai.subject
+        else:
+            return self.subject
 
     def determine_latest_decision_date(self):
         ai_list = AgendaItem.objects.filter(issue=self).order_by('-meeting__date')
         return ai_list[0].meeting.date
+
+    def determine_summary(self):
+        ai = self.find_most_descriptive_agenda_item()
+        if not ai:
+            return None
+        return ai.get_summary()
 
     def save(self, *args, **kwargs):
         if not self.pk and not self.slug:
@@ -162,6 +182,31 @@ class AgendaItem(models.Model):
     resolution = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, null=True, help_text="Type of resolution made")
     preparer = models.CharField(max_length=100, null=True, help_text="Name of the person who prepared the issue")
     introducer = models.CharField(max_length=100, null=True, help_text="Name of the person who introduced the issue in the meeting")
+
+    def get_summary(self):
+        c_list = list(ContentSection.objects.filter(agenda_item=self).order_by('index'))
+        content = None
+        for c_type in ("summary", "presenter"):
+            for content in c_list:
+                if content.type == c_type:
+                    break
+            else:
+                continue
+            break
+        else:
+            return None
+
+        text = content.text
+        # Use only the first paragraph
+        idx = text.find('<p')
+        if idx >= 0:
+            text = text[idx:]
+        idx = text.find('</p>')
+        if idx >= 0:
+            text = text[0:idx+4]
+
+        text = truncate_chars(strip_tags(text), 1000)
+        return text
 
     def get_absolute_url(self):
         return reverse('ui.views.issue_details', kwargs={'slug': self.issue.slug})

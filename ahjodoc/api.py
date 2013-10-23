@@ -245,19 +245,9 @@ class IssueResource(ModelResource):
         bundle.data['category_origin_id'] = obj.category.origin_id
         bundle.data['category_name'] = obj.category.name
         bundle.data['top_category_name'] = obj.category.get_root().name
-
-        content_filter = ContentSection.objects.filter(agenda_item__issue=obj).order_by('-agenda_item__meeting__date')
-        content = content_filter.filter(type="summary")
-        if not content:
-            content = content_filter.filter(type="presenter")
-        if content:
-            text = content[0].text
-            idx = text.find('</p>')
-            if idx >= 0:
-                text = text[0:idx+4]
-            if len(text) > 1000:
-                text = text[0:1000]
-            bundle.data['summary'] = strip_tags(text)
+        summary = obj.determine_summary()
+        if summary:
+            bundle.data['summary'] = summary
 
         geometries = []
         for geom in obj.geometries.all():

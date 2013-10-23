@@ -7,9 +7,16 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="description" content="">
+        <link rel="icon" type="image/x-icon" href="{% static "img/favicon.ico" %}" />
+        <link href="{% static "img/paatokset-icon_57x57.png" %}" rel="apple-touch-icon-precomposed" />
+        <link href="{% static "img/paatokset-icon_72x72.png" %}" rel="apple-touch-icon-precomposed" sizes="72x72" />
+        <link href="{% static "img/paatokset-icon_114x114.png" %}" rel="apple-touch-icon-precomposed" sizes="114x114" />
         <meta name="viewport" content="width=device-width">
-        <title>{% block title %}{% endblock %} | OpenAhjo</title>
+        <meta property="og:locale" content="fi_FI">
+{% for prop in meta_properties %}
+        <meta property="{{prop.name}}" content="{{prop.content}}">
+{% endfor %}
+        <title>{% block title %}{% endblock %} | Päätökset | Helsingin kaupunki</title>
 
         {% compress css %}
         <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/bootstrap.less" %}">
