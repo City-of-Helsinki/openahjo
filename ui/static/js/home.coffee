@@ -71,3 +71,11 @@ _.extend latest_meetings_list.filters,
     minutes: true
 latest_meetings_list.on 'reset', render_latest_meetings
 latest_meetings_list.fetch reset: true
+
+$(".form-search").submit ->
+    text = $.trim $(this).find('.search-box').val()
+    if not text.length
+        return false
+    url = VIEW_URLS['issue-list'] + '?q=' + encodeURIComponent text
+    window.location.href = url
+    return false

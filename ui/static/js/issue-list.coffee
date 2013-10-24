@@ -344,6 +344,9 @@ class IssueSearchView extends Backbone.View
             @set_filter 'text', q
         else
             @set_filter 'text', null
+        if window.history and window.history.replaceState
+            url = $.param.querystring location.href, q: q, 2
+            window.history.replaceState {}, window.title, url
 
     select_list: ->
         router.navigate "/", trigger: true
@@ -356,7 +359,10 @@ class IssueSearchView extends Backbone.View
         if @result_view
             @result_view.remove()
 
+        params = $.deparam.querystring()
         filters = {}
+        if 'q' of params
+            $("#text-filter").val params['q']
 
         parent_el = @$el.find('#issue-list-items-container')
         if view_type == 'list'
