@@ -36,7 +36,7 @@ class PolicymakerListNavView extends Backbone.View
             list = @collection.filter (m) -> m.get_category() == c.category
             list = _.sortBy list, (m) -> m.get 'name'
             if list.length > 1
-                $li = $("<li class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'>#{c.name} <b class='caret'></b>")
+                $li = $("<li class='dropdown'><a class='dropdown-toggle' data-toggle='dropdown' href='#'>#{c.name} <b class='caret'></b></a></li>")
                 $ul = $("<ul class='dropdown-menu'></ul>")
                 $li.append $ul
                 for m in list

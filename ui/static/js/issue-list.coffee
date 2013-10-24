@@ -536,4 +536,4 @@ if typeof issue_json != 'undefined'
     issue_list.at(0).agenda_item_list.reset ai_list_json, silent: true
     router.issue_list = issue_list
 
-Backbone.history.start {pushState: true, root: VIEW_URLS['issue-list']}
+Backbone.history.start {pushState: true, hashChange: false, root: VIEW_URLS['issue-list']}
