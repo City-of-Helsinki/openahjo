@@ -23,7 +23,7 @@ if [ $? -ne 0 ]; then
 fi
 
 # Index them
-python manage.py update_index --traceback -a 2 >> $LOG_FILE 2>&1
+python manage.py update_index -r --traceback -a 2 >> $LOG_FILE 2>&1
 if [ $? -ne 0 ]; then
     cat $LOG_FILE
     exit 1
