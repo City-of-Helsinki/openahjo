@@ -231,3 +231,12 @@ Ympäristölautakunta mm.
 - seuraa ympäristön tilaa Helsingissä ja ympäristöstä ihmiseen kohdistuvaa kuormitusta
 - vastaa kaupungin ympäristöohjelmien valmistelusta
 - osallistuu ympäristöasiantuntijana maankäytön suunnitteluun ja antaa muita lausuntoja ympäristökysymyksistä
+
+[Kaupunginhallituksen tietotekniikkajaosto]
+Tietotekniikkajaosto valvoo kaupungin tietotekniikkastrategiaa sekä tietohallinto- ja tietotekniikkainvestointeja.
+
+Tietotekniikkajaoston tehtävänä on
+
+- tehdä esityksiä tietotekniikkaa ja tietohallintoa koskevista periaatteista ja linjauksista sekä seurata niiden toteutumista seurata kaupungin tietotekniikkaohjelman laatimista, toimeenpanoa ja toteutumista
+- hyväksyä tietotekniikan hankeohjelmaan hallintokuntien esityksestä tietotekniikkahankkeet, joiden kokonaiskustannusarvio ylittää miljoona euroa
+- antaa lausunto kaupungin tietotekniikan hankeohjelman kokonaisuudesta.

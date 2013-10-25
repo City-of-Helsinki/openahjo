@@ -140,6 +140,7 @@ POLICYMAKERS =
     'Taimujk': icon: 'asterisk'
     'Talpajk': icon: 'euro'
     'Talk': icon: 'eye-open'
+    'Tija': icon: 'laptop'
     'Tplk': icon: 'cog'
     'Tervlk': icon: 'medkit'
     'Vakalk': icon: 'smile'
@@ -171,6 +172,8 @@ class @Policymaker extends Backbone.Tastypie.Model
 
     get_icon: ->
         pm_info = POLICYMAKERS[@get 'abbreviation']
+        if not pm_info
+            return null
         return pm_info.icon
 
     fetch_meetings: ->
