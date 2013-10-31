@@ -26,7 +26,7 @@ RESOLUTIONS_FI =
     'NOTED': 'Merkittiin tiedoksi'
     'RETURNED': 'Palautettiin'
     'REMOVED': 'Poistettiin'
-    'TABLED': 'Pöydättiin'
+    'TABLED': 'Jätettiin pöydälle'
     'ELECTION': 'Vaali'
 RESOLUTIONS_ICONS =
     'PASSED': 'ok'
