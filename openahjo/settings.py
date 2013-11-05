@@ -207,6 +207,8 @@ AHJO_PATHS = {
 # Use WGS84 coordinate system internally.
 PROJECTION_SRID = 4326
 
+TASTYPIE_DEFAULT_FORMATS = ['json']
+
 GEOCODER_API_URL = "http://dev.hel.fi/geocoder/"
 
 # local_settings.py can be used to override environment-specific settings
