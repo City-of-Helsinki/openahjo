@@ -249,13 +249,14 @@ class IssueResource(ModelResource):
         if summary:
             bundle.data['summary'] = summary
 
-        geometries = []
-        for geom in obj.geometries.all():
-            d = json.loads(geom.geometry.geojson)
-            d['name'] = geom.name
-            d['category'] = geom.type
-            geometries.append(d)
-        bundle.data['geometries'] = geometries
+        if bundle.request.GET.get('no_geometry', '').lower() not in ('1', 'true'):
+            geometries = []
+            for geom in obj.geometries.all():
+                d = json.loads(geom.geometry.geojson)
+                d['name'] = geom.name
+                d['category'] = geom.type
+                geometries.append(d)
+            bundle.data['geometries'] = geometries
 
         districts = []
         for d in obj.districts.all():
