@@ -152,16 +152,27 @@ class IssueResource(ModelResource):
 
     def apply_filters(self, request, applicable_filters):
         ret = super(IssueResource, self).apply_filters(request, applicable_filters)
-        if 'issuegeometry__in' in applicable_filters:
-            ret = ret.distinct()
+        for f in ('issuegeometry__in', 'districts__name', 'districts__type'):
+            if f in applicable_filters:
+                ret = ret.distinct()
+                break
         return ret
 
     def build_filters(self, filters=None):
         orm_filters = super(IssueResource, self).build_filters(filters)
-        if filters and 'bbox' in filters:
+        if not filters:
+            return orm_filters
+
+        if 'bbox' in filters:
             bbox_filter = build_bbox_filter(filters['bbox'], 'geometry')
             geom_list = IssueGeometry.objects.filter(**bbox_filter)
             orm_filters['issuegeometry__in'] = geom_list
+
+        district_filters = ['districts__name', 'districts__type']
+        for f in district_filters:
+            if f in filters:
+                orm_filters[f] = filters[f]
+
         return orm_filters
 
     def get_search(self, request, **kwargs):
