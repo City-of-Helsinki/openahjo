@@ -100,6 +100,34 @@ http://dev.hel.fi/openahjo/v1/issue/148/?format=json
 }
 ```
 
+### issue search
+
+The issue resource also provides a search interface. The interface includes Solr-powered full-text, spatial and faceted search capabilities. The following parameters are accepted:
+
+`limit`, `page`
+
+Allows specifying how many results and which page of results to return.
+
+`text`
+
+Full-text search terms. The parameter is passed to Haystack's [auto_query](https://django-haystack.readthedocs.org/en/latest/searchqueryset_api.html#auto-query), so it supports negation, exact matches etc.
+
+`category`
+
+Limits search to issues from given category id.
+
+`district`
+
+Limits search to issues from given districts. Multiple district ids can be given separated by commas.
+
+`bbox`
+
+Limits search geospatially to the given bounding box (left, bottom, right, top in standard WGS-84 coordinate format).
+
+```
+http://dev.hel.fi/openahjo/v1/issue/search/?text=guggenheim&format=json
+```
+
 ### category
 
 All the issues are under one category each. The [category list](data/categories.csv)
