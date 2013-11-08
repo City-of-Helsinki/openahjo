@@ -72,7 +72,7 @@ class Command(BaseCommand):
             feat = ogr.Feature(lyr.GetLayerDefn())
             feat.SetField("diaarinro", issue.register_id.encode('utf8'))
             feat.SetField("otsikko", issue.subject.encode('utf8'))
-            feat.SetField("openahjo", "http://dev.hel.fi/openahjo/issue/%s/" % issue.slug.encode('utf8'))
+            feat.SetField("openahjo", "http://dev.hel.fi/paatokset/asia/%s/" % issue.slug.encode('utf8'))
 
             pt = ogr.Geometry(ogr.wkbPoint)
             pt.SetPoint_2D(0, pnt.x, pnt.y)
