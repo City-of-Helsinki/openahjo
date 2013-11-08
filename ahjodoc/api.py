@@ -279,6 +279,7 @@ class IssueResource(ModelResource):
     class Meta:
         queryset = Issue.objects.all().select_related('category')
         resource_name = 'issue'
+        excludes = ['origin_id']
         filtering = {
             'register_id': ALL,
             'slug': ALL,

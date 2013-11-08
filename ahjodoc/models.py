@@ -82,6 +82,8 @@ class Issue(models.Model):
     category = models.ForeignKey(Category, db_index=True, help_text='Issue category')
     latest_decision_date = models.DateField(null=True, help_text='Date of the latest meeting where the issue was/will be discussed')
     last_modified_time = models.DateTimeField(auto_now=True, null=True)
+    origin_id = models.CharField(max_length=50, null=True,
+                                 help_text='ID field in the upstream source')
 
     geometries = models.ManyToManyField('IssueGeometry')
     districts = models.ManyToManyField(District)

@@ -92,6 +92,9 @@ class Command(BaseCommand):
                 break
             geometry = json.loads(g.geojson)
             meeting = ai.meeting
+            origin_id = issue.origin_id
+            if not origin_id:
+                origin_id = ''
             view_url = "http://dev.hel.fi/openahjo/issue/%s/%s-%d-%d/" % (issue.slug.encode('utf8'),
                     meeting.policymaker.slug, meeting.year, meeting.number)
             props = [('id', ai.id), ('register_id', issue.register_id), ('subject', ai.subject),
@@ -99,7 +102,8 @@ class Command(BaseCommand):
                      ('meeting_id', "%d/%d" % (meeting.number, meeting.year)),
                      ('preparer', ai.preparer), ('introducer', ai.introducer),
                      ('geometry_type', geom.type), ('geometry_name', geom.name),
-                     ('view_url', view_url)]
+                     ('view_url', view_url), ('origin_id', origin_id)]
+
             feat = {'type': 'Feature', 'properties': OrderedDict(props), 'geometry': geometry}
             features.append(feat)
         fc = {'type': 'FeatureCollection', 'features': features}
