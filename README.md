@@ -124,6 +124,10 @@ Limits search to issues from given districts. Multiple district ids can be given
 
 Limits search geospatially to the given bounding box (left, bottom, right, top in standard WGS-84 coordinate format).
 
+`order_by`
+
+Specifies in which order the returned results should be. Currently only supports `latest_date`, `-latest_date` and `relevance`.
+
 ```
 http://dev.hel.fi/openahjo/v1/issue/search/?text=guggenheim&format=json
 ```

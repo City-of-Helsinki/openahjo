@@ -192,8 +192,29 @@ class IssueResource(ModelResource):
         query = request.GET.get('text', '').strip()
         if query:
             sqs = sqs.auto_query(query).highlight()
+            order_by = None
         else:
-            sqs = sqs.order_by('-latest_date')
+            order_by = '-latest_date'
+
+        s = request.GET.get('order_by', '').lower()
+        if s:
+            if s[0] == '-':
+                reverse = True
+                s = s[1:]
+            else:
+                reverse = False
+
+            if s not in ('latest_date', 'relevance'):
+                raise BadRequest("'order_by' must either be for 'latest_date' or 'relevance'")
+            if reverse:
+                order_by = '-' + s
+            else:
+                order_by = s
+            if s == 'relevance':
+                order_by = None
+
+        if order_by:
+            sqs = sqs.order_by(order_by)
 
         category = request.GET.get('category', '').strip()
         if category:
