@@ -194,7 +194,7 @@ class IssueResource(ModelResource):
             sqs = sqs.auto_query(query).highlight()
             order_by = None
         else:
-            order_by = '-latest_date'
+            order_by = '-latest_decision_date'
 
         s = request.GET.get('order_by', '').lower()
         if s:
@@ -204,8 +204,8 @@ class IssueResource(ModelResource):
             else:
                 reverse = False
 
-            if s not in ('latest_date', 'relevance'):
-                raise BadRequest("'order_by' must either be for 'latest_date' or 'relevance'")
+            if s not in ('latest_decision_date', 'relevance'):
+                raise BadRequest("'order_by' must either be for 'latest_decision_date' or 'relevance'")
             if reverse:
                 order_by = '-' + s
             else:
