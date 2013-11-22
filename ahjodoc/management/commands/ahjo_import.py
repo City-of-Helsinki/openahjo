@@ -193,7 +193,7 @@ class Command(BaseCommand):
         except ParseError as e:
             self.logger.error("Error importing document %s" % origin_id, exc_info=e)
             self.failed_import_list.append(origin_id)
-            return
+            raise
 
         fname = info['origin_id'] + '.xml'
         print "Storing cleaned XML to %s" % fname
