@@ -236,7 +236,7 @@ class AgendaItem(models.Model):
 class Attachment(models.Model):
     agenda_item = models.ForeignKey(AgendaItem, db_index=True)
     number = models.PositiveIntegerField(help_text='Index number of the item attachment')
-    name = models.CharField(max_length=250, null=True, help_text='Short name for the agenda item')
+    name = models.CharField(max_length=400, null=True, help_text='Short name for the agenda item')
     public = models.BooleanField(help_text='Is attachment public?')
     file = models.FileField(upload_to=settings.AHJO_PATHS['attachment'], null=True)
     hash = models.CharField(max_length=50, null=True, help_text='SHA-1 hash of the file contents')
