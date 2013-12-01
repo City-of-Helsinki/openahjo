@@ -240,3 +240,8 @@ Tietotekniikkajaoston tehtävänä on
 - tehdä esityksiä tietotekniikkaa ja tietohallintoa koskevista periaatteista ja linjauksista sekä seurata niiden toteutumista seurata kaupungin tietotekniikkaohjelman laatimista, toimeenpanoa ja toteutumista
 - hyväksyä tietotekniikan hankeohjelmaan hallintokuntien esityksestä tietotekniikkahankkeet, joiden kokonaiskustannusarvio ylittää miljoona euroa
 - antaa lausunto kaupungin tietotekniikan hankeohjelman kokonaisuudesta.
+
+[Kaupunginhallituksen johtamisen jaosto]
+Jaoston tehtävänä on tehdä esityksiä kaupunginhallitukselle kaupungin
+johtamisjärjestelmän uudistamisesta siten, että uudistukset voivat tulla
+voimaan vuoden 2017 alussa.
