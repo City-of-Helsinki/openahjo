@@ -63,6 +63,7 @@ class IssueListItemView extends IssueView
 
     render: ->
         model = @model.toJSON()
+        model.latest_decision_date = moment(model.latest_decision_date).format DATE_FORMAT
         text = model.search_highlighted
         if text
             cut_amount = 200

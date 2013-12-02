@@ -69,10 +69,15 @@
     <a href="<%= view_url %>">
     <header>
         <div class="subject"><%- subject %></div>
-        <div class="issue-labels">
+        <div class="issue-meta">
+            <div class="last-processing">
+                <%= latest_decision_date %>
+            </div>
+            <div class="issue-labels">
             <% _.each(label_list, function(label) { %>
                 <span class="label label-<%= label['class'] %>"><%= label.text %></span>
             <% }); %>
+            </div>
         </div>
     </header>
     <% if (typeof search_highlighted != 'undefined') { %>
