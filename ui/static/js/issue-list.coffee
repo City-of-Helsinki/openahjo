@@ -352,7 +352,7 @@ class IssueSearchView extends Backbone.View
     select_list: ->
         router.navigate "/", trigger: true
     select_map: ->
-        router.navigate "map/", trigger: true
+        router.navigate "kartta/", trigger: true
 
     select: (view_type) ->
         if view_type == @view_type
