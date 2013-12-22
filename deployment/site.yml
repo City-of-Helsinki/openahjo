@@ -1,0 +1,17 @@
+---
+- hosts: all
+  gather_facts: no
+  sudo: yes
+  vars_files:
+  - vars.yml
+  roles:
+  - common
+
+- hosts: all
+  gather_facts: no
+  sudo: no
+  vars_files:
+    - vars.yml
+  roles:
+    - dbserver
+    - appserver

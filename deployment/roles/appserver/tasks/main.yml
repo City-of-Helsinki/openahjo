@@ -1,0 +1,54 @@
+- name: Node.js | Add the node.js PPA
+  sudo: yes
+  apt_repository: repo='ppa:chris-lea/node.js'
+
+- name: Node.js | Install nodejs package
+  sudo: yes
+  action: apt pkg={{ item }} state=installed update-cache=yes
+  with_items:
+  - nodejs
+
+- name: NPM | Install dependencies
+  sudo: yes
+  action: npm name={{ item }} global=yes
+  with_items:
+  - coffee-script
+  - less
+
+- name: Python | Install Django requirements
+  action: pip virtualenv={{ venv }} virtualenv_site_packages=yes requirements=/vagrant/requirements.txt
+- name: Django | Generate settings_local.py
+  template: src=local_settings.py.j2 dest=/vagrant/local_settings.py
+- name: Django | Add virtualenv execute script
+  template: src=venv_exec.j2 dest={{ venv }}/exec mode=0755
+
+- name: Django | Check if database exists
+  shell: '[ ! -z "$({{ venv }}/exec /vagrant/manage.py sqlclear {{ db_test_table }})" ]'
+  register: django_db_result
+  ignore_errors: yes
+- name: Django | Download database dump
+  get_url: url={{ download_base_url }}/{{ db_dump_filename }} dest=/home/{{ app_user }} mode=0644
+  when: django_db_result.rc != 0
+- name: Django | Apply database dump
+  sudo: yes
+  sudo_user: postgres
+  shell: bunzip2 -c /home/{{ app_user }}/openahjo.sql.bz2 | psql openahjo
+  when: django_db_result.rc != 0
+
+- name: PostgreSQL | Grant privileges to user
+  sudo: yes
+  sudo_user: postgres
+  postgresql_privs: db={{ db_name}} objs={{ db_name }} roles={{ app_user }} privs=ALL type=database
+- name: PostgreSQL | Grant table privileges to user
+  sudo: yes
+  sudo_user: postgres
+  command: psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ app_user }};" {{ db_name }}
+
+
+# - name: Kamu | Download image files
+#   get_url: url={{ download_url }}/kamu-img.tar.bz2 dest=/home/{{ app_user }} mode=0644
+# - name: Kamu | Untar image file
+#   command: tar -C /vagrant -xjf /home/{{ app_user }}/kamu-img.tar.bz2 creates=/vagrant/media/images/parties
+# 
+# - name: Django | Generate translations
+#   action: command {{ venv }}/exec /vagrant/manage.py compilemessages creates=/vagrant/locale/fi/LC_MESSAGES/django.mo
