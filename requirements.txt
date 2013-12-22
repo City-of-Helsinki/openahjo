@@ -20,3 +20,4 @@ pysolr
 geopy
 Markdown
 mimeparse
+ansible
