@@ -1,7 +1,7 @@
 import json
 import urlparse
 import os
-from django.conf.urls.defaults import url
+from django.conf.urls import url
 from django.contrib.gis.geos import Polygon
 from django.core.paginator import Paginator, InvalidPage
 from django.utils.html import strip_tags
