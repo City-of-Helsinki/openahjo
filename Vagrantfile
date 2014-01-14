@@ -4,9 +4,10 @@
 Vagrant.configure("2") do |config|
         # Base box to build off, and download URL for when it doesn't exist
         # on the user's system already
-        config.vm.box = "precise-server64"
+	ubuntu_release = "saucy"
+        config.vm.box = "#{ubuntu_release}-server64"
         config.vm.box_url =
-"http://cloud-images.ubuntu.com/vagrant/precise/current/precise-server-cloudimg-amd64-vagrant-disk1.box"
+"http://cloud-images.ubuntu.com/vagrant/#{ubuntu_release}/current/#{ubuntu_release}-server-cloudimg-amd64-vagrant-disk1.box"
 
         config.vm.hostname = "openahjodev"
         ip_address = "192.168.79.2"
