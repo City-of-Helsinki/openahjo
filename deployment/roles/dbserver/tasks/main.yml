@@ -9,7 +9,6 @@
   - postgis
   - postgresql-9.1-postgis
   - gdal-bin
-  - libgdal1
   - python-gdal
 
 - name: PostGIS | Create template database
