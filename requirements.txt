@@ -21,3 +21,4 @@ geopy
 Markdown
 mimeparse
 ansible
+django-extensions
