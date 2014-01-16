@@ -4,17 +4,14 @@
 Vagrant.configure("2") do |config|
         # Base box to build off, and download URL for when it doesn't exist
         # on the user's system already
-	ubuntu_release = "saucy"
+        ubuntu_release = "saucy"
+        ip_address = "192.168.79.2
+
         config.vm.box = "#{ubuntu_release}-server64"
         config.vm.box_url =
 "http://cloud-images.ubuntu.com/vagrant/#{ubuntu_release}/current/#{ubuntu_release}-server-cloudimg-amd64-vagrant-disk1.box"
 
         config.vm.hostname = "openahjodev"
-        ip_address = "192.168.79.2"
-
-        config.vm.provider "virtualbox" do |v|
-                v.customize ["modifyvm", :id, "--cpus", "2"]
-        end
 
         # Assign this VM to a host only network IP, allowing you to access
         # it
@@ -29,10 +26,23 @@ Vagrant.configure("2") do |config|
         config.vm.network "forwarded_port", guest: 8000, host: 8079
         config.vm.network "forwarded_port", guest: 22, host: 2279, id: "ssh", auto_correct: true
 
-        # Enable provisioning with a shell script.
+        config.vm.provider "virtualbox" do |v|
+                v.customize ["modifyvm", :id, "--cpus", "2"]
+                v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
+        end
+
+        $script = <<SCRIPT
+cat /etc/ssh/sshd_config | grep -v -e "^AcceptEnv" > /etc/ssh/sshd_config.new
+mv /etc/ssh/sshd_config.new /etc/ssh/sshd_config
+service ssh reload
+SCRIPT
+
+        config.vm.provision "shell", inline: $script
+
         config.vm.provision "ansible" do |ansible|
                 ansible.playbook = "deployment/site.yml"
                 ansible.extra_vars = { app_user: "vagrant" }
+                ansible.host_key_checking = false
                 #ansible.verbose = "v"
         end
 end
