@@ -7,9 +7,11 @@
   sudo: yes
   with_items:
   - postgis
-  - postgresql-9.1-postgis
+  - postgresql-9.1-postgis-2.1
+  - postgresql-9.1-postgis-scripts
   - gdal-bin
   - python-gdal
+  - postgresql
 
 - name: PostGIS | Create template database
   sudo: yes
