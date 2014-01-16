@@ -19,3 +19,4 @@
   - libavformat-dev
   - libswscale-dev
   - libxml2-dev
+  - zlib1g-dev
