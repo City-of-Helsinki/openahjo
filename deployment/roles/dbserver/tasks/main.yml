@@ -7,8 +7,8 @@
   sudo: yes
   with_items:
   - postgis
-  - postgresql-9.1-postgis-2.1
-  - postgresql-9.1-postgis-scripts
+  - postgresql-9.1-postgis-2.0
+  - postgresql-9.1-postgis-2.0-scripts
   - gdal-bin
   - python-gdal
   - postgresql
