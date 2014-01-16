@@ -1,6 +1,6 @@
 - name: PostGIS | Add UbuntuGIS PPA
   sudo: yes
-  apt_repository: repo='ppa:ubuntugis/ppa'
+  apt_repository: repo='ppa:ubuntugis/ubuntugis-unstable'
 
 - name: PostGIS | Install packages
   apt: pkg={{ item }} state=present

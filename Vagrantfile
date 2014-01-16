@@ -5,7 +5,7 @@ Vagrant.configure("2") do |config|
         # Base box to build off, and download URL for when it doesn't exist
         # on the user's system already
         ubuntu_release = "saucy"
-        ip_address = "192.168.79.2
+        ip_address = "192.168.79.2"
 
         config.vm.box = "#{ubuntu_release}-server64"
         config.vm.box_url =
