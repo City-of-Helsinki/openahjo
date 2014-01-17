@@ -11,7 +11,7 @@ Vagrant.configure("2") do |config|
         config.vm.box_url =
 "http://cloud-images.ubuntu.com/vagrant/#{ubuntu_release}/current/#{ubuntu_release}-server-cloudimg-amd64-vagrant-disk1.box"
 
-        config.vm.hostname = "openahjodev"
+        config.vm.hostname = "openahjodev.localdomain"
 
         # Assign this VM to a host only network IP, allowing you to access
         # it
