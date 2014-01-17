@@ -13,6 +13,20 @@
   - python-gdal
   - postgresql
 
+# Fix a problem caused by the lsb logging function which
+# uses echo and assumes /dev/console is writable during
+# boot. That is not a critical error, but having
+# "set -e" in the script causes it to fail when trying
+# to print status messages to the user.
+#
+# Similar to http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=661002
+# 
+- name: PostGIS | Fix postgresql init script
+  sudo: yes
+  lineinfile: dest=/etc/init.d/postgresql
+              regexp='^set -e'
+              state=absent
+
 - name: PostGIS | Create template database
   sudo: yes
   sudo_user: postgres
