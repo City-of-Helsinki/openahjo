@@ -1,6 +1,7 @@
 @import "bootstrap/variables.less";
 @import "bootstrap-variables.less";
 @import "bootstrap/mixins.less";
+@import "layout.less";
 
 @text_color: #333;
 @border_color: #ddd;
@@ -177,8 +178,8 @@ h1 {
     padding-right: 25px;
     padding-top: 40px;
     padding-bottom: 80px;
-    width: @gridRowWidth;
-    min-height: 800px;
+    //width: @gridRowWidth;
+    //min-height: 800px;
 }
 
 /*****************************************
@@ -359,7 +360,7 @@ h1 {
 
 #issue-list-filter {
     border: 1px solid @border_color;
-    .border-radius(3px);
+    border-radius: 3px;
     min-height: 120px;
     padding: 20px;
     margin-bottom: 30px;
@@ -418,7 +419,7 @@ ul.issue-list-items {
         }
         background-color: @issue_list_item_bg_color;
         overflow: hidden;
-        .border-radius(3px);
+        border-radius: 3px;
         padding: 6px 15px 6px 15px;
         margin-bottom: 10px;
         header {
@@ -766,10 +767,10 @@ ul.issue-list-items {
 }
 
 .policymaker-details {
-    .makeRow;
+    .make-row();
 
     > nav {
-        .makeColumn(4);
+        .make-xs-column(4);
         > a {
             display: block;
             color: @textColor;
@@ -808,7 +809,7 @@ ul.issue-list-items {
     }
 
     > .meeting-details {
-        .makeColumn(7);
+        .make-xs-column(7);
         nav {
             .clearfix;
             h3 {

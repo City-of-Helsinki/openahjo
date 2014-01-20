@@ -77,26 +77,33 @@
         {% block extra_head %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-static-top">
-            <div class="navbar-inner">
-                <div class="container">
-                    <a class="brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET <sub>beta</sub></a>
-                    <div class="nav-collapse collapse">
-                        <ul class="nav">
-                            <li><a href="{% url "ui.views.issue_list" %}">Asiat</a></li>
-                            <li><a href="{% url "ui.views.policymaker_list" %}">Päättäjät</a></li>
-                            <li><a href="{% url "ui.views.about" %}">Tietoa palvelusta</a></li>
-                        </ul>
-                        <ul class="nav city-link pull-right">
-                            <li><a href="#">Helsinki</a></li>
-                        </ul>
-                    </div><!--/.nav-collapse -->
-                </div>
-            </div>
+      
+        <nav class="navbar navbar-inverse navbar-static-top" role="navigation">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#paatokset-navbar-collapse">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET <sub>beta</sub></a>
+          </div>
+           
+          <div class="navbar-collapse collapse" id="paatokset-navbar-collapse">
+              <ul class="nav navbar-nav">
+                  <li><a href="{% url "ui.views.issue_list" %}">Asiat</a></li>
+                  <li><a href="{% url "ui.views.policymaker_list" %}">Päättäjät</a></li>
+                  <li><a href="{% url "ui.views.about" %}">Tietoa palvelusta</a></li>
+              </ul>
+              <ul class="nav city-link pull-right">
+                  <li><a href="#">Helsinki</a></li>
+              </ul>
+          </div><!--/.nav-collapse -->
+           
         </nav>
 
         {% block content_base %}
-        <div id="content-container">
+        <div id="content-container" class="container">
             {% block content %}{% endblock %}
         </div>
         {% endblock %}
