@@ -19,8 +19,7 @@
         <title>{% block title %}{% endblock %} | Päätökset | Helsingin kaupunki</title>
 
         {% compress css %}
-        <link rel="stylesheet" type="text/less" href="{% static "css/bootstrap/bootstrap.less" %}">
-        <link rel="stylesheet" href="{% static "css/chosen.less" %}" type="text/less">
+        
         {% endcompress %}
         <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,600,600italic,700' rel='stylesheet' type='text/css'>
         <!--[if lte IE 8]>
@@ -86,7 +85,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET <sub>beta</sub></a>
+            <a class="navbar-brand" href="{% url "ui.views.home_view" %}">PÄÄTÖKSET <sub>beta</sub></a>
           </div>
            
           <div class="navbar-collapse collapse" id="paatokset-navbar-collapse">
@@ -103,7 +102,7 @@
         </nav>
 
         {% block content_base %}
-        <div id="content-container" class="container">
+        <div class="content-container container">
             {% block content %}{% endblock %}
         </div>
         {% endblock %}
@@ -111,20 +110,20 @@
         <footer>
             <div class="container muted">
                 <div class="row">
-                    <div class="span3">
+                    <div class="sitemap-section">
                         <h4><a href="{% url "ui.views.issue_list" %}">Asiat</a></h4>
                         <ul>
                             <li><a href="{% url "ui.views.issue_list" %}">Haku</a></li>
                             <li><a href="{% url "ui.views.issue_list_map" %}">Kartalla</a></li>
                         </ul>
                     </div>
-                    <div class="span3">
+                    <div class="sitemap-section">
                         <h4><a href="{% url "ui.views.policymaker_list" %}">Päättäjät</a></h4>
                         <ul>
                             <li><a href="{% url "ui.views.policymaker_details" slug='kvsto' %}">Kaupunginvaltuusto</a></li>
                             <li><a href="{% url "ui.views.policymaker_details" slug='khs' %}">Kaupunginhallitus</a></li>
                     </div>
-                    <div class="span3">
+                    <div class="sitemap-section">
                         <h4><a href="{% url "ui.views.about" %}">Tietoa palvelusta</a></h4>
                         <ul>
                             <li><a href="{% url "ui.views.about" %}">Yleistä</a></li>
@@ -132,7 +131,7 @@
                             <li><a href="https://github.com/City-of-Helsinki/openahjo/">Palvelun lähdekoodi</a></li>
                         </ul>
                     </div>
-                    <div class="span3">
+                    <div class="sitemap-section">
                         <ul class="ext-links">
                             <li><a href="http://www.hel.fi/">&gt; Helsingin kaupunki</a></li>
                             <li><a href="http://www.hel.fi/paatoksenteko/">&gt; Helsingin kaupungin päätöksenteko</a></li>

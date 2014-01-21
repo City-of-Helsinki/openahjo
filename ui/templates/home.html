@@ -4,7 +4,8 @@
 
 {% block content %}
 <div class="row">
-    <header id="home-header-box" class="span12">
+    <header id="" class="home-header-box">
+      <div class="home-header-box-content">
         <div class="left-side">
             <h1><img src="{% static 'img/logo-white.png' %}" alt='Päätökset logo'><sub>beta</sub></h1>
             <p>Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset. Mitä naapurustossasi tapahtuu? Kuka päättää, mitä päätetään ja millä perusteella?</p>
@@ -18,41 +19,41 @@
             </form>
             <a class="browse-link" href="{% url 'ui.views.issue_list' %}">Selaa päätöksiä</a>
         </div>
+      </div>
     </header>
 </div>
 
-<div class="row home-nav-button-row">
-    <nav id="home-nav-buttons">
-        <div class="nav-button span4">
+
+<nav class="home-nav-buttons">
+        <div class="nav-button nav-button-issues">
             <a href="{% url 'ui.views.issue_list' %}"><div class="content">
                 <h2>Mitkä päätökset?</h2>
                 <p>Täältä löydät kaikki kaupungin päätökset ja niihin liittyvät asiakirjat</p>
             </div></a>
         </div>
-        <div class="nav-button span4">
+        <div class="nav-button nav-buttom-map">
             <a href="{% url 'ui.views.issue_list_map' %}"><div class="content">
                 <h2>Kartalla</h2>
                 <p>Katso omaa aluettasi koskevat päätökset.</p>
             </div></a>
         </div>
-        <div class="nav-button span4">
+        <div class="nav-button navbutton-policymakers">
             <a href="{% url 'ui.views.policymaker_list' %}"><div class="content">
                 <h2>Päättäjät</h2>
                 <p>Missä päätökset tehdään? Selaa päätöksen käsittelijöitä.</p>
             </div></a>
         </div>
-    </nav>
-</div>
+</nav>
 
-<div class="row" id="home-recent-content">
-    <div class="box span6">
+<div class="row home-recent-content">
+    <div class="box-recent-content">
         <article class="recent-items">
             <h2>Vasta käsiteltyä</h2>
             <ul class="item-list unstyled">
             </ul>
         </article>
     </div>
-    <div class="box span6">
+    <div class="box-recent-content">
         <article class="latest-meetings">
             <h2>Uusimmat kokoukset</h2>
             <ul class="meeting-list unstyled">
@@ -61,18 +62,18 @@
     </div>
 </div>
 
-<div class="row" id="home-logo-row">
-    <div class="span4 hel-heart-dev">
+<div class="row home-logo-row">
+    <div class="home-logo hel-heart-dev">
         <div class="logo">
             <a href="http://dev.hel.fi/"><img src="{% static 'img/hel-heart-dev.png' %}" alt="Helsinki loves developers"></a>
         </div>
     </div>
-    <div class="span4 helsinki">
+    <div class="home-logo helsinki">
         <div class="logo">
             <a href="http://www.hel.fi/"><img src="{% static 'img/helsinki.png' %}" alt="Helsingin kaupunki"></a>
         </div>
     </div>
-    <div class="span4 code-for-europe">
+    <div class="home-logo code-for-europe">
         <div class="logo">
             <a href="http://codeforeurope.net/"><img src="{% static 'img/codeforeurope.png' %}" alt="Helsinki Region Infoshare"></a>
         </div>

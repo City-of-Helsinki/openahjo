@@ -1,7 +1,9 @@
-@import "bootstrap/variables.less";
+//@import "bootstrap/variables.less";
+@import "bootstrap/bootstrap.less";
 @import "bootstrap-variables.less";
 @import "bootstrap/mixins.less";
 @import "layout.less";
+@import "chosen.less";
 
 @text_color: #333;
 @border_color: #ddd;
@@ -40,6 +42,7 @@
 
 @charset "UTF-8";
 
+
 /* Bootstrap overrides */
 textarea,
 input[type="text"],
@@ -75,12 +78,16 @@ footer {
     padding-top: 80px;
     padding-bottom: 80px;
     background-color: @box_text_color;
+  
+    .sitemap-section {
+      .make-md-column(3);
+    }
     h4 {
         a {
             color: @org_color_7;
         }
         font-size: 16px;
-        margin: 0;
+        margin: 0 0 0.5em 0;
     }
     ul {
         list-style-type: none;
@@ -125,12 +132,7 @@ h1 {
 
 .navbar {
     margin-bottom: 0px;
-    .navbar-inner {
-        background-color: black;
-        background-image: none;
-        border: none;
-    }
-    .brand {
+    .navbar-brand {
         font-weight: 700;
         sub {
             font-size: 10px;
@@ -156,7 +158,11 @@ h1 {
     }
 }
 
-#logo-right {
+.logo-header {
+    .make-md-column(12);
+}
+
+.logo-right {
     height: 60px;
     text-align: right;
     font-size: 50px;
@@ -165,19 +171,19 @@ h1 {
     }
 }
 
-#content-container {
+.content-container {
     > h1, .main-heading {
         margin-bottom: 40px;
     }
     background-color: white;
-    margin-left: auto; /* 80px */
-    margin-right: auto;
-    border-left: 8px solid @page_side_color;
-    border-right: 8px solid @page_side_color;
-    padding-left: 25px;
-    padding-right: 25px;
-    padding-top: 40px;
-    padding-bottom: 80px;
+    //margin-left: auto; /* 80px */
+    //margin-right: auto;
+    //border-left: 8px solid @page_side_color;
+    //border-right: 8px solid @page_side_color;
+    //padding-left: 25px;
+    //padding-right: 25px;
+    //padding-top: 40px;
+    //padding-bottom: 80px;
     //width: @gridRowWidth;
     //min-height: 800px;
 }
@@ -186,12 +192,17 @@ h1 {
  * Home page                             *
  *****************************************/
 
-#home-header-box {
-    background-image: url('../img/paatokset_bg_tumma.gif');
-    height: 200px;
-    color: white;
+.home-header-box {
+    .make-md-column(12);
+    .home-header-box-content {
+      background-image: url('../img/paatokset_bg_tumma.gif');
+      color: white;
+      padding: 24px;
+      .clearfix();
+    }
     h1 {
         color: white;
+        margin-top: 0;
         img {
             height: 50px;
             margin-bottom: 8px;
@@ -211,8 +222,6 @@ h1 {
     }
     .left-side {
         width: 50%;
-        margin-top: 20px;
-        margin-left: 50px;
         float: left;
     }
     .right-side {
@@ -229,16 +238,15 @@ h1 {
     }
 }
 
-.home-nav-button-row {
-    margin-top: 20px;
-}
 
-#home-nav-buttons {
-    margin-bottom: 20px;
-    height: 180px;
+
+.home-nav-buttons {
+    .make-row();
+    
     .nav-button {
-        background-color: @org_color_4;
+        
         height: 100%;
+        .make-md-column(4);
         a:hover {
             text-decoration: none;
             color: @box_text_color;
@@ -246,7 +254,9 @@ h1 {
     }
     .content {
         padding: 15px;
+        background-color: @org_color_4;
         color: @box_text_color;
+        min-height: 160px;
         h2 {
             margin-top: 0px;
             color: @box_text_color;
@@ -261,13 +271,15 @@ h1 {
     }
 }
 
-#home-recent-content {
+.home-recent-content {
+    .make-row();
     margin-bottom: 20px;
-    .box {
-        background-color: @org_color_7;
+    .box-recent-content {
+        .make-md-column(6);    
     }
     article {
         padding: 20px;
+        background-color: @org_color_7;
         h2 {
             margin-top: 0px;
         }
@@ -277,6 +289,7 @@ h1 {
         height: 300px;
         overflow-y: hidden;
         margin: 0px;
+        padding: 0;
         position: relative;
         li {
             padding-top: 10px;
@@ -322,13 +335,19 @@ h1 {
     }
 }
 
-#home-logo-row {
-    margin-top: 60px;
-    height: 162px;
+.home-logo-row {
     .logo {
         width: 280px;
         margin-left: auto;
         margin-right: auto;
+    }
+  
+    .home-logo {
+      .make-md-column(4);
+      
+      .logo {
+        padding: 24px;
+      }
     }
     .helsinki .logo {
         width: 140px;
@@ -358,7 +377,12 @@ h1 {
     }
 }
 
-#issue-list-filter {
+.browse-issues-form {
+  .make-md-column(10);
+  .make-md-column-offset(1);
+}
+
+.issue-list-filter {
     border: 1px solid @border_color;
     border-radius: 3px;
     min-height: 120px;
@@ -379,6 +403,9 @@ h1 {
     .caret {
         margin-right: 6px;
     }
+    .issues-form-label {
+      .make-md-column(2);
+    }
     label {
         float: left;
         margin-bottom: 0px;
@@ -395,8 +422,10 @@ h1 {
     }
 }
 
-#issue-list-results {
+.issue-list-results {
     margin-bottom: 20px;
+    .make-md-column(10);
+    .make-md-column-offset(1);
     header {
         float: left;
         font-weight: 700;
@@ -491,6 +520,7 @@ ul.issue-list-items {
     }
 
     .navigate-column {
+      .make-md-column(4);
         .meeting-list li {
             &.active {
                 .meeting-link {
@@ -534,7 +564,11 @@ ul.issue-list-items {
             }
         }
     }
+  
     .content-column {
+      .make-md-column(5);
+    }
+    .content-column-content {
         h1, h2, h3 {
             color: #333;
         }
@@ -560,9 +594,11 @@ ul.issue-list-items {
             overflow: auto;
             padding: 20px 16px 20px 16px;
             background-color: @issue_bg_color;
+            margin-bottom: 24px;
         }
     }
     .meta-column {
+        .make-md-column(3);
         .section {
             margin-bottom: 16px;
         }
@@ -588,6 +624,7 @@ ul.issue-list-items {
         }
         .attachment-list {
             margin-left: 0px;
+            padding: 0;
             li {
                 .clearfix();
                 list-style: none;
@@ -632,7 +669,7 @@ ul.issue-list-items {
 /*****************************************
  * Policymaker views                     *
  *****************************************/
-#content-container > h1.policymaker-heading {
+.content-container > h1.policymaker-heading {
     margin-bottom: 15px;
 }
 
@@ -710,8 +747,17 @@ ul.issue-list-items {
         margin-bottom: 16px;
     }
     .org-box {
+        .clearfix();
         height: 120px;
         cursor: pointer;
+    }
+    
+    .span3 {
+      .make-md-column(3);
+    }
+  
+    .span9 {
+      .make-md-column(9);
     }
     .span3 .content h3 {
         width: 220px - 48px - 16px;
@@ -720,6 +766,7 @@ ul.issue-list-items {
         padding-left: 16px;
         padding-top: 16px;
         padding-bottom: 16px;
+        .clearfix();
         h3 {
             color: black;
             font-size: 24px;
@@ -749,19 +796,19 @@ ul.issue-list-items {
         }
     }
 
-    .council {
+    .council > .content{
         .org-type-box(@org_color_1);
     }
-    .government {
+    .government > .content {
         .org-type-box(@org_color_2);
     }
-    .committee {
+    .committee > .content {
         .org-type-box(@org_color_3);
     }
-    .board {
+    .board > .content {
         .org-type-box(@org_color_4);
     }
-    .other {
+    .other > .content {
         .org-type-box(@org_color_5);
     }
 }
@@ -770,10 +817,10 @@ ul.issue-list-items {
     .make-row();
 
     > nav {
-        .make-xs-column(4);
+        .make-md-column(4);
         > a {
             display: block;
-            color: @textColor;
+            color: @text-color;
             text-decoration: underline;
             font-weight: 700;
             font-size: 20px;
@@ -786,6 +833,7 @@ ul.issue-list-items {
         ul {
             list-style: none;
             margin: 0;
+            padding: 0;
         }
         li {
             border-bottom: 1px solid @border_color;
@@ -809,7 +857,7 @@ ul.issue-list-items {
     }
 
     > .meeting-details {
-        .make-xs-column(7);
+        .make-md-column(7);
         nav {
             .clearfix;
             h3 {
@@ -887,6 +935,8 @@ ul.issue-list-items {
  *****************************************/
 
 .about-info-column {
+    .make-md-column(8);
+    .make-md-column-offset(1);
     h4 {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -896,10 +946,12 @@ ul.issue-list-items {
     }
 }
 
+
 .about-feedback-column {
-    background-color: @org_color_7;
+    .make-md-column(3);
     .content {
-        padding: 20px;
+      background-color: @org_color_7;
+      padding: 20px;
     }
     .logos {
         border-top: 1px solid black;
@@ -913,3 +965,5 @@ ul.issue-list-items {
         }
     }
 }
+
+

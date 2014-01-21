@@ -9,24 +9,24 @@
 <script id="issue-search-template" type="text/template">
 <h1 class="main-heading">Selaa asioita</h1>
 <div class="row">
-    <div class="span10 offset1">
-        <div id="issue-list-filter">
+    <div class="browse-issues-form">
+        <div class="issue-list-filter">
             <h2>Rajaus</h2>
             <div class="control-group">
-                <label class="span2" style="margin-left: 0" for="text-filter">Hae sisällöstä</label>
+                <label class="issues-form-label" style="margin-left: 0" for="text-filter">Hae sisällöstä</label>
                 <div class="controls">
                     <input type="text" id="text-filter" placeholder="Syötä teksti...">
                 </div>
             </div>
             <div class="control-group">
-                <label class="span2" style="margin-left: 0" for="text-filter">Kaupunginosa</label>
+                <label class="issues-form-label" style="margin-left: 0" for="text-filter">Kaupunginosa</label>
                 <div class="controls">
                     <select id="district-filter" data-placeholder="Syötä kaupunginosa..." multiple>
                     </select>
                 </div>
             </div>
             <div class="control-group">
-                <label class="span2" style="margin-left: 0" for="text-filter">Päättäjät</label>
+                <label class="issues-form-label" style="margin-left: 0" for="text-filter">Päättäjät</label>
                 <div class="controls">
                     <select id="policymaker-filter" data-placeholder="Syötä päättäjä..." multiple>
                     </select>
@@ -34,8 +34,8 @@
             </div>
             <div class="control-group">
                 <div id="category-filter" class="input-prepend">
-                    <div class="btn-group">
-                        <button class="span2 btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
+                    <div class="btn-group issues-form-label">
+                        <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
                         <ul class="dropdown-menu category-list">
                         </ul>
                     </div>
@@ -46,7 +46,7 @@
     </div>
 </div>
 
-<div class="row"><div class="span10 offset1" id="issue-list-results">
+<div class="row"><div class="issue-list-results">
     <header id="result-count">Löytyi <span class="count"></span> kpl</header>
     <div class="btn-toolbar pull-right">
         <div class="btn-group list-tab-selector" data-toggle="buttons-radio">
@@ -89,11 +89,11 @@
 <script id="item-details-template" type="text/template">
 <h1 class="main-heading">Asia</h1>
 <div class="item-details row">
-    <div class="navigate-column span4">
+    <div class="navigate-column">
         <% if (future_list.length) { %>
         <div class="future-hearings meeting-list">
             <h2 class="header-bar">Tulevat käsittelyt</h2>
-            <ul class="unstyled vertical-list">
+            <ul class="list-unstyled vertical-list">
                 <% _.each(future_list, function(ai) { %>
                 <%= meeting_template(ai) %>
                 <% }); %>
@@ -103,7 +103,7 @@
         <% if (past_list.length) { %>
         <div class="decision-history meeting-list">
             <h2 class="header-bar">Käsittelyhistoria</h2>
-            <ul class="unstyled vertical-list">
+            <ul class="list-unstyled vertical-list">
                 <% _.each(past_list, function(ai) { %>
                 <%= meeting_template(ai) %>
                 <% }); %>
@@ -111,8 +111,8 @@
         </div>
         <% } %>
     </div>
-    <div class="span5">
-        <div class="content-column">
+    <div class="content-column">
+        <div class="content-column-content">
             <header><h1><%= current.subject %></h1></header>
             <div class="content">
                 <% _.each(current.content, function(item) { %>
@@ -122,7 +122,7 @@
             </div>
         </div>
     </div>
-    <div class="meta-column span3">
+    <div class="meta-column">
         <div class="identifiers clearfix section">
             <div class="icon">
                 <i class="icon-archive"></i>
