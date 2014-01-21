@@ -1,0 +1,17 @@
+
+apache_mirror: http://www.nic.funet.fi/pub/mirrors/apache.org/
+solr_user:     solr
+solr_package:  lucene/solr/4.6.0/solr-4.6.0.tgz
+solr_checksum: 2a4a6559665363236653bec749f580a5da973e1088227ceb1fca87802bd06a3f
+solr_path:     /opt/solr
+
+voikko_dict_baseurl: http://www.puimula.org/htp/testing/voikko-snapshot
+voikko_dicts:
+  - filename: dict.zip
+    checksum: 3492bfa64a9bb22e314c39b7d46a58f7bdb9d6757b4107fc0d5eb473d08ba048
+  - filename: dict-morphoid.zip
+    checksum: c7eb7e195fd09d6aa5dec0dad5841df851d0fcd2a1f03024634f9c50b57c1e22
+voikko_libs:
+  - libvoikko-3.5.jar
+  - solrvoikko-0.0.2-SNAPSHOT.jar
+  - jna.jar
