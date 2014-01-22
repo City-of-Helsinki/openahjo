@@ -20,3 +20,6 @@
   - libswscale-dev
   - libxml2-dev
   - zlib1g-dev
+  - default-jdk
+  - libvoikko1
+  - unzip

@@ -29,6 +29,7 @@ Vagrant.configure("2") do |config|
         config.vm.provider "virtualbox" do |v|
                 v.customize ["modifyvm", :id, "--cpus", "2"]
                 v.customize ["modifyvm", :id, "--ostype", "Ubuntu_64"]
+                v.memory = 1024
         end
 
         $script = <<SCRIPT
