@@ -93,3 +93,17 @@
   sudo: yes
   command: start solr
   when: solr_running|failed
+
+- name: Apache Solr | Wait until Solr is ready
+  wait_for: host={{ solr_host }} port={{ solr_port }} delay=10
+
+- name: Apache Solr | Check document count
+  shell: >
+    curl -s 'http://{{ solr_host }}:{{ solr_port }}/solr/select?q=*:*&rows=0'
+    | grep 'numFound="0"'
+  ignore_errors: True
+  register: solr_empty_index
+
+- name: Haystack | Index all documents
+  command: "{{ venv }}/exec /vagrant/manage.py rebuild_index --noinput"
+  when: solr_empty_index|success
