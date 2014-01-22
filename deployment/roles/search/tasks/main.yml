@@ -30,7 +30,8 @@
 - name: Apache Solr | Setup logging
   sudo: yes
   sudo_user: "{{ solr_user }}"
-  template: src=roles/search/templates/log4j.properties.j2 dest={{ solr_path }}/example/resources/log4j.properties
+  template: src=roles/search/templates/log4j.properties.j2
+            dest={{ solr_path }}/example/resources/log4j.properties
 
 - name: Voikko | Download language dictionaries
   sudo: yes
@@ -67,16 +68,21 @@
 - name: Apache Solr | Generate Solr schema from Django Haystack template
   sudo: yes
   sudo_user: "{{ app_user }}"
-  command: "{{ venv }}/exec /vagrant/manage.py build_solr_schema -f {{ solr_path }}/example/solr/collection1/conf/schema.xml"
+  command: >
+    {{ venv }}/exec /vagrant/manage.py build_solr_schema
+    -f {{ solr_path }}/example/solr/collection1/conf/schema.xml
 
 - name: Apache Solr | Install solr start script
   sudo: yes
-  template: src=roles/search/templates/start_solr.sh.j2 dest={{ solr_path }}/example/start_solr.sh owner={{ solr_user }} group={{ solr_user }} mode=0744
+  template: src=roles/search/templates/start_solr.sh.j2
+            dest={{ solr_path }}/example/start_solr.sh
+            owner={{ solr_user }} group={{ solr_user }} mode=0744
 
 - name: Apache Solr | Install solr upstart script
   sudo: yes
   sudo_user: root
-  template: src=roles/search/templates/solr.conf.j2 dest=/etc/init/solr.conf owner=root group=root mode=0644
+  template: src=roles/search/templates/solr.conf.j2
+            dest=/etc/init/solr.conf owner=root group=root mode=0644
 
 - name: Apache Solr | Start Solr service
   sudo: yes
