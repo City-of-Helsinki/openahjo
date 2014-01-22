@@ -84,6 +84,12 @@
   template: src=roles/search/templates/solr.conf.j2
             dest=/etc/init/solr.conf owner=root group=root mode=0644
 
+- name: Apache Solr | Check if Solr is running
+  command: pgrep solr
+  register: solr_running
+  ignore_errors: True
+
 - name: Apache Solr | Start Solr service
   sudo: yes
   command: start solr
+  when: solr_running|failed
