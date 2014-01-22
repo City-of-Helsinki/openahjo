@@ -71,7 +71,7 @@ LOGGING = {
 HAYSTACK_CONNECTIONS = {
     'default': { 
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://127.0.0.1:8080/solr',
+        'URL': 'http://{{ solr_host }}:{{ solr_port }}/solr',
         'INCLUDE_SPELLING': True,
         'TIMEOUT': 60,
     },
