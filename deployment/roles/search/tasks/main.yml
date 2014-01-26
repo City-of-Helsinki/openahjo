@@ -56,7 +56,7 @@
   sudo: yes
   command: unzip -o {{ item.filename }} -d /etc/voikko
            chdir=/home/{{ solr_user }}
-           creates=/etc/voikko/2
+           creates=/etc/voikko/2/{{ item.out_dir }}
   with_items: voikko_dicts
 
 - name: Voikko | Copy VoikkoSolr library jars

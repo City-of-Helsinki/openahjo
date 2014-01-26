@@ -9,8 +9,10 @@ voikko_dict_baseurl: http://www.puimula.org/htp/testing/voikko-snapshot
 voikko_dicts:
   - filename: dict.zip
     checksum: 3492bfa64a9bb22e314c39b7d46a58f7bdb9d6757b4107fc0d5eb473d08ba048
+    out_dir:  mor-standard
   - filename: dict-morphoid.zip
     checksum: c7eb7e195fd09d6aa5dec0dad5841df851d0fcd2a1f03024634f9c50b57c1e22
+    out_dir:  mor-morphoid
 voikko_libs:
   - libvoikko-3.5.jar
   - solrvoikko-0.0.2-SNAPSHOT.jar
