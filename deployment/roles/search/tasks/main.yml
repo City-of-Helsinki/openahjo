@@ -56,7 +56,7 @@
   sudo: yes
   command: unzip -o {{ item.filename }} -d /etc/voikko
            chdir=/home/{{ solr_user }}
-           creates=/etc/voikko/2
+           creates=/etc/voikko/2/{{ item.out_dir }}
   with_items: voikko_dicts
 
 - name: Voikko | Copy VoikkoSolr library jars
@@ -84,15 +84,9 @@
   template: src=roles/search/templates/solr.conf.j2
             dest=/etc/init/solr.conf owner=root group=root mode=0644
 
-- name: Apache Solr | Check if Solr is running
-  command: pgrep solr
-  register: solr_running
-  ignore_errors: True
-
-- name: Apache Solr | Start Solr service
+- name: Apache Solr | Ensure Solr is using new configuration and running
   sudo: yes
-  command: start solr
-  when: solr_running|failed
+  service: name=solr state=restarted
 
 - name: Apache Solr | Wait until Solr is ready
   wait_for: host={{ solr_host }} port={{ solr_port }} delay=10
