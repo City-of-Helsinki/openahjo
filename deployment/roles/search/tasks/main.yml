@@ -86,7 +86,7 @@
 
 - name: Apache Solr | Ensure Solr is using new configuration and running
   sudo: yes
-  shell: restart solr || start solr
+  service: name=solr state=restarted
 
 - name: Apache Solr | Wait until Solr is ready
   wait_for: host={{ solr_host }} port={{ solr_port }} delay=10
