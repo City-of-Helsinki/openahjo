@@ -132,6 +132,9 @@
                 <span class="id-value archive-id"><%= register_id %></span>
             </div>
         </div>
+        <div class="issue-map section">
+            <div id="issue-map" class="map"></div>
+        </div>
         <div class="issue-labels section">
             <% _.each(label_list, function(label) { %>
                 <span class="label label-<%- label['class'] %>"><%- label.text %></span>

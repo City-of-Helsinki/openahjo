@@ -40,6 +40,15 @@ RESOLUTIONS_ICONS =
     'TABLED': 'inbox'
     'ELECTION': 'group'
 
+create_map = (container_element) ->
+    L.map(container_element,
+        layers: [L.tileLayer(
+            'http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+            maxZoom: 18
+            key: 'BC9A493B41014CAABB98F0471D759707'
+            style: 998)])
+
 class IssueView extends Backbone.View
     make_labels: ->
         labels = []
@@ -172,14 +181,7 @@ class IssueMapView extends Backbone.View
 
         opts.parent_el.append @el
 
-        @map = L.map(@el).setView [60.170833, 24.9375], 12
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-            maxZoom: 18
-            key: 'BC9A493B41014CAABB98F0471D759707'
-            style: 998
-        ).addTo @map
-
+        @map = create_map(@el).setView [60.170833, 24.9375], 12
         @map.on 'moveend', @map_move
 
     render_one: (issue) =>
@@ -474,6 +476,22 @@ class IssueDetailsView extends IssueView
         data.meeting_template = @meeting_template
         html = $.trim(@template data)
         @$el.html html
+
+        @map = create_map('issue-map')
+        geom_layer = L.geoJson()
+        for geom_json in @model.get 'geometries'
+            geom_layer.addData(geom_json)
+            geom_json.geometry = geom_layer
+
+        @map.fitBounds(geom_layer.getBounds(),
+            paddingBottomRight: [0, 50], maxZoom: 16)
+        geom_layer.addTo @map
+
+        if (@map.getZoom() > 16)
+            # Workaround: fitBounds options attribute above maxZoom isn't respected,
+            # so we have to zoom out manually if we require a maximum zoom level
+            # while enabling the user to zoom in manually later.
+            @map.setZoom(16, animate: false)
 
         @$el.find(".meeting-list li").click (ev) =>
             if ev.target.tagName == 'A'
