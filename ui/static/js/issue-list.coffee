@@ -483,15 +483,17 @@ class IssueDetailsView extends IssueView
             geom_layer.addData(geom_json)
             geom_json.geometry = geom_layer
 
+        preferred_max_zoom = 16
+
         @map.fitBounds(geom_layer.getBounds(),
-            paddingBottomRight: [0, 50], maxZoom: 16)
+            paddingBottomRight: [0, 50], maxZoom: preferred_max_zoom)
         geom_layer.addTo @map
 
-        if (@map.getZoom() > 16)
+        if (@map.getZoom() > preferred_max_zoom)
             # Workaround: fitBounds options attribute above maxZoom isn't respected,
             # so we have to zoom out manually if we require a maximum zoom level
             # while enabling the user to zoom in manually later.
-            @map.setZoom(16, animate: false)
+            @map.setZoom(preferred_max_zoom, animate: false)
 
         @$el.find(".meeting-list li").click (ev) =>
             if ev.target.tagName == 'A'
