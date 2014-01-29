@@ -6,6 +6,10 @@ TRANSLATIONS = {
     "resolution": "Päätös"
     "summary": "Yhteenveto"
 }
+LOCATIONS_FI =
+    'address': 'Osoite'
+    'plan': 'Kaava'
+    'plan_unit': 'Kaavayksikkö'
 RESOLUTIONS_EN =
     'PASSED': 'Passed as drafted'
     'PASSED_VOTED': 'Passed after a vote'
@@ -486,23 +490,34 @@ class IssueDetailsView extends IssueView
         html = $.trim(@template data)
         @$el.html html
 
-        @map = create_map 'issue-map'
-        geom_layer = L.geoJson()
-        for geom_json in @model.get 'geometries'
-            geom_layer.addData geom_json
-            geom_json.geometry = geom_layer
+        geometries = @model.get 'geometries'
+        if geometries.length > 0
+            @$el.find('#issue-map').css 'display', 'block'
+            @map = create_map 'issue-map'
+            @$el.find('#map-attribution').html '<hr>' + MAP_ATTRIBUTION
 
-        preferred_max_zoom = 16
+            geom_layer = L.geoJson null,
+                onEachFeature: (featureData, layer) ->
+                    layer.bindPopup "#{LOCATIONS_FI[featureData.category]}<br>
+                                     <b>#{featureData.name}</b>"
 
-        @map.fitBounds(geom_layer.getBounds(),
-            paddingBottomRight: [0, 50], maxZoom: preferred_max_zoom)
-        geom_layer.addTo @map
+            for geom_json in geometries
+                geom_layer.addData geom_json
+                geom_json.geometry = geom_layer
 
-        if (@map.getZoom() > preferred_max_zoom)
-            # Workaround: fitBounds options attribute above maxZoom isn't respected,
-            # so we have to zoom out manually if we require a maximum zoom level
-            # while enabling the user to zoom in manually later.
-            @map.setZoom preferred_max_zoom, animate: false
+            geom_layer.addTo @map
+
+            preferred_max_zoom = 16
+
+            @map.fitBounds geom_layer.getBounds(),
+                paddingBottomRight: [0, 50]
+                maxZoom: preferred_max_zoom
+
+            if (@map.getZoom() > preferred_max_zoom)
+                # Workaround: the fitBounds options attribute maxZoom isn't respected,
+                # so we have to zoom out manually if we require a maximum initial zoom level
+                # while enabling the user to zoom in manually later.
+                @map.setZoom preferred_max_zoom, animate: false
 
         @$el.find(".meeting-list li").click (ev) =>
             if ev.target.tagName == 'A'
