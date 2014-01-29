@@ -41,13 +41,20 @@ RESOLUTIONS_ICONS =
     'ELECTION': 'group'
 
 create_map = (container_element) ->
-    L.map(container_element,
-        layers: [L.tileLayer(
-            'http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-            maxZoom: 18
-            key: 'BC9A493B41014CAABB98F0471D759707'
-            style: 998)])
+    L.map container_element,
+          layers: [
+            L.tileLayer 'http://{s}.tile.cloudmade.com/{key}/' +
+                '{style}/256/{z}/{x}/{y}.png',
+                attribution:
+                    'Map data &copy;
+                    <a href="http://openstreetmap.org">OpenStreetMap</a>
+                    contributors,
+                    <a href="http://creativecommons.org/licenses/by-sa/2.0/">
+                       CC-BY-SA</a>,
+                       Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+                maxZoom: 18
+                key: 'BC9A493B41014CAABB98F0471D759707'
+                style: 998]
 
 class IssueView extends Backbone.View
     make_labels: ->
@@ -477,10 +484,10 @@ class IssueDetailsView extends IssueView
         html = $.trim(@template data)
         @$el.html html
 
-        @map = create_map('issue-map')
+        @map = create_map 'issue-map'
         geom_layer = L.geoJson()
         for geom_json in @model.get 'geometries'
-            geom_layer.addData(geom_json)
+            geom_layer.addData geom_json
             geom_json.geometry = geom_layer
 
         preferred_max_zoom = 16
@@ -493,7 +500,7 @@ class IssueDetailsView extends IssueView
             # Workaround: fitBounds options attribute above maxZoom isn't respected,
             # so we have to zoom out manually if we require a maximum zoom level
             # while enabling the user to zoom in manually later.
-            @map.setZoom(preferred_max_zoom, animate: false)
+            @map.setZoom preferred_max_zoom, animate: false
 
         @$el.find(".meeting-list li").click (ev) =>
             if ev.target.tagName == 'A'
