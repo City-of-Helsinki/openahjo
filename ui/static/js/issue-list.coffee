@@ -6,6 +6,10 @@ TRANSLATIONS = {
     "resolution": "Päätös"
     "summary": "Yhteenveto"
 }
+LOCATIONS_FI =
+    'address': 'Osoite'
+    'plan': 'Kaava'
+    'plan_unit': 'Kaavayksikkö'
 RESOLUTIONS_EN =
     'PASSED': 'Passed as drafted'
     'PASSED_VOTED': 'Passed after a vote'
@@ -39,6 +43,24 @@ RESOLUTIONS_ICONS =
     'REMOVED': 'remove'
     'TABLED': 'inbox'
     'ELECTION': 'group'
+
+MAP_ATTRIBUTION =
+    'Map data &copy;
+     <a href="http://openstreetmap.org">OpenStreetMap</a>
+     contributors,
+     <a href="http://creativecommons.org/licenses/by-sa/2.0/">
+     CC-BY-SA</a>,
+     Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+
+create_map = (container_element, map_attribution) ->
+    L.map container_element,
+          layers: [
+            L.tileLayer 'http://{s}.tile.cloudmade.com/{key}/' +
+                '{style}/256/{z}/{x}/{y}.png',
+                attribution: map_attribution
+                maxZoom: 18
+                key: 'BC9A493B41014CAABB98F0471D759707'
+                style: 998]
 
 class IssueView extends Backbone.View
     make_labels: ->
@@ -172,14 +194,7 @@ class IssueMapView extends Backbone.View
 
         opts.parent_el.append @el
 
-        @map = L.map(@el).setView [60.170833, 24.9375], 12
-        L.tileLayer('http://{s}.tile.cloudmade.com/{key}/{style}/256/{z}/{x}/{y}.png',
-            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-            maxZoom: 18
-            key: 'BC9A493B41014CAABB98F0471D759707'
-            style: 998
-        ).addTo @map
-
+        @map = create_map(@el, MAP_ATTRIBUTION).setView [60.170833, 24.9375], 12
         @map.on 'moveend', @map_move
 
     render_one: (issue) =>
@@ -474,6 +489,35 @@ class IssueDetailsView extends IssueView
         data.meeting_template = @meeting_template
         html = $.trim(@template data)
         @$el.html html
+
+        geometries = @model.get 'geometries'
+        if geometries.length > 0
+            @$el.find('#issue-map').css 'display', 'block'
+            @map = create_map 'issue-map'
+            @$el.find('#map-attribution').html '<hr>' + MAP_ATTRIBUTION
+
+            geom_layer = L.geoJson null,
+                onEachFeature: (featureData, layer) ->
+                    layer.bindPopup "#{LOCATIONS_FI[featureData.category]}<br>
+                                     <b>#{featureData.name}</b>"
+
+            for geom_json in geometries
+                geom_layer.addData geom_json
+                geom_json.geometry = geom_layer
+
+            geom_layer.addTo @map
+
+            preferred_max_zoom = 16
+
+            @map.fitBounds geom_layer.getBounds(),
+                paddingBottomRight: [0, 50]
+                maxZoom: preferred_max_zoom
+
+            if (@map.getZoom() > preferred_max_zoom)
+                # Workaround: the fitBounds options attribute maxZoom isn't respected,
+                # so we have to zoom out manually if we require a maximum initial zoom level
+                # while enabling the user to zoom in manually later.
+                @map.setZoom preferred_max_zoom, animate: false
 
         @$el.find(".meeting-list li").click (ev) =>
             if ev.target.tagName == 'A'

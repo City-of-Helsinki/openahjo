@@ -132,6 +132,9 @@
                 <span class="id-value archive-id"><%= register_id %></span>
             </div>
         </div>
+        <div class="issue-map section">
+            <div id="issue-map" class="map"></div>
+        </div>
         <div class="issue-labels section">
             <% _.each(label_list, function(label) { %>
                 <span class="label label-<%- label['class'] %>"><%- label.text %></span>
@@ -155,6 +158,7 @@
     syistä saatu sähköiseen muotoon. (Julkisuuslaki § 621/1999, Sähköisen viestinnän tietosuojalaki § 516/2004, Henkilötietolaki § 523/1999, Sosiaalihuollon asiakaslaki § 812/2000, Potilaslaki § 785/1992, Laki julkisista hankinnoista § 348/2007)
         </p>
         <% } %>
+        <p id="map-attribution" class="non-public-info"></p>
     </div>
 </div>
 </script>
