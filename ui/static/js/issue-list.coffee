@@ -40,18 +40,20 @@ RESOLUTIONS_ICONS =
     'TABLED': 'inbox'
     'ELECTION': 'group'
 
-create_map = (container_element) ->
+MAP_ATTRIBUTION =
+    'Map data &copy;
+     <a href="http://openstreetmap.org">OpenStreetMap</a>
+     contributors,
+     <a href="http://creativecommons.org/licenses/by-sa/2.0/">
+     CC-BY-SA</a>,
+     Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+
+create_map = (container_element, map_attribution) ->
     L.map container_element,
           layers: [
             L.tileLayer 'http://{s}.tile.cloudmade.com/{key}/' +
                 '{style}/256/{z}/{x}/{y}.png',
-                attribution:
-                    'Map data &copy;
-                    <a href="http://openstreetmap.org">OpenStreetMap</a>
-                    contributors,
-                    <a href="http://creativecommons.org/licenses/by-sa/2.0/">
-                       CC-BY-SA</a>,
-                       Imagery © <a href="http://cloudmade.com">CloudMade</a>'
+                attribution: map_attribution
                 maxZoom: 18
                 key: 'BC9A493B41014CAABB98F0471D759707'
                 style: 998]
@@ -188,7 +190,7 @@ class IssueMapView extends Backbone.View
 
         opts.parent_el.append @el
 
-        @map = create_map(@el).setView [60.170833, 24.9375], 12
+        @map = create_map(@el, MAP_ATTRIBUTION).setView [60.170833, 24.9375], 12
         @map.on 'moveend', @map_move
 
     render_one: (issue) =>
