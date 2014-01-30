@@ -189,8 +189,11 @@ class IssueMapView extends Backbone.View
 
     initialize: (opts) ->
         @geometries = []
+        @issues = {}
         @listenTo @collection, 'reset', @render
         @listenTo @collection, 'add', @render_one
+        # Do not remove markers from the map.
+        # render_one won't insert duplicates.
 
         opts.parent_el.append @el
 
@@ -198,14 +201,16 @@ class IssueMapView extends Backbone.View
         @map.on 'moveend', @map_move
 
     render_one: (issue) =>
-        for geom_json in issue.get 'geometries'
-            if geom_json.type != 'Point'
-                continue
-            geom = L.geoJson geom_json
-            geom.bindPopup "<b>#{geom_json.name}</b><br><a href='#{issue.get_view_url()}'>#{issue.get 'subject'}</a>"
-            geom.addTo @map
-            geom_json.geometry = geom
-            @geometries.push geom
+        if !(issue.id of @issues)
+            for geom_json in issue.get 'geometries'
+                if geom_json.type != 'Point'
+                    continue
+                geom = L.geoJson geom_json
+                geom.bindPopup "<b>#{geom_json.name}</b><br><a href='#{issue.get_view_url()}'>#{issue.get 'subject'}</a>"
+                geom.addTo @map
+                geom_json.geometry = geom
+                @geometries.push geom
+            @issues[issue.id] = true
 
     remove_one: (issue) =>
         for geom_json in issue.get 'geometries'
@@ -215,7 +220,7 @@ class IssueMapView extends Backbone.View
             delete geom_json.geometry
 
     get_map_bounds: ->
-        return @map.getBounds().toBBoxString()
+        return @map.getBounds().pad(0.25).toBBoxString()
     map_move: (ev) =>
         @trigger "map-move", @get_map_bounds()
 
@@ -223,6 +228,7 @@ class IssueMapView extends Backbone.View
         for geom in @geometries
             @map.removeLayer geom
         @geometries = []
+        @issues = {}
         @collection.each @render_one
 
 class CategorySelectView extends Backbone.View
@@ -405,7 +411,11 @@ class IssueSearchView extends Backbone.View
         @set_filters filters
 
     map_move: (args) ->
-        @set_filter 'bbox', args
+        @set_bounding_box args
+
+    set_bounding_box: (bbox) ->
+        @issue_list.set_filter 'bbox', bbox
+        @issue_list.fetch()
 
     set_filter: (type, query) ->
         @issue_list.set_filter type, query
