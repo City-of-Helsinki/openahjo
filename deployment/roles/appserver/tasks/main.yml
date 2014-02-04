@@ -43,6 +43,10 @@
   sudo: yes
   sudo_user: postgres
   command: psql -c "GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO {{ app_user }};" {{ db_name }}
+- name: PostgreSQL | Grant sequence privileges to user
+  sudo: yes
+  sudo_user: postgres
+  command: psql -c "GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO {{ app_user }};" {{ db_name }}
 
 
 # - name: Kamu | Download image files
