@@ -5,13 +5,13 @@ solr_package:  lucene/solr/4.6.0/solr-4.6.0.tgz
 solr_checksum: 2a4a6559665363236653bec749f580a5da973e1088227ceb1fca87802bd06a3f
 solr_path:     /opt/solr
 
-voikko_dict_baseurl: http://www.puimula.org/htp/testing/voikko-snapshot
+voikko_dict_baseurl: http://dev.hel.fi/paatokset/media/dev
 voikko_dicts:
   - filename: dict.zip
-    checksum: 3492bfa64a9bb22e314c39b7d46a58f7bdb9d6757b4107fc0d5eb473d08ba048
+    checksum: bcd29e2289cba2bf00a752d99ba5545791b6e80473ee42027e292a8785e1337c
     out_dir:  mor-standard
   - filename: dict-morphoid.zip
-    checksum: c7eb7e195fd09d6aa5dec0dad5841df851d0fcd2a1f03024634f9c50b57c1e22
+    checksum: 880dc1eb79626b0d2a7a4944a1ee3224108851fc0cb9ea1daa272e9e18d4ae12
     out_dir:  mor-morphoid
 voikko_libs:
   - libvoikko-3.5.jar
