@@ -87,6 +87,7 @@ class Issue(models.Model):
 
     geometries = models.ManyToManyField('IssueGeometry')
     districts = models.ManyToManyField(District)
+    keywords = models.ManyToManyField('IssueKeyword')
 
     def find_most_descriptive_agenda_item(self):
         ai_list = AgendaItem.objects.filter(issue=self).order_by('meeting__date')
@@ -150,6 +151,9 @@ class IssueGeometry(models.Model):
 
     class Meta:
         unique_together = (('name', 'type'),)
+
+class IssueKeyword(models.Model):
+    name = models.CharField(max_length=150 , db_index=True, unique=True)
 
 class AgendaItem(models.Model):
     PASSED = "PASSED_UNCHANGED"

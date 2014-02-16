@@ -72,7 +72,8 @@ class AhjoGeocoder(object):
                 continue
 
             pnt = self.convert_from_gk25(e['coord_n'], e['coord_e'])
-            geom = {'name': '%s %d' % (e['street'], num), 'geometry': pnt, 'type': 'address'}
+            geom = {'name': '%s %d' % (e['street'], num), 'geometry': pnt,
+                    'type': 'address', 'text': text}
             geom_id = "%s/%s" % (geom['type'], geom['name'])
             geometries[geom_id] = geom
         return geometries
@@ -161,6 +162,7 @@ class AhjoGeocoder(object):
         if m1 or m2:
             geom = self.geocode_plan_unit(text, context)
             if geom:
+                geom['text'] = text
                 geom_id = "%s/%s" % (geom['type'], geom['name'])
                 geometries[geom_id] = geom
             return geometries
@@ -169,6 +171,7 @@ class AhjoGeocoder(object):
         if m:
             geom = self.geocode_plan(m.groups()[0])
             if geom:
+                geom['text'] = text
                 geom_id = "%s/%s" % (geom['type'], geom['name'])
                 geometries[geom_id] = geom
 

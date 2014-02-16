@@ -49,9 +49,12 @@ class Command(BaseCommand):
         for kw in info['keywords']:
             text_list.append(kw)
         geom_list = self.geocoder.geocode_from_text_list(text_list)
+        matched_texts = set()
 
         districts = {}
         for g in geom_list:
+            matched_texts.add(g['text'])
+            del g['text']
             args = dict(type=g['type'], name=g['name'])
             try:
                 igeom = IssueGeometry.objects.get(**args)
@@ -73,6 +76,15 @@ class Command(BaseCommand):
                 districts[d.pk] = d
 
         issue.districts = districts.values()
+        return matched_texts
+
+    def store_keywords(self, issue, text_list):
+        for kw in text_list:
+            if kw in ['Valtuustoaloite',
+                      'Toivomusponnet']:
+                kw = kw.lower()
+            keyword, _ = IssueKeyword.objects.get_or_create(name=kw)
+            issue.keywords.add(keyword)
 
     def store_issue(self, meeting, meeting_doc, info, adoc):
         try:
@@ -92,7 +104,9 @@ class Command(BaseCommand):
         issue.category = category
         issue.save()
 
-        self.geocode_issue(issue, info)
+        geo_matches = self.geocode_issue(issue, info)
+        text_list = [i for i in info['keywords'] if i not in geo_matches]
+        self.store_keywords(issue, text_list)
 
         try:
             agenda_item = AgendaItem.objects.get(issue=issue, meeting=meeting)
