@@ -58,7 +58,7 @@
 - name: PostgreSQL | Create database
   sudo: yes
   sudo_user: postgres
-  action: postgresql_db name={{ db_name }} encoding=utf8 lc_ctype={{ locale }} lc_collate={{ locale }} owner={{ app_user }} template=template0
+  action: postgresql_db name={{ db_name }} encoding=utf8 lc_ctype={{ locale }} lc_collate={{ locale }} owner={{ app_user }} template=postgis_template
 
 # - name: PostgreSQL | Grant privileges
 #   sudo: yes
