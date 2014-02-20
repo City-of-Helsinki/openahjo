@@ -118,6 +118,7 @@ class AhjoDocument(object):
 
     SECTION_TYPES = {
         'paatosehdotus': 'draft resolution',
+        'esitysehdotus': 'draft resolution', # FIXME verify this
         'paatoksenperustelut': 'reasons for resolution',
         'tiivistelma': 'summary',
         'esittelija': 'presenter',
