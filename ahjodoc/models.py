@@ -188,6 +188,8 @@ class AgendaItem(models.Model):
     resolution = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, null=True, help_text="Type of resolution made")
     preparer = models.CharField(max_length=100, null=True, help_text="Name of the person who prepared the issue")
     introducer = models.CharField(max_length=100, null=True, help_text="Name of the person who introduced the issue in the meeting")
+    classification_code = models.CharField(max_length=20, null=True, help_text='Classification of the item')
+    classification_description = models.CharField(max_length=60, null=True, help_text='Textual description of the item type')
 
     def get_summary(self):
         c_list = list(ContentSection.objects.filter(agenda_item=self).order_by('index'))
