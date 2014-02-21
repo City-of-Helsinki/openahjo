@@ -35,6 +35,9 @@
   shell: bunzip2 -c /home/{{ app_user }}/openahjo.sql.bz2 | psql openahjo
   when: django_db_result.rc != 0
 
+- name: Django | Apply migrations
+  shell: '[ ! -z "$({{ venv }}/exec /vagrant/manage.py migrate)" ]'
+
 - name: PostgreSQL | Grant privileges to user
   sudo: yes
   sudo_user: postgres
