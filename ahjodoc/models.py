@@ -88,6 +88,7 @@ class Issue(models.Model):
     geometries = models.ManyToManyField('IssueGeometry')
     districts = models.ManyToManyField(District)
     keywords = models.ManyToManyField('IssueKeyword')
+    reference_text = models.TextField(null=True)
 
     def find_most_descriptive_agenda_item(self):
         ai_list = AgendaItem.objects.filter(issue=self).order_by('meeting__date')

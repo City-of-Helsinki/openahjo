@@ -228,12 +228,17 @@ class AhjoDocument(object):
         info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
         info['category'] = desc_el.find('Tehtavaluokka').text.strip()
 
-        raw_document_classification = desc_el.find('AsiakirjallinenTieto').text.strip()
-        m = re.match(r'([0-9 -]+) (\D+)', raw_document_classification)
-        if m:
-            id_no, description = m.groups()
-            info['classification_code'] = id_no
-            info['classification_description'] = description
+        references = desc_el.find('Viite')
+        if references is not None:
+            info['reference_text'] = references.text.strip()
+
+        raw_document_classification = desc_el.find('AsiakirjallinenTieto')
+        if raw_document_classification is not None:
+            m = re.match(r'([0-9 -]+) (\D+)', raw_document_classification.text.strip())
+            if m:
+                id_no, description = m.groups()
+                info['classification_code'] = id_no
+                info['classification_description'] = description
 
         kw_list = []
         for kw_el in desc_el.findall('Asiasanat'):

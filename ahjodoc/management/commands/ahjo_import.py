@@ -102,6 +102,7 @@ class Command(BaseCommand):
         cat_id = s[0:m.end()].strip()
         category = Category.objects.get(origin_id=cat_id)
         issue.category = category
+        issue.reference_text = info.get('reference_text')
         issue.save()
 
         geo_matches = self.geocode_issue(issue, info)
