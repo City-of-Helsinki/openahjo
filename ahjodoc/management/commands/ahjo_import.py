@@ -102,6 +102,7 @@ class Command(BaseCommand):
         cat_id = s[0:m.end()].strip()
         category = Category.objects.get(origin_id=cat_id)
         issue.category = category
+        issue.reference_text = info.get('reference_text')
         issue.save()
 
         geo_matches = self.geocode_issue(issue, info)
@@ -119,6 +120,8 @@ class Command(BaseCommand):
         agenda_item.resolution = info.get('resolution')
         agenda_item.preparer = info.get('preparer')
         agenda_item.introducer = info.get('introducer')
+        agenda_item.classification_code = info.get('classification_code')
+        agenda_item.classification_description = info.get('classification_description')
         agenda_item.save()
 
         latest_date = issue.determine_latest_decision_date()
