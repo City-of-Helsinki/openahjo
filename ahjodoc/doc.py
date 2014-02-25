@@ -219,7 +219,7 @@ class AhjoDocument(object):
             # Strip comma and space
             subject = re.sub(r'^[, ]+', '', subject)
         # Strip Kj/Ryj/Kaj...
-        subject = re.sub(r'\w{2,4} ?/ *', '', subject)
+        subject = re.sub(r'^\w{2,4} ?/ *', '', subject)
         info['subject'] = subject
 
         if self.verbosity >= 2:
