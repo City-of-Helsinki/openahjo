@@ -150,6 +150,9 @@ class IssueGeometry(models.Model):
 
     objects = models.GeoManager()
 
+    def __unicode__(self):
+        return "%s (%s, %s)" % (self.name, self.type, self.geometry.geom_type)
+
     class Meta:
         unique_together = (('name', 'type'),)
 
