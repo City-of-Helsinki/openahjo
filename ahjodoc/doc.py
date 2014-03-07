@@ -150,7 +150,7 @@ class AhjoDocument(object):
             if subject:
                 subject = subject.encode('utf8')
                 if subject.replace('ä', 'a').replace('ö', 'o').lower() != s:
-                    self.logger.warning("Unexpected section header: %s" % subject)
+                    self.logger.warning("Unexpected section header: %s, expected: %s" % (subject, s))
             text_section = section_el.find('TekstiSektio')
             if not text_section:
                 # If it's an empty content section, skip it.
