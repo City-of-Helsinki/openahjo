@@ -118,11 +118,14 @@ class AhjoDocument(object):
 
     SECTION_TYPES = {
         'paatosehdotus': 'draft resolution',
-        'esitysehdotus': 'draft resolution', # FIXME verify this
+        'paatos': 'resolution',
+        'esitysehdotus': 'draft proposal', # FIXME verify translation
+        'esitys': 'proposal', # FIXME verify translation
+        'lausuntoehdotus': 'draft statement', # FIXME verify translation
+        'lausunto': 'statement', # FIXME verify translation
         'paatoksenperustelut': 'reasons for resolution',
         'tiivistelma': 'summary',
         'esittelija': 'presenter',
-        'paatos': 'resolution',
         'kasittely': 'hearing',
     }
     def parse_item_content(self, info, item_el):
