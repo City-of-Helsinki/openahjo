@@ -518,7 +518,22 @@ ul.issue-list-items {
             cursor: pointer;
         }
     }
-
+.decision-history .accordion-toggle .toggle-icon {
+    /* symbol for "opening" panels */
+    //font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
+    .glyphicon();
+    .glyphicon-chevron-down();
+    font-size: 0.75em;
+    //content: "\e114";    /* adjust as needed, taken from bootstrap.css */
+    //float: right;        /* adjust as needed */
+    color: #ffffff;         /* adjust as needed */
+}
+.decision-history .accordion-toggle.collapsed .toggle-icon {
+    /* symbol for "collapsed" panels */
+    .glyphicon-chevron-right();
+    //content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+}
+  
     .navigate-column {
       .make-md-column(4);
         .meeting-list li {
@@ -897,6 +912,7 @@ ul.issue-list-items {
             ol {
                 margin: 0px;
                 list-style: none;
+                padding: 0px;
             }
             li {
                 border-top: 1px solid black;

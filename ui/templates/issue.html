@@ -102,8 +102,9 @@
         <% } %>
         <% if (past_list.length) { %>
         <div class="decision-history meeting-list">
-            <h2 class="header-bar">Käsittelyhistoria</h2>
-            <ul class="list-unstyled vertical-list">
+      
+            <a href="#" class="accordion-toggle" data-toggle="collapse" data-target="#history-list"><h2 class="header-bar">Käsittelyhistoria <span class="toggle-icon"></span></h2></a>
+            <ul id="history-list" class="list-unstyled vertical-list collapse in">
                 <% _.each(past_list, function(ai) { %>
                 <%= meeting_template(ai) %>
                 <% }); %>
