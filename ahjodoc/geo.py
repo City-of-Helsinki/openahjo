@@ -72,7 +72,8 @@ class AhjoGeocoder(object):
                 continue
 
             pnt = self.convert_from_gk25(e['coord_n'], e['coord_e'])
-            geom = {'name': '%s %d' % (e['street'], num), 'geometry': pnt, 'type': 'address'}
+            geom = {'name': '%s %d' % (e['street'], num), 'geometry': pnt,
+                    'type': 'address', 'text': text}
             geom_id = "%s/%s" % (geom['type'], geom['name'])
             geometries[geom_id] = geom
         return geometries
@@ -97,18 +98,20 @@ class AhjoGeocoder(object):
             unit_id = int(unit_id)
             district_id = block_id // 1000
             block_id %= 1000
-            if rest:
-                if rest[0].lower() in ('a', 'b', 'c', 'd', 'e'):
-                    rest = rest[1:]
-                rest = rest.strip()
-                if rest and rest[0] == '-':
-                    range_end = int(re.match('-\s?(\d)+', rest).groups()[0])
-                elif rest.startswith('ja'):
-                    range_end = int(rest[2:])
-                elif rest.lower().startswith('.a'): # Ksv notation
-                    pass
-                elif rest.startswith(':'): # ???
-                    pass
+            # TODO: Code the logic to extract and use unit
+            #       ids from the rest of the match.
+            # if rest:
+            #     if rest[0].lower() in ('a', 'b', 'c', 'd', 'e'):
+            #         rest = rest[1:]
+            #     rest = rest.strip()
+            #     if rest and rest[0] == '-':
+            #         range_end = int(re.match('-\s?(\d)+', rest).groups()[0])
+            #     elif rest.startswith('ja'):
+            #         range_end = int(rest[2:])
+            #     elif rest.lower().startswith('.a'): # Ksv notation
+            #         pass
+            #     elif rest.startswith(':'): # ???
+            #         pass
             # check for '161/3.A' style
             if not district_id:
                 for l in context['all_text']:
@@ -159,6 +162,7 @@ class AhjoGeocoder(object):
         if m1 or m2:
             geom = self.geocode_plan_unit(text, context)
             if geom:
+                geom['text'] = text
                 geom_id = "%s/%s" % (geom['type'], geom['name'])
                 geometries[geom_id] = geom
             return geometries
@@ -167,6 +171,7 @@ class AhjoGeocoder(object):
         if m:
             geom = self.geocode_plan(m.groups()[0])
             if geom:
+                geom['text'] = text
                 geom_id = "%s/%s" % (geom['type'], geom['name'])
                 geometries[geom_id] = geom
 

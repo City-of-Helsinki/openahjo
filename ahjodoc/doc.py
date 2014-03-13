@@ -118,10 +118,14 @@ class AhjoDocument(object):
 
     SECTION_TYPES = {
         'paatosehdotus': 'draft resolution',
+        'paatos': 'resolution',
+        'esitysehdotus': 'draft proposal', # FIXME verify translation
+        'esitys': 'proposal', # FIXME verify translation
+        'lausuntoehdotus': 'draft statement', # FIXME verify translation
+        'lausunto': 'statement', # FIXME verify translation
         'paatoksenperustelut': 'reasons for resolution',
         'tiivistelma': 'summary',
         'esittelija': 'presenter',
-        'paatos': 'resolution',
         'kasittely': 'hearing',
     }
     def parse_item_content(self, info, item_el):
@@ -149,7 +153,7 @@ class AhjoDocument(object):
             if subject:
                 subject = subject.encode('utf8')
                 if subject.replace('ä', 'a').replace('ö', 'o').lower() != s:
-                    self.logger.warning("Unexpected section header: %s" % subject)
+                    self.logger.warning("Unexpected section header: %s, expected: %s" % (subject, s))
             text_section = section_el.find('TekstiSektio')
             if not text_section:
                 # If it's an empty content section, skip it.
@@ -218,13 +222,27 @@ class AhjoDocument(object):
             # Strip comma and space
             subject = re.sub(r'^[, ]+', '', subject)
         # Strip Kj/Ryj/Kaj...
-        subject = re.sub(r'\w{2,4} ?/ *', '', subject)
+        subject = re.sub(r'^\w{2,4} ?/ *', '', subject)
         info['subject'] = subject
 
         if self.verbosity >= 2:
             self.logger.debug('Parsing item: %s' % info['subject'])
+
         info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
         info['category'] = desc_el.find('Tehtavaluokka').text.strip()
+
+        references = desc_el.find('Viite')
+        if references is not None:
+            info['reference_text'] = references.text.strip()
+
+        raw_document_classification = desc_el.find('AsiakirjallinenTieto')
+        if raw_document_classification is not None:
+            m = re.match(r'([0-9 -]+) (\D+)', raw_document_classification.text.strip())
+            if m:
+                id_no, description = m.groups()
+                info['classification_code'] = id_no
+                info['classification_description'] = description
+
         kw_list = []
         for kw_el in desc_el.findall('Asiasanat'):
             kw_list.append(clean_text(kw_el.text))

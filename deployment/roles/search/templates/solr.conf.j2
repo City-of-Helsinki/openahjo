@@ -1,0 +1,9 @@
+description "Apache Solr search server"
+
+start on runlevel [2345]
+
+chdir {{ solr_path }}/example
+setuid {{ solr_user }}
+setgid {{ solr_user }}
+
+exec {{ solr_path }}/example/start_solr.sh
