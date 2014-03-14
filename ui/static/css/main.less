@@ -127,13 +127,14 @@ body {
 
 h1 {
     color: @header_color;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .navbar {
     margin-bottom: 0px;
     .navbar-brand {
         font-weight: 700;
+    
         sub {
             font-size: 10px;
             color: @org_color_3;
@@ -145,13 +146,13 @@ h1 {
         background-color: gray;
     }
     li {
-        font-weight: 600;
+        font-weight: 500;
         font-size: 16px;
     }
     .city-link {
         a {
             text-transform: uppercase;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: @org_color_4 !important;
         }
@@ -176,10 +177,11 @@ h1 {
         margin-bottom: 40px;
     }
     background-color: white;
+    padding-top: @grid-gutter-width;
     //margin-left: auto; /* 80px */
     //margin-right: auto;
-    //border-left: 8px solid @page_side_color;
-    //border-right: 8px solid @page_side_color;
+    border-left: 6px solid @page_side_color;
+    border-right: 6px solid @page_side_color;
     //padding-left: 25px;
     //padding-right: 25px;
     //padding-top: 40px;
@@ -199,6 +201,7 @@ h1 {
       color: white;
       padding: 24px;
       .clearfix();
+      margin-bottom: @grid-gutter-width;
     }
     h1 {
         color: white;
@@ -216,7 +219,7 @@ h1 {
         }
     }
     p {
-        font-weight: 600;
+        font-weight: 500;
         font-size: 16px;
         color: @org_color_7;
     }
@@ -244,7 +247,7 @@ h1 {
     .make-row();
     
     .nav-button {
-        
+        margin-bottom: @grid-gutter-width;
         height: 100%;
         .make-md-column(4);
         a:hover {
@@ -265,7 +268,7 @@ h1 {
             line-height: 1em;
         }
         p {
-            font-weight: 600;
+            font-weight: 500;
             font-size: 16px;
         }
     }
@@ -294,7 +297,7 @@ h1 {
         li {
             padding-top: 10px;
             padding-bottom: 10px;
-            font-weight: 700;
+            font-weight: 500;
             font-size: 16px;
             a {
                 text-decoration: none;
@@ -455,7 +458,7 @@ ul.issue-list-items {
             .clearfix();
         }
         .subject {
-            font-weight: 600;
+            font-weight: 500;
             color: @issue_list_item_text_color;
             float: left;
             width: 500px;
@@ -500,7 +503,7 @@ ul.issue-list-items {
         color: white;
         background-color: @issue_main_color;
         margin: 0px;
-        padding-left: 16px;
+        padding-left: 8px;
         padding-top: 4px;
         padding-bottom: 4px;
         font-size: 22px;
@@ -518,20 +521,31 @@ ul.issue-list-items {
             cursor: pointer;
         }
     }
+.accordion-toggle {
+    .header-bar {
+      //border-bottom: #fff 2px solid;
+    }
+    &.collapsed .header-bar {
+      //border-bottom: #333 2px solid;
+    }
+    &:hover {
+      text-decoration: none;
+    }
+  }
+.decision-history {
+  border-bottom: @org_color_6 3px solid;
+  margin-bottom: 24px;
+  }
 .decision-history .accordion-toggle .toggle-icon {
     /* symbol for "opening" panels */
-    //font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
-    .glyphicon();
-    .glyphicon-chevron-down();
+    .fa;
     font-size: 0.75em;
-    //content: "\e114";    /* adjust as needed, taken from bootstrap.css */
-    //float: right;        /* adjust as needed */
     color: #ffffff;         /* adjust as needed */
+    &:before { content: @fa-var-chevron-down; }
 }
 .decision-history .accordion-toggle.collapsed .toggle-icon {
     /* symbol for "collapsed" panels */
-    .glyphicon-chevron-right();
-    //content: "\e080";    /* adjust as needed, taken from bootstrap.css */
+    &:before { content: @fa-var-chevron-right; }
 }
   
     .navigate-column {
@@ -590,17 +604,17 @@ ul.issue-list-items {
         header {
             h1 {
                 color: #333;
-                font-size: 16px;
-                line-height: 20px;
+                font-size: 22px;
+                line-height: 1;
                 font-weight: 700;
-                margin-left: 16px; // 48px;
+                margin-left: 8px; // 48px;
                 margin-right: 16px;
             }
             border-top: solid 10px @issue_main_color;
         }
         .content {
             h2 {
-                font-size: 28px;
+                font-size: 24px;
             }
             h3 {
                 font-size: 16px;
@@ -791,7 +805,7 @@ ul.issue-list-items {
         h3 {
             color: black;
             font-size: 24px;
-            font-weight: 600;
+            font-weight: 500;
             line-height: 28px;
             margin: 0px;
             display: block;

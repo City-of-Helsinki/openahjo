@@ -50,8 +50,8 @@
     <header id="result-count">Löytyi <span class="count"></span> kpl</header>
     <div class="btn-toolbar pull-right">
         <div class="btn-group list-tab-selector" data-toggle="buttons-radio">
-            <button class="btn active select-list"><i class="icon-list"></i> Lista</button>
-            <button class="btn select-map"><i class="icon-globe"></i> Kartalla</button>
+            <button class="btn active select-list"><i class="fa fa-list"></i> Lista</button>
+            <button class="btn select-map"><i class="fa fa-globe"></i> Kartalla</button>
         </div>
     </div>
 </div></div>
@@ -103,7 +103,7 @@
         <% if (past_list.length) { %>
         <div class="decision-history meeting-list">
       
-            <a href="#" class="accordion-toggle" data-toggle="collapse" data-target="#history-list"><h2 class="header-bar">Käsittelyhistoria <span class="toggle-icon"></span></h2></a>
+            <a href="#" class="accordion-toggle" data-toggle="collapse" data-target="#history-list"><h2 class="header-bar">Käsittelyhistoria <i class="toggle-icon"></i></h2></a>
             <ul id="history-list" class="list-unstyled vertical-list collapse in">
                 <% _.each(past_list, function(ai) { %>
                 <%= meeting_template(ai) %>
@@ -126,7 +126,7 @@
     <div class="meta-column">
         <div class="identifiers clearfix section">
             <div class="icon">
-                <i class="icon-archive"></i>
+                <i class="fa fa-archive"></i>
             </div>
             <div class="data">
                 <span class="id-label">Diaarinumero</span>
@@ -146,9 +146,9 @@
         <ol class="attachment-list">
         <% _.each(current.attachments, function (att) {
             if (att.public) { %>
-        <li value=<%= att.number %> class="public"><div class="icon"><i class="icon-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
+        <li value=<%= att.number %> class="public"><div class="icon"><i class="fa fa-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
         <%   } else { %>
-        <li value=<%= att.number %> class="non-public"><div class="icon"><i class="icon-eye-close"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
+        <li value=<%= att.number %> class="non-public"><div class="icon"><i class="fa fa-eye-close"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
         <%   }
             }); %>
         </ol>
@@ -166,7 +166,7 @@
 
 <script id="meeting-template" type="text/template">
 <li data-agenda-item-id="<%= id %>" <% if (is_active) { %>class="active"<% } %>>
-    <div class="policymaker-icon"><i class="icon-<%= meeting.icon %>"></i></div>
+    <div class="policymaker-icon"><i class="fa fa-<%= meeting.icon %>"></i></div>
     <div class="text">
         <span class="policymaker"><%= meeting.policymaker_name %></span>
         <span class="meeting"><%= meeting.number %>/<%= meeting.date_str %></span>
@@ -176,7 +176,7 @@
     </div>
     <% if (resolution) { %>
     <div class="resolution">
-        <i class="icon-<%= resolution_icon %>" title="<%= resolution_str %>"></i>
+        <i class="fa fa-<%= resolution_icon %>" title="<%= resolution_str %>"></i>
     </div>
     <% } %>
 </li>

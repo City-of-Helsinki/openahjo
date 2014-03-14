@@ -125,7 +125,7 @@ POLICYMAKERS =
     'Kvsto': icon: 'microphone'
     'Kslk': icon: 'eraser'
     'Kvlk': icon: 'ticket'
-    'Klk': icon: 'building'
+    'Klk': icon: 'building-o'
     'Kklk': icon: 'picture'
     'HKLjk': icon: 'road'
     'LILK': icon: 'trophy'
