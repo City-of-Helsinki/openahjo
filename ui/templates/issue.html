@@ -142,16 +142,18 @@
             <% }); %>
         </div>
         <% if (current.attachments.length) { %>
-        <h2 class="header-bar">Liitteet</h2>
-        <ol class="attachment-list">
-        <% _.each(current.attachments, function (att) {
-            if (att.public) { %>
-        <li value=<%= att.number %> class="public"><div class="icon"><i class="fa fa-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
-        <%   } else { %>
-        <li value=<%= att.number %> class="non-public"><div class="icon"><i class="fa fa-eye-close"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
+        <div class="issue-attachments section">
+          <h2 class="header-bar">Liitteet</h2>
+          <ol class="attachment-list">
+          <% _.each(current.attachments, function (att) {
+             if (att.public) { %>
+          <li value=<%= att.number %> class="public"><div class="icon"><i class="fa fa-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
+            <%   } else { %>
+          <li value=<%= att.number %> class="non-public"><div class="icon"><i class="fa fa-eye-close"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
         <%   }
             }); %>
-        </ol>
+          </ol>
+          </div>
         <% } %>
         <% if (current.has_non_public_attachments) { %>
         <p class="non-public-info">

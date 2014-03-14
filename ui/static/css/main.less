@@ -125,10 +125,6 @@ body {
     background-image: url('../img/paatokset_bg_vaalea.gif');
 }
 
-h1 {
-    color: @header_color;
-    font-weight: 500;
-}
 
 .navbar {
     margin-bottom: 0px;
@@ -712,6 +708,14 @@ ul.issue-list-items {
 .policymaker-nav-pill(@color) {
     &> a {
         color: @color;
+      &:hover {
+        color: white;
+        background-color: @color;
+        .caret {
+          border-top-color: white;
+          border-bottom-color: white;
+        }
+    }
     }
     .dropdown-toggle .caret {
         border-top-color: @color;
@@ -732,6 +736,15 @@ ul.issue-list-items {
     }
     &.active > a {
         color: white;
+        background-color: @color;
+        .caret {
+        border-top-color: white;
+        border-bottom-color: white;
+      }
+          &:hover {
+        color: white;
+        background-color: @color;
+    }
     }
 }
 
@@ -743,7 +756,7 @@ ul.issue-list-items {
         color: white;
         background-color: @pm_navbar_active_color;
         &:hover {
-            background-color: lighten(@pm_navbar_active_color, 10%)
+            //background-color: lighten(@pm_navbar_active_color, 10%)
         }
     }
     .list {
@@ -769,30 +782,34 @@ ul.issue-list-items {
 
 .policymaker-content {
     min-height: 1000px;
+    .make-md-column(10);
+    .make-md-column-offset(1);
 }
 
 .policymaker-list {
-    margin-left: 100px;
+    //margin-left: 100px;
 
     > h2 {
         font-weight: 700;
         margin-top: 24px;
     }
     .row {
+        .make-row();
         margin-bottom: 16px;
     }
-    .org-box {
+    .org-box .content {
         .clearfix();
         height: 120px;
         cursor: pointer;
     }
     
     .span3 {
-      .make-md-column(3);
+      .make-md-column(4);
     }
   
     .span9 {
-      .make-md-column(9);
+      .make-md-column(12);
+      //.make-md-column-offset(1);
     }
     .span3 .content h3 {
         width: 220px - 48px - 16px;
@@ -853,6 +870,14 @@ ul.issue-list-items {
 
     > nav {
         .make-md-column(4);
+        margin-bottom: @grid-gutter-width;
+        .toggle-icon {
+            .fa;
+            &:before { content: @fa-var-chevron-down; }
+        }
+        .collapsed .toggle-icon {
+            &:before { content: @fa-var-chevron-right; }
+        }
         > a {
             display: block;
             color: @text-color;
@@ -908,11 +933,14 @@ ul.issue-list-items {
                 a {
                     color: lighten(@header_color, 5%);
                 }
+                .disabled {
+                  color: @org_color_7;
+                }
             }
         }
         article {
             background-color: @meeting_details_bg_color;
-            //border: 1px solid black;
+            margin-bottom: @grid-gutter-width;
             > header {
                 padding: 20px;
                 h1 {
