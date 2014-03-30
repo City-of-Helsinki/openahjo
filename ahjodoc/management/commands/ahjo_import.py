@@ -331,9 +331,17 @@ class Command(BaseCommand):
                 self.logger.info(u"No agenda item found for issue: %s" % issue['title'])
                 continue
             title = issue['title'].strip()
+            # Remove leading 'Stj / '
+            re.sub(r'^[\w]{2,4} / ?', '', title)
+
             if ai.subject != title:
+                db_subj = ai.subject
+                if len(title) > 100 and len(db_subj) != len(title):
+                    min_len = min(len(db_subj), len(title))
+                    title = title[0:min_len]
+                    db_subj = db_subj[0:min_len]
                 # Attempt a fuzzy match
-                matcher = difflib.SequenceMatcher(None, ai.subject, title)
+                matcher = difflib.SequenceMatcher(None, db_subj, title)
                 if matcher.ratio() < 0.90:
                     self.logger.error(u"Mismatch between titles: '%s' vs. '%s'" % (ai.subject, title))
                     raise Exception("Title mismatch")
