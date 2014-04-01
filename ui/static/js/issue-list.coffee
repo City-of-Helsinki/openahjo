@@ -59,7 +59,7 @@ create_map = (container_element, map_attribution) ->
                 '{style}/256/{z}/{x}/{y}.png',
                 attribution: map_attribution
                 maxZoom: 18
-                key: 'BC9A493B41014CAABB98F0471D759707'
+                key: '8831a03368004097ba8ddc389ec30633'
                 style: 998]
 
 class IssueView extends Backbone.View
