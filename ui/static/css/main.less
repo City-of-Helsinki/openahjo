@@ -1,6 +1,9 @@
-@import "bootstrap/variables.less";
+//@import "bootstrap/variables.less";
+@import "bootstrap/bootstrap.less";
 @import "bootstrap-variables.less";
 @import "bootstrap/mixins.less";
+@import "layout.less";
+@import "chosen.less";
 
 @text_color: #333;
 @border_color: #ddd;
@@ -39,6 +42,7 @@
 
 @charset "UTF-8";
 
+
 /* Bootstrap overrides */
 textarea,
 input[type="text"],
@@ -74,12 +78,16 @@ footer {
     padding-top: 80px;
     padding-bottom: 80px;
     background-color: @box_text_color;
+  
+    .sitemap-section {
+      .make-md-column(3);
+    }
     h4 {
         a {
             color: @org_color_7;
         }
         font-size: 16px;
-        margin: 0;
+        margin: 0 0 0.5em 0;
     }
     ul {
         list-style-type: none;
@@ -117,20 +125,12 @@ body {
     background-image: url('../img/paatokset_bg_vaalea.gif');
 }
 
-h1 {
-    color: @header_color;
-    font-weight: 600;
-}
 
 .navbar {
     margin-bottom: 0px;
-    .navbar-inner {
-        background-color: black;
-        background-image: none;
-        border: none;
-    }
-    .brand {
+    .navbar-brand {
         font-weight: 700;
+    
         sub {
             font-size: 10px;
             color: @org_color_3;
@@ -142,20 +142,24 @@ h1 {
         background-color: gray;
     }
     li {
-        font-weight: 600;
+        font-weight: 500;
         font-size: 16px;
     }
     .city-link {
         a {
             text-transform: uppercase;
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             color: @org_color_4 !important;
         }
     }
 }
 
-#logo-right {
+.logo-header {
+    .make-md-column(12);
+}
+
+.logo-right {
     height: 60px;
     text-align: right;
     font-size: 50px;
@@ -164,33 +168,40 @@ h1 {
     }
 }
 
-#content-container {
+.content-container {
     > h1, .main-heading {
         margin-bottom: 40px;
     }
     background-color: white;
-    margin-left: auto; /* 80px */
-    margin-right: auto;
-    border-left: 8px solid @page_side_color;
-    border-right: 8px solid @page_side_color;
-    padding-left: 25px;
-    padding-right: 25px;
-    padding-top: 40px;
-    padding-bottom: 80px;
-    width: @gridRowWidth;
-    min-height: 800px;
+    padding-top: @grid-gutter-width;
+    //margin-left: auto; /* 80px */
+    //margin-right: auto;
+    border-left: 6px solid @page_side_color;
+    border-right: 6px solid @page_side_color;
+    //padding-left: 25px;
+    //padding-right: 25px;
+    //padding-top: 40px;
+    //padding-bottom: 80px;
+    //width: @gridRowWidth;
+    //min-height: 800px;
 }
 
 /*****************************************
  * Home page                             *
  *****************************************/
 
-#home-header-box {
-    background-image: url('../img/paatokset_bg_tumma.gif');
-    height: 200px;
-    color: white;
+.home-header-box {
+    .make-md-column(12);
+    .home-header-box-content {
+      background-image: url('../img/paatokset_bg_tumma.gif');
+      color: white;
+      padding: 24px;
+      .clearfix();
+      margin-bottom: @grid-gutter-width;
+    }
     h1 {
         color: white;
+        margin-top: 0;
         img {
             height: 50px;
             margin-bottom: 8px;
@@ -204,14 +215,12 @@ h1 {
         }
     }
     p {
-        font-weight: 600;
+        font-weight: 500;
         font-size: 16px;
         color: @org_color_7;
     }
     .left-side {
         width: 50%;
-        margin-top: 20px;
-        margin-left: 50px;
         float: left;
     }
     .right-side {
@@ -228,16 +237,15 @@ h1 {
     }
 }
 
-.home-nav-button-row {
-    margin-top: 20px;
-}
 
-#home-nav-buttons {
-    margin-bottom: 20px;
-    height: 180px;
+
+.home-nav-buttons {
+    .make-row();
+    
     .nav-button {
-        background-color: @org_color_4;
+        margin-bottom: @grid-gutter-width;
         height: 100%;
+        .make-md-column(4);
         a:hover {
             text-decoration: none;
             color: @box_text_color;
@@ -245,7 +253,9 @@ h1 {
     }
     .content {
         padding: 15px;
+        background-color: @org_color_4;
         color: @box_text_color;
+        min-height: 160px;
         h2 {
             margin-top: 0px;
             color: @box_text_color;
@@ -254,19 +264,21 @@ h1 {
             line-height: 1em;
         }
         p {
-            font-weight: 600;
+            font-weight: 500;
             font-size: 16px;
         }
     }
 }
 
-#home-recent-content {
+.home-recent-content {
+    .make-row();
     margin-bottom: 20px;
-    .box {
-        background-color: @org_color_7;
+    .box-recent-content {
+        .make-md-column(6);    
     }
     article {
         padding: 20px;
+        background-color: @org_color_7;
         h2 {
             margin-top: 0px;
         }
@@ -276,11 +288,12 @@ h1 {
         height: 300px;
         overflow-y: hidden;
         margin: 0px;
+        padding: 0;
         position: relative;
         li {
             padding-top: 10px;
             padding-bottom: 10px;
-            font-weight: 700;
+            font-weight: 500;
             font-size: 16px;
             a {
                 text-decoration: none;
@@ -321,13 +334,19 @@ h1 {
     }
 }
 
-#home-logo-row {
-    margin-top: 60px;
-    height: 162px;
+.home-logo-row {
     .logo {
         width: 280px;
         margin-left: auto;
         margin-right: auto;
+    }
+  
+    .home-logo {
+      .make-md-column(4);
+      
+      .logo {
+        padding: 24px;
+      }
     }
     .helsinki .logo {
         width: 140px;
@@ -357,9 +376,14 @@ h1 {
     }
 }
 
-#issue-list-filter {
+.browse-issues-form {
+  .make-md-column(10);
+  .make-md-column-offset(1);
+}
+
+.issue-list-filter {
     border: 1px solid @border_color;
-    .border-radius(3px);
+    border-radius: 3px;
     min-height: 120px;
     padding: 20px;
     margin-bottom: 30px;
@@ -378,6 +402,9 @@ h1 {
     .caret {
         margin-right: 6px;
     }
+    .issues-form-label {
+      .make-md-column(2);
+    }
     label {
         float: left;
         margin-bottom: 0px;
@@ -394,8 +421,10 @@ h1 {
     }
 }
 
-#issue-list-results {
+.issue-list-results {
     margin-bottom: 20px;
+    .make-md-column(10);
+    .make-md-column-offset(1);
     header {
         float: left;
         font-weight: 700;
@@ -418,14 +447,14 @@ ul.issue-list-items {
         }
         background-color: @issue_list_item_bg_color;
         overflow: hidden;
-        .border-radius(3px);
+        border-radius: 3px;
         padding: 6px 15px 6px 15px;
         margin-bottom: 10px;
         header {
             .clearfix();
         }
         .subject {
-            font-weight: 600;
+            font-weight: 500;
             color: @issue_list_item_text_color;
             float: left;
             width: 500px;
@@ -470,7 +499,7 @@ ul.issue-list-items {
         color: white;
         background-color: @issue_main_color;
         margin: 0px;
-        padding-left: 16px;
+        padding-left: 8px;
         padding-top: 4px;
         padding-bottom: 4px;
         font-size: 22px;
@@ -488,8 +517,35 @@ ul.issue-list-items {
             cursor: pointer;
         }
     }
-
+.accordion-toggle {
+    .header-bar {
+      //border-bottom: #fff 2px solid;
+    }
+    &.collapsed .header-bar {
+      //border-bottom: #333 2px solid;
+    }
+    &:hover {
+      text-decoration: none;
+    }
+  }
+.decision-history {
+  border-bottom: @org_color_6 3px solid;
+  margin-bottom: 24px;
+  }
+.decision-history .accordion-toggle .toggle-icon {
+    /* symbol for "opening" panels */
+    .fa;
+    font-size: 0.75em;
+    color: #ffffff;         /* adjust as needed */
+    &:before { content: @fa-var-chevron-down; }
+}
+.decision-history .accordion-toggle.collapsed .toggle-icon {
+    /* symbol for "collapsed" panels */
+    &:before { content: @fa-var-chevron-right; }
+}
+  
     .navigate-column {
+      .make-md-column(4);
         .meeting-list li {
             &.active {
                 .meeting-link {
@@ -533,24 +589,28 @@ ul.issue-list-items {
             }
         }
     }
+  
     .content-column {
+      .make-md-column(5);
+    }
+    .content-column-content {
         h1, h2, h3 {
             color: #333;
         }
         header {
             h1 {
                 color: #333;
-                font-size: 16px;
-                line-height: 20px;
+                font-size: 22px;
+                line-height: 1;
                 font-weight: 700;
-                margin-left: 16px; // 48px;
+                margin-left: 8px; // 48px;
                 margin-right: 16px;
             }
             border-top: solid 10px @issue_main_color;
         }
         .content {
             h2 {
-                font-size: 28px;
+                font-size: 24px;
             }
             h3 {
                 font-size: 16px;
@@ -559,9 +619,11 @@ ul.issue-list-items {
             overflow: auto;
             padding: 20px 16px 20px 16px;
             background-color: @issue_bg_color;
+            margin-bottom: 24px;
         }
     }
     .meta-column {
+        .make-md-column(3);
         .section {
             margin-bottom: 16px;
         }
@@ -593,6 +655,7 @@ ul.issue-list-items {
 
         .attachment-list {
             margin-left: 0px;
+            padding: 0;
             li {
                 .clearfix();
                 list-style: none;
@@ -637,7 +700,7 @@ ul.issue-list-items {
 /*****************************************
  * Policymaker views                     *
  *****************************************/
-#content-container > h1.policymaker-heading {
+.content-container > h1.policymaker-heading {
     margin-bottom: 15px;
 }
 
@@ -645,6 +708,14 @@ ul.issue-list-items {
 .policymaker-nav-pill(@color) {
     &> a {
         color: @color;
+      &:hover {
+        color: white;
+        background-color: @color;
+        .caret {
+          border-top-color: white;
+          border-bottom-color: white;
+        }
+    }
     }
     .dropdown-toggle .caret {
         border-top-color: @color;
@@ -665,6 +736,15 @@ ul.issue-list-items {
     }
     &.active > a {
         color: white;
+        background-color: @color;
+        .caret {
+        border-top-color: white;
+        border-bottom-color: white;
+      }
+          &:hover {
+        color: white;
+        background-color: @color;
+    }
     }
 }
 
@@ -676,7 +756,7 @@ ul.issue-list-items {
         color: white;
         background-color: @pm_navbar_active_color;
         &:hover {
-            background-color: lighten(@pm_navbar_active_color, 10%)
+            //background-color: lighten(@pm_navbar_active_color, 10%)
         }
     }
     .list {
@@ -702,21 +782,34 @@ ul.issue-list-items {
 
 .policymaker-content {
     min-height: 1000px;
+    .make-md-column(10);
+    .make-md-column-offset(1);
 }
 
 .policymaker-list {
-    margin-left: 100px;
+    //margin-left: 100px;
 
     > h2 {
         font-weight: 700;
         margin-top: 24px;
     }
     .row {
+        .make-row();
         margin-bottom: 16px;
     }
-    .org-box {
+    .org-box .content {
+        .clearfix();
         height: 120px;
         cursor: pointer;
+    }
+    
+    .span3 {
+      .make-md-column(4);
+    }
+  
+    .span9 {
+      .make-md-column(12);
+      //.make-md-column-offset(1);
     }
     .span3 .content h3 {
         width: 220px - 48px - 16px;
@@ -725,10 +818,11 @@ ul.issue-list-items {
         padding-left: 16px;
         padding-top: 16px;
         padding-bottom: 16px;
+        .clearfix();
         h3 {
             color: black;
             font-size: 24px;
-            font-weight: 600;
+            font-weight: 500;
             line-height: 28px;
             margin: 0px;
             display: block;
@@ -754,31 +848,39 @@ ul.issue-list-items {
         }
     }
 
-    .council {
+    .council > .content{
         .org-type-box(@org_color_1);
     }
-    .government {
+    .government > .content {
         .org-type-box(@org_color_2);
     }
-    .committee {
+    .committee > .content {
         .org-type-box(@org_color_3);
     }
-    .board {
+    .board > .content {
         .org-type-box(@org_color_4);
     }
-    .other {
+    .other > .content {
         .org-type-box(@org_color_5);
     }
 }
 
 .policymaker-details {
-    .makeRow;
+    .make-row();
 
     > nav {
-        .makeColumn(4);
+        .make-md-column(4);
+        margin-bottom: @grid-gutter-width;
+        .toggle-icon {
+            .fa;
+            &:before { content: @fa-var-chevron-down; }
+        }
+        .collapsed .toggle-icon {
+            &:before { content: @fa-var-chevron-right; }
+        }
         > a {
             display: block;
-            color: @textColor;
+            color: @text-color;
             text-decoration: underline;
             font-weight: 700;
             font-size: 20px;
@@ -791,6 +893,7 @@ ul.issue-list-items {
         ul {
             list-style: none;
             margin: 0;
+            padding: 0;
         }
         li {
             border-bottom: 1px solid @border_color;
@@ -814,7 +917,7 @@ ul.issue-list-items {
     }
 
     > .meeting-details {
-        .makeColumn(7);
+        .make-md-column(7);
         nav {
             .clearfix;
             h3 {
@@ -830,11 +933,14 @@ ul.issue-list-items {
                 a {
                     color: lighten(@header_color, 5%);
                 }
+                .disabled {
+                  color: @org_color_7;
+                }
             }
         }
         article {
             background-color: @meeting_details_bg_color;
-            //border: 1px solid black;
+            margin-bottom: @grid-gutter-width;
             > header {
                 padding: 20px;
                 h1 {
@@ -854,6 +960,7 @@ ul.issue-list-items {
             ol {
                 margin: 0px;
                 list-style: none;
+                padding: 0px;
             }
             li {
                 border-top: 1px solid black;
@@ -892,6 +999,8 @@ ul.issue-list-items {
  *****************************************/
 
 .about-info-column {
+    .make-md-column(8);
+    .make-md-column-offset(1);
     h4 {
         margin-top: 20px;
         margin-bottom: 20px;
@@ -901,10 +1010,12 @@ ul.issue-list-items {
     }
 }
 
+
 .about-feedback-column {
-    background-color: @org_color_7;
+    .make-md-column(3);
     .content {
-        padding: 20px;
+      background-color: @org_color_7;
+      padding: 20px;
     }
     .logos {
         border-top: 1px solid black;
@@ -918,3 +1029,5 @@ ul.issue-list-items {
         }
     }
 }
+
+
