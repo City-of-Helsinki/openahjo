@@ -1,8 +1,8 @@
 
 apache_mirror: http://www.nic.funet.fi/pub/mirrors/apache.org/
 solr_user:     solr
-solr_package:  lucene/solr/4.6.0/solr-4.6.0.tgz
-solr_checksum: 2a4a6559665363236653bec749f580a5da973e1088227ceb1fca87802bd06a3f
+solr_package:  lucene/solr/4.7.1/solr-4.7.1.tgz
+solr_checksum: 4a546369a31d34b15bc4b99188984716bf4c0c158c0e337f3c1f98088aec70ee
 solr_path:     /opt/solr
 
 voikko_dict_baseurl: http://dev.hel.fi/paatokset/media/dev
