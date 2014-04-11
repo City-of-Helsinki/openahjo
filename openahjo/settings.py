@@ -24,6 +24,9 @@ DATABASES = {
     }
 }
 
+# Keep the database connection open for 120s
+CONN_MAX_AGE = 120
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
