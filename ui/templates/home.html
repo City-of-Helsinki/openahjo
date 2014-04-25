@@ -11,11 +11,13 @@
             <p>Löydä juuri sinua kiinnostavat Helsingin kaupungin poliittiset päätökset. Mitä naapurustossasi tapahtuu? Kuka päättää, mitä päätetään ja millä perusteella?</p>
         </div>
         <div class="right-side">
-            <form class="form-search">
-                <div class="input-append">
-                    <input class="span3 search-query search-box" placeholder="Syötä hakusana..." type="text">
-                    <input type="submit" class="btn search-query" value="Hae">
-                </div>
+            <form class="form-search" role="search">
+              <div class="input-group">
+                <input type="text" class="form-control search-query search-box" placeholder="Syötä hakusana...">
+                <span class="input-group-btn">
+                  <button class="btn search-query" type="submit">Hae</button>
+                </span>
+              </div>
             </form>
             <a class="browse-link" href="{% url 'ui.views.issue_list' %}">Selaa päätöksiä</a>
         </div>

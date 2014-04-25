@@ -13,33 +13,36 @@
         <div class="issue-list-filter">
             <h2>Rajaus</h2>
             <div class="control-group">
-                <label class="issues-form-label" style="margin-left: 0" for="text-filter">Hae sisällöstä</label>
+                <label class="issues-form-label" for="text-filter">Hae sisällöstä</label>
                 <div class="controls">
                     <input class="form-control" type="text" id="text-filter" placeholder="Syötä teksti...">
                 </div>
             </div>
             <div class="control-group">
-                <label class="issues-form-label" style="margin-left: 0" for="text-filter">Kaupunginosa</label>
+                <label class="issues-form-label" for="district-filter">Kaupunginosa</label>
                 <div class="controls">
-                    <select id="district-filter" data-placeholder="Syötä kaupunginosa..." multiple>
+                    <select id="district-filter" class="" data-placeholder="Syötä kaupunginosa..." multiple>
                     </select>
                 </div>
             </div>
             <div class="control-group">
-                <label class="issues-form-label" style="margin-left: 0" for="text-filter">Päättäjät</label>
+                <label class="issues-form-label" for="policymaker-filter">Päättäjät</label>
                 <div class="controls">
-                    <select id="policymaker-filter" data-placeholder="Syötä päättäjä..." multiple>
+                    <select id="policymaker-filter" class="" data-placeholder="Syötä päättäjä..." multiple>
                     </select>
                 </div>
             </div>
             <div class="control-group">
-                <div id="category-filter" class="input-prepend">
-                    <div class="btn-group issues-form-label">
-                        <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Tehtäväluokka</button>
-                        <ul class="dropdown-menu category-list">
-                        </ul>
-                    </div>
-                    <input class="form-control" type="text" disabled>
+                <label class="issues-form-label" for="category-filter">Tehtäväluokka</label>
+                <div class="controls">
+                  <div id="category-filter" class="input-group">
+                      <div class="input-group-btn">
+                          <button class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span>Valitse</button>
+                          <ul class="dropdown-menu category-list">
+                          </ul>
+                      </div>
+                      <input class="form-control" type="text" disabled>
+                  </div>
                 </div>
             </div>
         </div>
