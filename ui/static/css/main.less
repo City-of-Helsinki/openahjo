@@ -68,33 +68,67 @@ input[type="color"],
   }
 }
 
-.chosen-container-active .chosen-choices {
-    // Use @page_side_color
-    border-color: rgba(85,192,180,.8);
-    .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(85,192,180,.6)");
-}
+/** HACK to make Chosen responsive + match Bootstrap style**/
+
+.chosen-container {
+      width:100%!important;
+      .chosen-search {
+          input[type='text'] {
+              padding:2px 4%!important;
+              width:90%!important;
+              margin:5px 2%;
+          }
+      }
+      .chosen-single {
+          padding:10px 1%;
+      }
+      .chosen-drop {
+          width:100%!important;
+      }
+      .chosen-choices {
+        border-color: rgba(85,192,180,.8);
+        border-radius: 4px;
+        .box-shadow(~"inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(85,192,180,.6)");
+        -webkit-transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        transition: border-color ease-in-out .15s, box-shadow ease-in-out .15s;
+        } 
+  }
+
 
 footer {
     padding-top: 80px;
     padding-bottom: 80px;
+    @media(max-width:767px){
+      padding-top: 40px;
+      padding-bottom: 40px;
+    }
     background-color: @box_text_color;
   
+    .sitemap {
+      .make-row();  
+    }
+    
     .sitemap-section {
+      .make-xs-column(6);
       .make-md-column(3);
+
     }
     h4 {
-        a {
+        a, a:hover {
             color: @org_color_7;
         }
         font-size: 16px;
-        margin: 0 0 0.5em 0;
+        margin: 0 0 1em 0;
     }
     ul {
         list-style-type: none;
         padding: 0;
-        margin: 0;
+        margin: 0 0 2em 0;
         a {
             color: @org_color_7;
+        }
+        li {
+            margin-bottom: 0.5em;
         }
     }
     ul.ext-links {
@@ -102,10 +136,7 @@ footer {
         font-weight: bold;
         a {
             color: @org_color_4;
-        }
-        li {
-            margin-bottom: 1em;
-        }
+        } 
     }
     p {
         margin-top: 22px;
@@ -123,6 +154,24 @@ footer {
 
 body {
     background-image: url('../img/paatokset_bg_vaalea.gif');
+}
+
+h1, h2, h3, h4, h5, h6 {
+  word-wrap: break-word;
+}
+
+h1 {
+  @media(max-width:767px){
+    font-size:28px;
+  }
+}
+
+img {
+  max-width: 100%;
+}
+
+.btn.active {
+  background: @org_color_5;
 }
 
 
@@ -155,7 +204,18 @@ body {
     }
 }
 
+.content-header {
+  .make-row();
+}
+
+.content-header-content {
+  .make-md-column(12);
+}
+
 .logo-header {
+  @media(max-width:767px){
+    display: none;
+  }
     .make-md-column(12);
 }
 
@@ -172,6 +232,7 @@ body {
     > h1, .main-heading {
         margin-bottom: 40px;
     }
+    padding-bottom: 40px;
     background-color: white;
     padding-top: @grid-gutter-width;
     //margin-left: auto; /* 80px */
@@ -184,6 +245,12 @@ body {
     //padding-bottom: 80px;
     //width: @gridRowWidth;
     //min-height: 800px;
+}
+
+@media(max-width:767px){
+  .container {
+      padding: 5px !important;
+  }
 }
 
 /*****************************************
@@ -204,6 +271,9 @@ body {
         margin-top: 0;
         img {
             height: 50px;
+            @media(max-width:767px){
+              height: 40px;
+            }
             margin-bottom: 8px;
         }
         sub {
@@ -212,6 +282,11 @@ body {
             font-size: 22px;
             margin-left: 8px;
             bottom: -8px;
+            @media(max-width:767px){
+              font-size: 12px;
+              margin-left: 0;
+              bottom: -8px;
+            }
         }
     }
     p {
@@ -220,13 +295,11 @@ body {
         color: @org_color_7;
     }
     .left-side {
-        width: 50%;
-        float: left;
+        .make-md-column(6);
     }
     .right-side {
         margin-top: 40px;
-        padding-right: 30px;
-        float: right;
+        .make-md-column(6);
         text-align: right;
         font-weight: bold;
         a {
@@ -272,12 +345,12 @@ body {
 
 .home-recent-content {
     .make-row();
-    margin-bottom: 20px;
+    margin-bottom: @grid-gutter-width;
     .box-recent-content {
         .make-md-column(6);
     }
     article {
-        padding: 20px;
+        padding: @grid-gutter-width/2;
         background-color: @org_color_7;
         h2 {
             margin-top: 0px;
@@ -381,6 +454,11 @@ body {
     .make-md-column-offset(1);
 }
 
+#issue-list-items-container {
+    .make-md-column(10);
+    .make-md-column-offset(1);
+}
+
 .issue-list-filter {
     border: 1px solid @border_color;
     border-radius: 3px;
@@ -402,24 +480,30 @@ body {
     .caret {
         margin-right: 6px;
     }
+    .control-group {
+      .make-row();
+    }
     .issues-form-label {
-      .make-md-column(2);
+      .make-xs-column(12);
+      .make-md-column(3);
     }
     label {
         float: left;
         margin-bottom: 0px;
         margin-top: 5px;
     }
-    select {
-        width: 580px;
+    .controls {
+      .make-xs-column(12);
+      .make-md-column(9);
     }
-    input {
-        width: 566px;
+    select, input {
+       //width: 100%
     }
     .controls > select, input, .chosen-choices {
         margin-bottom: 4px;
     }
 }
+
 
 .issue-list-results {
     margin-bottom: 20px;
@@ -429,18 +513,18 @@ body {
         float: left;
         font-weight: 700;
         font-size: 24px;
-        margin-top: 10px;
+        margin: 10px 0;
         display: none;
     }
     .btn-toolbar {
-        margin: 0;
+        margin: 10px 0;
     }
 }
 
 ul.issue-list-items {
     list-style: none;
     margin-left: 0;
-
+    padding-left: 0;
     li {
         a:hover {
             text-decoration: none;
@@ -451,22 +535,23 @@ ul.issue-list-items {
         padding: 6px 15px 6px 15px;
         margin-bottom: 10px;
         header {
-            .clearfix();
+          .make-row();
         }
         .subject {
+            .make-md-column(8);
             font-weight: 500;
             color: @issue_list_item_text_color;
-            float: left;
-            width: 500px;
-            margin-right: 20px
         }
         .issue-meta {
-            width: 220px;
-            float: left;
+            .make-md-column(4);
             .last-processing {
                 font-weight: 400;
                 color: @issue_list_item_text_color;
                 float: right;
+            }
+            .label {
+              display: inline-block;
+              margin: 2px 0;
             }
         }
         .content-excerpt {
@@ -945,6 +1030,7 @@ ul.issue-list-items {
             margin-bottom: @grid-gutter-width;
             > header {
                 padding: 20px;
+                overflow: hidden;
                 h1 {
                     font-size: 28px;
                     font-weight: 700;
@@ -966,21 +1052,19 @@ ul.issue-list-items {
             }
             li {
                 border-top: 1px solid black;
-                padding: 20px;
+                padding: 10px;
                 cursor: pointer;
                 .item-header {
-                    .clearfix;
+                    .make-row();
                     font-size: 20px;
                     font-weight: 700;
                     color: #333;
                 }
                 .index {
-                    float: left;
-                    width: 40px;
+                    .make-md-column(2);
                 }
                 .subject {
-                    float: left;
-                    width: 458px;
+                    .make-md-column(10);
                     hyphens: auto;
                 }
             }
