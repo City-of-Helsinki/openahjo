@@ -5,8 +5,10 @@
 
 {% block policymaker_content %}
 
+
 <div class="policymaker-content">
 </div>
+
 
 <script type="text/template" id="policymaker-list-item-template">
 <div class="content">
@@ -17,8 +19,9 @@
 
 <script type="text/template" id="policymaker-details-template">
 <nav>
+    <a href="#" class="organisation-link">Organisaatio</a>
     <a href="#" class="description-link">Tehtävät</a>
-    <a href="#" class="meeting-link" data-toggle="collapse" data-target=".meeting-list">Kokoukset <i class="toggle-icon"></i></a>
+    <a href="#" class="meeting-link" data-toggle="collapse" data-target=".meeting-list">Päätökset <i class="toggle-icon"></i></a>
     <ul class="meeting-list collapse in">
     </ul>
 </nav>
@@ -32,7 +35,21 @@
 
 <script type="text/template" id="policymaker-meeting-details-template">
 <div class="tab-content">
+    <div class="organisation-tab tab-pane">
+        /** PLEASE MOVE ORGANISATION CONTENT HERE AND MAKE THIS TAB DEFAULT TAB**/
+    </div>
     <div class="meeting-details-tab tab-pane">
+            <h2>Organisaatio</h2>
+        <ul class="policymaker-organisation">
+          <li class="policymaker-underling"><a href="#">Asumisen tuen päällikkö</a></li>
+          <li class="policymaker-underling"><a href="#">Psykiatria- ja päihdepalvelujen johtaja</a></li>
+          <li class="policymaker-underling"><a href="#">Etelän psykiatria- ja päihdekeskuksen johtaja</a></li>
+          <li class="policymaker-underling"><a href="#">Idän psykiatria- ja päihdekeskuksen johtaja</a></li>
+          <li class="policymaker-underling"><a href="#">Lännen psykiatria- ja päihdekeskuksen johtaja</a></li>
+          <li class="policymaker-underling"><a href="#">Pohjoisen psykiatria- ja päihdekeskuksen johtaja</a></li>
+          <li class="policymaker-underling"><a href="#">Psykiatrian ja päihdehuollon erityispalvelujen päällikkö</a></li>
+          <li class="policymaker-underling"><a href="#">Johtajapsykiatri</a></li>
+        </ul>
         <nav>
             <h3>Kokous</h3>
             <div class="back-fwd">

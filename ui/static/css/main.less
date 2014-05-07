@@ -4,6 +4,7 @@
 @import "font-awesome/less/core.less";
 @import "layout.less";
 @import "bootstrap-chosen.less";
+// @import "jquery.multilevelpushmenu.less";
 
 @text_color: #333;
 @border_color: #ddd;
@@ -795,6 +796,107 @@ ul.issue-list-items {
     margin-bottom: 15px;
 }
 
+/* Policymaker breadcrumbs */
+.policy-breadcrumb-navi {
+  padding: 5px;
+  background: #ccc;
+  margin-bottom: 15px;
+  .clearfix();
+}
+.policy-breadcrumb { 
+	list-style: none; 
+	font-size: 14px;
+    line-height: 16px;
+    padding: 0;
+}
+.policy-breadcrumb li { 
+	float: left; 
+    margin: 3px 0 3px 0;
+}
+.policy-breadcrumb li a {
+	color: white;
+	text-decoration: none; 
+	padding: 10px 0 10px 40px;
+	background: #ccc;
+	position: relative; 
+	display: block;
+	float: left;
+    border-top: 1px solid #fff;
+    border-left: 1px solid #fff;
+    border-bottom: 1px solid #fff;
+}
+
+.policy-breadcrumb li a:after { 
+	content: " "; 
+	display: block; 
+	width: 0; 
+	height: 0;
+	border-top: 18px solid transparent;           /* Go big on the size, and let overflow hide */
+	border-bottom: 18px solid transparent;
+	border-left: 30px solid #CCC;
+	position: absolute;
+	top: 50%;
+	margin-top: -18px; 
+	left: 100%;
+	z-index: 2; 
+}
+
+.policy-breadcrumb li a:before { 
+	content: " "; 
+	display: block; 
+	width: 0; 
+	height: 0;
+	border-top: 18px solid transparent;       
+	border-bottom: 18px solid transparent;
+	border-left: 30px solid #fff;
+	position: absolute;
+	top: 50%;
+	margin-top: -18px; 
+	margin-left: 1px;
+	left: 100%;
+	z-index: 1; 
+}
+
+li.breadcrumb-policymaker a       { background:        @org_color_1; }
+li.breadcrumb-policymaker a:after { border-left-color: @org_color_1; }
+li.breadcrumb-policymaker.is-empty a       { background:         #666; }
+li.breadcrumb-policymaker.is-empty a:after { border-left-color:  #666; }
+
+li.breadcrumb-office a       { background:        @org_color_3; }
+li.breadcrumb-office a:after { border-left-color: @org_color_3; }
+li.breadcrumb-office.is-empty a       { background:         #666;  }
+li.breadcrumb-office.is-empty a:after { border-left-color:  #666; }
+
+li.breadcrumb-officer a       { background:        @org_color_3; }
+li.breadcrumb-officer a:after { border-left-color: @org_color_3; }
+
+/* /Policymaker breadcrumbs */
+
+/* Policymaker organisation */
+.policymaker-organisation {
+    .make-row;
+      padding: 0;
+}
+
+.policymaker-underling {
+    list-style: none;
+    display: block;
+    .make-md-column(4);
+    margin-bottom: 15px;
+  a {
+        display: block;
+        padding: 5px;
+        background: @org_color_3;
+        height: 100px;
+        color: #FFF;
+  }
+  a:hover {
+      background: @org_color_2;
+      text-decoration: none;
+  }
+}
+
+/* /Policymaker organisation */
 
 .policymaker-nav-pill(@color) {
     &> a {
@@ -873,8 +975,7 @@ ul.issue-list-items {
 
 .policymaker-content {
     min-height: 1000px;
-    .make-md-column(10);
-    .make-md-column-offset(1);
+    .make-md-column(12);
 }
 
 .policymaker-list {
@@ -962,6 +1063,7 @@ ul.issue-list-items {
     > nav {
         .make-md-column(4);
         margin-bottom: @grid-gutter-width;
+        padding-top: 20px;
         .toggle-icon {
             .fa;
             &:before { content: @fa-var-chevron-down; }
@@ -970,6 +1072,7 @@ ul.issue-list-items {
             &:before { content: @fa-var-chevron-right; }
         }
         > a {
+            border-top: 4px solid @border_color;
             display: block;
             color: @text-color;
             text-decoration: underline;
@@ -1008,7 +1111,7 @@ ul.issue-list-items {
     }
 
     > .meeting-details {
-        .make-md-column(7);
+        .make-md-column(8);
         nav {
             .clearfix;
             h3 {
