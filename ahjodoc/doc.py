@@ -343,7 +343,7 @@ class AhjoDocument(object):
 
         name_list = self.zip_file.namelist()
         names = [x for x in name_list if att['id'] in x]
-        if len(names) != 1:
+        if not len(names):
             raise ParseError("Attachment %s not found in ZIP file" % att['id'])
         zip_info = self.zip_file.getinfo(names[0])
 
