@@ -52,15 +52,37 @@ MAP_ATTRIBUTION =
      CC-BY-SA</a>,
      Imagery © <a href="http://cloudmade.com">CloudMade</a>'
 
+
+
 create_map = (container_element, map_attribution) ->
-    L.map container_element,
-          layers: [
-            L.tileLayer 'http://{s}.tile.cloudmade.com/{key}/' +
-                '{style}/256/{z}/{x}/{y}.png',
-                attribution: map_attribution
-                maxZoom: 18
-                key: '8831a03368004097ba8ddc389ec30633'
-                style: 998]
+    crs_name = 'EPSG:3067'
+    proj_def = '+proj=utm +zone=35 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs'
+
+    bounds = L.bounds L.point(-548576, 6291456), L.point(1548576, 8388608)
+    origin_nw = [bounds.min.x, bounds.max.y]
+    crs_opts =
+        resolutions: [8192, 4096, 2048, 1024, 512, 256, 128, 64, 32, 16, 8, 4, 2, 1, 0.5, 0.25]
+        bounds: bounds
+        transformation: new L.Transformation 1, -origin_nw[0], -1, origin_nw[1]
+
+    crs = new L.Proj.CRS crs_name, proj_def, crs_opts
+    url = "http://geoserver.hel.fi/mapproxy/wmts/osm-sm/etrs_tm35fin/{z}/{x}/{y}.png"
+    opts =
+        maxZoom: 15
+        minZoom: 0
+        continuousWorld: true
+        tms: false
+
+    map_layer = new L.TileLayer url, opts
+
+    map = new L.Map container_element,
+        crs: crs
+        continuusWorld: true
+        worldCopyJump: false
+        zoomControl: false
+        attribution: map_attribution
+        layers: [map_layer]
+
 
 class IssueView extends Backbone.View
     make_labels: ->
