@@ -287,6 +287,10 @@ class Command(BaseCommand):
         # Only Kaupunginvaltuusto supported for now.
         if meeting.policymaker.origin_id != '02900':
             return
+        # FIXME: Broken in API
+        if meeting.year == 2014 and meeting.number == 3:
+            return
+
         self.logger.debug("Checking for videos for %s" % meeting)
         meeting_info = {'year': meeting.year, 'nr': meeting.number}
         video_info = get_videos_for_meeting(meeting_info)
