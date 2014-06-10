@@ -22,3 +22,5 @@ Markdown
 mimeparse
 ansible
 django-extensions
+django-modeltranslation
+-e git+https://github.com/juyrjola/django-popolo#egg=django-popolo

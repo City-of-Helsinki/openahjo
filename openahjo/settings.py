@@ -49,6 +49,10 @@ TIME_ZONE = 'Europe/Helsinki'
 # Language code for this installation. All choices can be found here:
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'fi'
+LANGUAGES = (
+    ('fi', 'Finnish'),
+    ('sv', 'Swedish'),
+)
 
 SITE_ID = 1
 
@@ -142,15 +146,18 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'tastypie_swagger',
     'corsheaders',
+    'popolo',
     'tastypie',
     'compressor',
     'mptt',
     'south',
     'haystack',
     'django_extensions',
+    'modeltranslation',
     'munigeo',
 
     'ahjodoc',
+    'decisions',
     'ui',
 )
 
@@ -214,6 +221,8 @@ PROJECTION_SRID = 4326
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
 GEOCODER_API_URL = "http://dev.hel.fi/geocoder/"
+
+POPOLO_APP_NAME = 'decisions'
 
 # local_settings.py can be used to override environment-specific settings
 # like database and email that differ between development and production.
