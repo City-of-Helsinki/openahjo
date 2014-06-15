@@ -45,7 +45,7 @@ class Meeting(models.Model):
         return u"%s %d/%d (%s)" % (self.policymaker, self.number, self.year, self.date) 
 
     class Meta:
-        unique_together = (('policymaker', 'date'), ('policymaker', 'year', 'number'))
+        unique_together = (('policymaker', 'year', 'number'),)
 
 class MeetingDocument(models.Model):
     meeting = models.ForeignKey(Meeting)
