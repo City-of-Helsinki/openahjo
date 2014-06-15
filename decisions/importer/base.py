@@ -86,6 +86,15 @@ class Importer(object):
                 continue
             self._set_field(obj, field_name, info[field_name])
 
+    def _update_m2m(self, obj, field_name, new_val):
+        new_set = set(new_val)
+        old_set = set(getattr(obj, field_name).all().values_list('id', flat=True))
+        if new_set == old_set:
+            return
+
+        obj._changed_fields.append(field_name)
+        setattr(obj, field_name, list(new_set))
+
     def save_organization(self, info):
         obj = self.org_syncher.get(info['id'])
         if not obj:
@@ -101,6 +110,8 @@ class Importer(object):
 
         if obj._created or obj._changed_fields:
             obj.save()
+
+        self._update_m2m(obj, 'parents', info['parents'])
 
         if obj._changed_fields or obj._created:
             if obj._created:

@@ -19,6 +19,8 @@ TYPE_MAP = {
     7: 'field',
     8: 'department',
     9: 'division',
+    10: 'introducer',
+    11: 'introducer_field',
     12: 'office_holder',
     13: 'city',
     14: 'unit',
@@ -48,6 +50,8 @@ def mark_deleted(obj):
     obj.save(update_fields=['deleted'])
     return True
 
+def origin_id_to_id(origin_id):
+    return 'hel:%s' % origin_id
 
 @register_importer
 class HelsinkiImporter(Importer):
@@ -60,7 +64,7 @@ class HelsinkiImporter(Importer):
         if info['type'] not in TYPE_MAP:
             return
         org = {'origin_id': info['id']}
-        org['id'] = 'hel:%s' % org['origin_id']
+        org['id'] = origin_id_to_id(org['origin_id'])
         org['type'] = TYPE_MAP[info['type']]
 
         org['name'] = {'fi': info['name_fin'], 'sv': info['name_swe']}
@@ -89,7 +93,11 @@ class HelsinkiImporter(Importer):
             cd['postcode'] = z
             org['contact_details'].append(cd)
         org['modified_at'] = dateutil_parse(info['modified_time'])
-        org['parents'] = info['parents']
+
+        parents = info['parents']
+        if parents == None:
+            parents = []
+        org['parents'] = [origin_id_to_id(x) for x in parents]
 
         self.save_organization(org)
 
