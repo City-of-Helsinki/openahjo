@@ -27,7 +27,13 @@ class Policymaker(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.slug and self.abbreviation:
-            self.slug = slugify(unicode(self.abbreviation))
+            slug_base = slugify(unicode(self.abbreviation))
+            self.slug = slug_base
+            for i in range(2, 10):
+                if not Policymaker.objects.filter(slug=self.slug).exists():
+                    break
+                self.slug = '%s-%d' % (slug_base, i)
+
         return super(Policymaker, self).save(*args, **kwargs)
 
     def __unicode__(self):

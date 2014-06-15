@@ -20,7 +20,7 @@ def clean_text(text):
     return re.sub(r'\s\s+', ' ', text, re.U).strip()
 
 class AhjoDocument(object):
-    ATTACHMENT_EXTS = ('pdf', 'xls', 'ppt', 'doc', 'docx', 'png')
+    ATTACHMENT_EXTS = ('pdf', 'xls', 'ppt', 'doc', 'docx', 'png', 'jpg')
 
     def __init__(self, verbosity=1, options={}):
         self.verbosity = verbosity
@@ -134,7 +134,8 @@ class AhjoDocument(object):
         for section_el in section_el_list:
             s = section_el.attrib.get('sisaltosektioTyyppi')
             if not s:
-                self.logger.warning("attribute sisaltosektioTyyppi not found")
+                if info.get('type', None) != 'officeholder_decision':
+                    self.logger.warning("attribute sisaltosektioTyyppi not found")
                 subj_el = section_el.find('SisaltoOtsikko')
                 if not subj_el:
                     continue
@@ -152,6 +153,8 @@ class AhjoDocument(object):
             subject = section_el.find('SisaltoOtsikko').text
             if subject:
                 subject = subject.encode('utf8')
+                if subject.lower() == 'Esittelijän perustelut':
+                    subject = 'Esittelijä'
                 if subject.replace('ä', 'a').replace('ö', 'o').lower() != s:
                     self.logger.warning("Unexpected section header: %s, expected: %s" % (subject, s))
             text_section = section_el.find('TekstiSektio')
@@ -199,6 +202,21 @@ class AhjoDocument(object):
         desc_el = item_el.find('KuvailutiedotOpenDocument')
         if not desc_el:
             raise ParseError("Field KuvailutiedotOpenDocument missing")
+
+        doc_type = desc_el.find('AsiakirjaTyyppi')
+        if doc_type:
+            doc_type = doc_type.text
+        else:
+            doc_type = None
+        if doc_type == u'päätös':
+            info['type'] = 'decision'
+        elif doc_type == u'esitys':
+            info['type'] = 'proposal'
+        elif doc_type == u'viranhaltijan päätös':
+            info['type'] = 'officeholder_decision'
+        elif doc_type:
+            raise ParseError("Invalid item type: %s" % doc_type)
+
         lang_el = desc_el.find('Kieli')
         if lang_el is not None:
             lang_id = lang_el.attrib['KieliID']

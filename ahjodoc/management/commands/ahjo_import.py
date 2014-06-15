@@ -14,6 +14,7 @@ from django.conf import settings
 from django.db import transaction
 
 from munigeo.models import District
+from decisions.models import Organization
 
 from ahjodoc.scanner import AhjoScanner
 from ahjodoc.doc import AhjoDocument, ParseError
@@ -179,13 +180,23 @@ class Command(BaseCommand):
         d = [int(x) for x in info['date'].split('-')]
         doc_date = datetime.date(*d)
 
-        policymaker = Policymaker.objects.get(origin_id=info['policymaker_id'])
-        args = {'policymaker': policymaker, 'number': info['meeting_nr'],
-                'year': doc_date.year}
+        try:
+            policymaker = Policymaker.objects.get(origin_id=info['policymaker_id'])
+        except Policymaker.DoesNotExist:
+            org = Organization.objects.get(origin_id=info['policymaker_id'])
+            print "Creating new policymaker for %s" % org
+            args = {'name': org.name_fi, 'abbreviation': org.abbreviation,
+                    'origin_id': info['policymaker_id']}
+            policymaker = Policymaker(**args)
+            policymaker.save()
+
         if not policymaker.abbreviation and 'policymaker_abbr' in info:
             self.logger.info("Saving abbreviation '%s' for %s" % (info['policymaker_abbr'], policymaker))
             policymaker.abbreviation = info['policymaker_abbr']
             policymaker.save()
+
+        args = {'policymaker': policymaker, 'number': info['meeting_nr'],
+                'year': doc_date.year}
         try:
             meeting = Meeting.objects.get(**args)
         except Meeting.DoesNotExist:
@@ -519,6 +530,9 @@ class Command(BaseCommand):
                     options['start_from'] = ''
                 else:
                     continue
+
+            #if not 'VH' in info['policymaker_id']:
+            #    continue
 
             if options['policymaker_id'] and info['policymaker_id'] != options['policymaker_id']:
                 continue

@@ -51,8 +51,16 @@ class AhjoScanner(object):
         info_list = []
         for link_el in links:
             link = link_el.attrib['href']
+            if path in link and link.endswith('/'):
+                # Is a sub-directory
+                new_policymaker_id = link.strip('/').split('_')[-1].strip()
+                sub_list = self.scan_dir(link, new_policymaker_id)
+                info_list += sub_list
+                continue
+
             if not link.endswith('.zip'):
                 continue
+
             fname = link.split('/')[-1]
             fname = fname.replace('.zip', '')
             FIELD_NAMES = ("org", "date", "policymaker", "meeting_nr", "doc_type_id", "language")
@@ -88,6 +96,7 @@ class AhjoScanner(object):
             if info['origin_id'] in SKIP_DOC_LIST:
                 self.logger.warning("Skipping document on skip list: %s" % info['origin_id'])
                 continue
+
             info_list.append(info)
         return info_list
 
