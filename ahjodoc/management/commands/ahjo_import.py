@@ -210,7 +210,15 @@ class Command(BaseCommand):
         doc.policymaker = info['policymaker']
         doc.date = doc_date
         if str(meeting.date) != str(doc.date):
-            raise Exception("Date mismatch between doc and meeting (%s vs. %s)" % (meeting.date, doc.date))
+            # If the new meeting date comes from a document with the latest modification
+            # time, assume the earlier meeting date is incorrect. Otherwise, bail out.
+            latest_doc = meeting.meetingdocument_set.order_by('-last_modified_time')[0]
+            if info['last_modified'] > latest_doc.last_modified_time:
+                self.logger.warning("Fixing date mismatch between doc and meeting (%s vs. %s)" % (meeting.date, doc.date))
+                meeting.date = doc.date
+                meeting.save(update_fields=['date'])
+            else:
+                raise Exception("Date mismatch between doc and meeting (%s vs. %s)" % (meeting.date, doc.date))
         doc.meeting_nr = info['meeting_nr']
         doc.origin_url = info['url']
 
