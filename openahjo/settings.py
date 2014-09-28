@@ -129,7 +129,7 @@ ROOT_URLCONF = 'openahjo.urls'
 WSGI_APPLICATION = 'openahjo.wsgi.application'
 
 TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates')
+    os.path.join(PROJECT_ROOT, 'templates'),
 )
 
 INSTALLED_APPS = (

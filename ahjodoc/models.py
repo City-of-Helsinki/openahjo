@@ -45,7 +45,7 @@ class Meeting(models.Model):
     number = models.PositiveIntegerField(help_text='Meeting number for the policymaker')
     year = models.PositiveIntegerField(help_text='Year the meeting is held')
     issues = models.ManyToManyField('Issue', through='AgendaItem')
-    minutes = models.BooleanField(help_text='Meeting minutes document available')
+    minutes = models.BooleanField(default=False, help_text='Meeting minutes document available')
 
     def __unicode__(self):
         return u"%s %d/%d (%s)" % (self.policymaker, self.number, self.year, self.date) 
@@ -192,7 +192,7 @@ class AgendaItem(models.Model):
     issue = models.ForeignKey(Issue, db_index=True, help_text='Issue for the item')
     index = models.PositiveIntegerField(help_text='Item number on the agenda')
     subject = models.CharField(max_length=500, help_text='One-line description for agenda item')
-    from_minutes = models.BooleanField(help_text='Do the contents come from the minutes document?')
+    from_minutes = models.BooleanField(default=False, help_text='Do the contents come from the minutes document?')
     last_modified_time = models.DateTimeField(db_index=True, auto_now=True, help_text='Time of last modification')
     origin_last_modified_time = models.DateTimeField(db_index=True, null=True, help_text='Time of last modification in data source')
     resolution = models.CharField(max_length=20, choices=RESOLUTION_CHOICES, null=True, help_text="Type of resolution made")
@@ -253,7 +253,7 @@ class Attachment(models.Model):
     agenda_item = models.ForeignKey(AgendaItem, db_index=True)
     number = models.PositiveIntegerField(help_text='Index number of the item attachment')
     name = models.CharField(max_length=400, null=True, help_text='Short name for the agenda item')
-    public = models.BooleanField(help_text='Is attachment public?')
+    public = models.BooleanField(default=False, help_text='Is attachment public?')
     file = models.FileField(upload_to=settings.AHJO_PATHS['attachment'], null=True)
     hash = models.CharField(max_length=50, null=True, help_text='SHA-1 hash of the file contents')
     file_type = models.CharField(max_length=10, null=True, help_text='File extension')
