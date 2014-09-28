@@ -150,7 +150,6 @@ INSTALLED_APPS = (
     'tastypie',
     'compressor',
     'mptt',
-    'south',
     'haystack',
     'django_extensions',
     'modeltranslation',

@@ -12,7 +12,6 @@ django-cors-headers
 -e git+https://github.com/juyrjola/NoAho.git#egg=NoAho
 django-mptt
 django-tastypie-swagger
-South
 ffvideo
 django-haystack
 pysolr
