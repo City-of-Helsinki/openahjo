@@ -14,8 +14,10 @@ class Organization(popolo_models.Organization):
     parents = models.ManyToManyField('Organization', related_name='all_children')
     deleted = models.BooleanField(default=False)
 
+
 class OrganizationContactDetail(popolo_models.OrganizationContactDetail):
     postcode = models.CharField(max_length=10)
+
 
 # Generate concrete model classes for those Popolo models that the user didn't
 # explicitly define.
@@ -31,7 +33,7 @@ for name, popolo_class in popolo_models.__dict__.items():
     for g_name, g_class in globals().items():
         try:
             if issubclass(g_class, popolo_class):
-                continue
+                break
         except TypeError:
             continue
     else:
