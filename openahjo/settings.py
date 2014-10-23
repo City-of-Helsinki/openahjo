@@ -217,6 +217,9 @@ AHJO_PATHS = {
 # Use WGS84 coordinate system internally.
 PROJECTION_SRID = 4326
 
+# Set to quelch a warning
+TEST_RUNNER = "django.test.runner.DiscoverRunner"
+
 TASTYPIE_DEFAULT_FORMATS = ['json']
 
 GEOCODER_API_URL = "http://dev.hel.fi/geocoder/"
@@ -229,3 +232,4 @@ try:
     from local_settings import *
 except ImportError:
     pass
+
