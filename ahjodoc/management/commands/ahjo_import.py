@@ -499,8 +499,8 @@ class Command(BaseCommand):
 
         plan_path = os.path.join(self.data_path, 'plans')
         if os.path.isdir(plan_path) and not options['no_geocoding']:
-            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_Vireilla.tab'))
-            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_Voimassa.tab'))
+            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_Vireilla.tab'), in_effect=False)
+            self.geocoder.load_plans(os.path.join(plan_path, 'Kaava_Voimassa.tab'), in_effect=True)
             self.geocode_plans = True
         else:
             print "Plan database not found; plan geocoding not available."
@@ -509,7 +509,7 @@ class Command(BaseCommand):
         property_path = os.path.join(self.data_path, 'properties')
         if os.path.isdir(property_path) and not options['no_geocoding']:
             self.geocoder.load_plan_units(os.path.join(property_path, 'Kaava_kaavayksikko_Voimassa.tab'))
-            self.geocoder.load_properties(os.path.join(property_path, 'GISestx.csv'))
+            self.geocoder.load_properties(os.path.join(property_path, 'kiinteistoalueet.tab'))
             self.geocode_plan_units = True
         else:
             print "Plan unit database not found; plan unit geocoding not available."

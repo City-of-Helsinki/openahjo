@@ -192,7 +192,7 @@ class AhjoGeocoder(object):
         reader.next()
         addr_hash = {}
         for idx, row in enumerate(reader):
-            row_type = int(row[-1])
+            row_type = int(row[-2])
             if row_type != 1:
                 continue
             street = row[0].strip()
@@ -204,8 +204,8 @@ class AhjoGeocoder(object):
             num2 = row[2]
             if not num2:
                 num2 = None
-            letter = row[3]
-            muni_name = row[10]
+            letter = row[3].strip()
+            muni_name = row[10].strip()
             coord_n = int(row[8])
             coord_e = int(row[9])
             if muni_name != "Helsinki":
@@ -213,34 +213,34 @@ class AhjoGeocoder(object):
             e = {'muni': muni_name, 'street': street, 'num': num, 'num_end': num2,
                  'letter': letter, 'coord_n': coord_n, 'coord_e': coord_e}
             street = street.lower().decode('utf8')
-            if street in addr_hash:
-                if num2 == None:
-                    num2s = ''
-                else:
-                    num2s = str(num2)
-                addr_hash[street].append(e)
+            num_list = addr_hash.setdefault(street, [])
+            for s in num_list:
+                if e['num'] == s['num'] and e['num_end'] == s['num_end'] and e['letter'] == s['letter']:
+                    break
             else:
-                addr_hash[street] = [e]
+                num_list.append(e)
+
         self.street_hash = addr_hash
         self.street_tree = NoAho()
         print "%d street names loaded" % len(self.street_hash)
         for street in self.street_hash.keys():
             self.street_tree.add(street)
 
-    def load_plans(self, plan_file):
-        ds = DataSource(plan_file, encoding='iso8859-1')
+    def _load_mapinfo(self, ds, id_field_name, id_fixer=None):
+        geom_map = {}
         lyr = ds[0]
-
         for idx, feat in enumerate(lyr):
-            origin_id = feat['kaavatunnus'].as_string().strip()
+            origin_id = feat[id_field_name].as_string().strip()
+            if id_fixer:
+                origin_id = id_fixer(origin_id)
             geom = feat.geom
             geom.srid = GK25_SRID
             geom.transform(settings.PROJECTION_SRID)
-            if origin_id not in self.plan_map:
+            if origin_id not in geom_map:
                 plan = {'geometry': None}
-                self.plan_map[origin_id] = plan
+                geom_map[origin_id] = plan
             else:
-                plan = self.plan_map[origin_id]
+                plan = geom_map[origin_id]
             poly = GEOSGeometry(geom.wkb, srid=geom.srid)
             if isinstance(poly, LineString):
                 try:
@@ -260,16 +260,37 @@ class AhjoGeocoder(object):
             else:
                 plan['geometry'] = poly
 
-        print "%d plans imported" % idx
-
-        for key in self.plan_map.keys():
-            geom = self.plan_map[key]['geometry']
+        for key, e in geom_map.items():
+            geom = e['geometry']
             if not geom.valid:
                 self.logger.warning("geometry for %s not OK, fixing" % key)
                 geom = geom.simplify()
                 assert geom.valid
-                self.plan_map[key]['geometry'] = geom
+                e['geometry'] = geom
+        return geom_map
 
+    def load_plans(self, plan_file, in_effect):
+        if getattr(self, 'all_plans_loaded', False):
+            return
+        if not in_effect: # Okay, this is hacky!
+            try:
+                picklef = open('plans.pickle', 'r')
+                self.plan_map = cPickle.load(picklef)
+                self.all_plans_loaded = True
+                print "%d pickled plans loaded" % len(self.plan_map)
+                return
+            except IOError:
+                pass
+
+        ds = DataSource(plan_file, encoding='iso8859-1')
+
+        plan_map = self._load_mapinfo(ds, 'kaavatunnus')
+        print "%d plans imported" % len(plan_map)
+        self.plan_map.update(plan_map)
+
+        if in_effect:
+            picklef = open('plans.pickle', 'w')
+            cPickle.dump(self.plan_map, picklef, protocol=cPickle.HIGHEST_PROTOCOL)
 
     def load_plan_units(self, plan_unit_file):
         try:
@@ -281,45 +302,10 @@ class AhjoGeocoder(object):
             pass
 
         ds = DataSource(plan_unit_file, encoding='iso8859-1')
-        lyr = ds[0]
 
-        for idx, feat in enumerate(lyr):
-            origin_id = feat['jhstunnus'].as_string().strip()
-            geom = feat.geom
-            geom.srid = GK25_SRID
-            geom.transform(settings.PROJECTION_SRID)
-            if origin_id not in self.plan_unit_map:
-                plan = {'geometry': None}
-                self.plan_unit_map[origin_id] = plan
-            else:
-                plan = self.plan_unit_map[origin_id]
-            poly = GEOSGeometry(geom.wkb, srid=geom.srid)
-            if isinstance(poly, LineString):
-                try:
-                    ring = LinearRing(poly.tuple)
-                except Exception:
-                    self.logger.error("Skipping plan %s, it's linestring doesn't close." % origin_id)
-                    # if the LineString doesn't form a polygon, skip it.
-                    continue
-                poly = Polygon(ring)
-            if plan['geometry']:
-                if isinstance(plan['geometry'], Polygon):
-                    plan['geometry'] = MultiPolygon(plan['geometry'])
-                if isinstance(poly, MultiPolygon):
-                    plan['geometry'].extend(poly)
-                else:
-                    plan['geometry'].append(poly)
-            else:
-                plan['geometry'] = poly
-        print "%d plan units imported" % idx
+        self.plan_unit_map = self._load_mapinfo(ds, 'jhstunnus')
 
-        for key in self.plan_unit_map.keys():
-            geom = self.plan_unit_map[key]['geometry']
-            if not geom.valid:
-                self.logger.warning("geometry for %s not OK, fixing" % key)
-                geom = geom.simplify()
-                assert geom.valid
-                self.plan_unit_map[key]['geometry'] = geom
+        print "%d plan units imported" % len(self.plan_unit_map)
 
         picklef = open('plan_units.pickle', 'w')
         cPickle.dump(self.plan_unit_map, picklef, protocol=cPickle.HIGHEST_PROTOCOL)
@@ -333,32 +319,16 @@ class AhjoGeocoder(object):
         except IOError:
             pass
 
-        f = open(property_file, 'r')
-        reader = csv.reader(f)
-        header = reader.next()
+        def fix_property_id(s):
+            if s[0] != '0':
+                return '0' + s
+            return s
 
-        ident_row = header.index('estx_ident')
-        x_row = header.index('estx_ixm')
-        y_row = header.index('estx_iym')
-        name_row = header.index('estx_enam')
+        ds = DataSource(property_file, encoding='iso8859-1')
 
-        self.property_map = {}
-        for idx, row in enumerate(reader):
-            x, y = row[x_row], row[y_row]
-            # Discard rows without coordinates
-            if not x or not y:
-                continue
-            x = int(x)
-            y = int(y)
-            if not x or not y:
-                continue
+        self.property_map = self._load_mapinfo(ds, 'Kiinteistotunnus', id_fixer=fix_property_id)
 
-            s = row[ident_row]
-            origin_id = s
-            assert origin_id not in self.property_map
-            pnt = self.convert_from_gk25(y, x)
-            self.property_map[origin_id] = {'geometry': pnt}
-        print "%d properties imported" % idx
+        print "%d properties imported" % len(self.property_map)
 
         picklef = open('geo_properties.pickle', 'w')
         cPickle.dump(self.property_map, picklef, protocol=cPickle.HIGHEST_PROTOCOL)
