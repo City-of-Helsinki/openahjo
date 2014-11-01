@@ -14,7 +14,7 @@ v1_api.register(DistrictResource())
 # from django.contrib import admin
 # admin.autodiscover()
 
-base_urlpatterns = patterns('',
+urlpatterns = patterns('',
     # Examples:
     # url(r'^$', 'openahjo.views.home', name='home'),
     # url(r'^openahjo/', include('openahjo.foo.urls')),
@@ -27,11 +27,6 @@ base_urlpatterns = patterns('',
     url(r'^', include(v1_api.urls)),
     url(r'^', include('ui.urls')),
     url(r'^doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),
-)
-
-prefix = getattr(settings, 'URL_PREFIX', '')
-urlpatterns = patterns('',
-    url('^' + prefix, include(base_urlpatterns))
 )
 
 if settings.DEBUG:
