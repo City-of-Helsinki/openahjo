@@ -24,6 +24,7 @@ class Policymaker(models.Model):
     slug = models.CharField(max_length=50, db_index=True, unique=True, null=True, help_text='Unique slug')
     origin_id = models.CharField(max_length=20, db_index=True, help_text='ID string in upstream system')
     summary = models.TextField(null=True)
+    type = models.CharField(max_length=30)
 
     def save(self, *args, **kwargs):
         if not self.slug and self.abbreviation:

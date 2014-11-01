@@ -186,7 +186,7 @@ class Command(BaseCommand):
             org = Organization.objects.get(origin_id=info['policymaker_id'])
             print "Creating new policymaker for %s" % org
             args = {'name': org.name_fi, 'abbreviation': org.abbreviation,
-                    'origin_id': info['policymaker_id']}
+                    'type': org.type, 'origin_id': info['policymaker_id']}
             policymaker = Policymaker(**args)
             policymaker.save()
 
