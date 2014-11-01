@@ -1,5 +1,6 @@
 from django.db import models
 from popolo import models as popolo_models
+from django.utils.translation import ugettext as _
 
 
 class Person(popolo_models.Person):
@@ -7,13 +8,28 @@ class Person(popolo_models.Person):
 
 
 class Organization(popolo_models.Organization):
+    TYPES = (
+        ('council', _('Council')),
+        ('board', _('Board')),
+        ('board_division', _('Board division')),
+        ('committee', _('Committee')),
+        ('field', _('Field')),
+        ('department', _('Department')),
+        ('division', _('Division')),
+        ('introducer', _('Introducer')),
+        ('introducer_field', _('Introducer (Field)')),
+        ('office_holder', _('Office holder')),
+        ('city', _('City')),
+        ('unit', _('Unit')),
+    )
+
     id = models.CharField(max_length=50, primary_key=True)
     origin_id = models.CharField(max_length=50, db_index=True)
     abbreviation = models.CharField(max_length=20)
     # In Helsinki, an organization can have more than one parent.
     parents = models.ManyToManyField('Organization', related_name='all_children')
     deleted = models.BooleanField(default=False)
-
+    type = models.CharField(max_length=30, choices=TYPES)
 
 class OrganizationContactDetail(popolo_models.OrganizationContactDetail):
     postcode = models.CharField(max_length=10)
