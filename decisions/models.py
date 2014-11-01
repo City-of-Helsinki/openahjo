@@ -29,8 +29,11 @@ for name, popolo_class in popolo_models.__dict__.items():
             continue
     except TypeError:
         continue
+
     # If the class is already defined, do not replace it.
     for g_name, g_class in globals().items():
+        if g_class == popolo_class:
+            continue
         try:
             if issubclass(g_class, popolo_class):
                 break
