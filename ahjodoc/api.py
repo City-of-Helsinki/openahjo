@@ -24,11 +24,17 @@ CACHE_TIMEOUT = 600
 class PolicymakerResource(ModelResource):
     def apply_filters(self, request, filters):
         qs = super(PolicymakerResource, self).apply_filters(request, filters)
+
+        # Do not show office holders by default
+        if request.GET.get('show_office_holders', '').lower() not in ('1', 'true'):
+            qs = qs.exclude(type='office_holder')
+
         meetings = request.GET.get('meetings', '')
         if meetings.lower() in ('1', 'true'):
             # Include only categories with associated issues
             qs = qs.annotate(num_meetings=Count('meeting')).filter(num_meetings__gt=0)
         return qs
+
     class Meta:
         queryset = Policymaker.objects.all()
         resource_name = 'policymaker'
