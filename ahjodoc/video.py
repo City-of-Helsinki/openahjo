@@ -1,10 +1,10 @@
 import re
 import json
 import requests
+import subprocess
+import datetime
 
 from doc import ParseError
-from ffvideo import VideoStream
-#from models import Meeting, Issue, AgendaItem
 
 INDEX_URL = "http://www.helsinkikanava.fi/@@opendata-index-v2.0"
 
@@ -64,8 +64,26 @@ def get_videos_for_meeting(meeting):
             return fetch_meeting(m)
     return None
 
-def open_video(url):
-    return VideoStream(url)
-    
-def get_video_frame(video, pos):
-    return video.get_frame_at_sec(pos).image()
+
+class VideoFile(object):
+    def __init__(self, fpath):
+        self.video_path = fpath
+
+    def get_duration(self):
+        args = ['avprobe', '-show_format', '-of', 'json', self.video_path]
+        result = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result.wait()
+        if result.returncode != 0:
+            raise Exception("avprobe invocation failed (cmd: %s)" % ' '.join(args))
+        json_str = ''.join(result.stdout.readlines())
+        d = json.loads(json_str)
+        duration = int(float(d['format']['duration']))
+        return duration
+
+    def take_screenshot(self, pos, out_fname):
+        time_str = str(datetime.timedelta(seconds=pos))
+        args = ['ffmpegthumbnailer', '-i', self.video_path, '-s0', '-t', time_str, '-o', out_fname]
+        result = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        result.wait()
+        if result.returncode != 0:
+            raise Exception("ffmpegthumbnailer invocation failed (cmd: %s)" % ' '.join(args))

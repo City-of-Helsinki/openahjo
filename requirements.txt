@@ -12,7 +12,6 @@ django-cors-headers
 -e git+https://github.com/juyrjola/NoAho.git#egg=NoAho
 django-mptt
 django-tastypie-swagger
-ffvideo
 django-haystack
 pysolr
 -e git+https://github.com/juyrjola/munigeo@stable#egg=django-munigeo
@@ -22,4 +21,5 @@ mimeparse
 ansible
 django-extensions
 django-modeltranslation
+django-appconf
 -e git+https://github.com/juyrjola/django-popolo#egg=django-popolo

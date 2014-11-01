@@ -20,7 +20,7 @@ from ahjodoc.scanner import AhjoScanner
 from ahjodoc.doc import AhjoDocument, ParseError
 from ahjodoc.models import *
 from ahjodoc.geo import AhjoGeocoder
-from ahjodoc.video import get_videos_for_meeting, open_video, get_video_frame
+from ahjodoc.video import get_videos_for_meeting, VideoFile
 from ahjodoc.utils import download_file
 
 class Command(BaseCommand):
@@ -276,7 +276,7 @@ class Command(BaseCommand):
         if not self.options['no_videos']:
             self.import_videos(meeting)
 
-    def get_video_screenshot(self, video, video_stream):
+    def get_video_screenshot(self, video, video_file):
         meeting_id = '%d-%d' % (video.meeting.number, video.meeting.year)
         path = os.path.join(self.video_path, meeting_id)
         if not os.path.exists(path):
@@ -290,8 +290,7 @@ class Command(BaseCommand):
             pos = video.start_pos + video.duration / 2.0
 
         self.logger.debug("Fetching screenshot as %s" % fname)
-        ss_img = get_video_frame(video_stream, pos)
-        ss_img.save(os.path.join(path, fname))
+        video_file.take_screenshot(pos, os.path.join(path, fname))
         video.screenshot = os.path.join(settings.AHJO_PATHS['video'], meeting_id, fname)
 
     def download_video(self, url):
@@ -325,9 +324,9 @@ class Command(BaseCommand):
         video.url = video_info['video']['http_url']
 
         video_fname = self.download_video(video.url)
-        video_stream = open_video(video_fname)
-        video.duration = video_stream.duration
-        self.get_video_screenshot(video, video_stream)
+        video_file = VideoFile(video_fname)
+        video.duration = video_file.get_duration()
+        self.get_video_screenshot(video, video_file)
         video.save()
         ai_list = AgendaItem.objects.filter(meeting=meeting).order_by('index')
         if self.verbosity >= 2:
@@ -392,7 +391,7 @@ class Command(BaseCommand):
                         video.duration = vid_list[idx+1]['start_pos'] - video.start_pos
                     else:
                         video.duration = 0
-                self.get_video_screenshot(video, video_stream)
+                self.get_video_screenshot(video, video_file)
                 video.save()
 
     def import_categories(self):
