@@ -5,6 +5,7 @@ from ahjodoc.models import *
 from ahjodoc.api import *
 from munigeo.api import DistrictResource
 from django.templatetags.static import static
+from django.core.urlresolvers import get_script_prefix
 
 # Cache the JSON encodings for some rarely changing data here.
 policymaker_json = None
@@ -12,10 +13,10 @@ category_json = None
 district_json = None
 
 def get_js_paths():
-    prefix = getattr(settings, 'URL_PREFIX', '')
+    prefix = get_script_prefix()
     debug = "true" if settings.DEBUG else "false"
     return {
-        'API_PREFIX': '/' + prefix,
+        'API_PREFIX': prefix,
         'GEOCODER_API_URL': settings.GEOCODER_API_URL,
         'DEBUG': debug
     }
