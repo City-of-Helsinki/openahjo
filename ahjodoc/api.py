@@ -10,12 +10,13 @@ from django.db.models import Count, Sum
 from django.http import Http404
 from tastypie import fields
 from tastypie.resources import ModelResource
-from tastypie.exceptions import InvalidFilterError, BadRequest
+from tastypie.exceptions import InvalidFilterError, BadRequest, NotFound
 from tastypie.constants import ALL, ALL_WITH_RELATIONS
 from tastypie.cache import SimpleCache
 from tastypie.contrib.gis.resources import ModelResource as GeoModelResource
 from tastypie.utils import trailing_slash
 from ahjodoc.models import *
+from decisions.models import Organization
 from haystack.query import SearchQuerySet
 from haystack.utils.geo import Point as HaystackPoint
 
@@ -427,8 +428,48 @@ class VideoResource(ModelResource):
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
+class OrganizationResource(ModelResource):
+    parents = fields.ToManyField('ahjodoc.api.OrganizationResource', 'parents')
+
+    def _get_ancestors(self, org, id_list):
+        parents = org.parents.only('id')
+        for p in parents:
+            id_list.append(p.id)
+            self._get_ancestors(p, id_list)
+
+    def apply_filters(self, request, filters):
+        qs = super(OrganizationResource, self).apply_filters(request, filters)
+
+        ancestors_for = request.GET.get('ancestors_for', '')
+        if ancestors_for:
+            try:
+                org = Organization.objects.get(pk=ancestors_for)
+            except Organization.DoesNotExist:
+                raise NotFound("organization '%s' not found" % ancestors_for)
+            id_list = [org.pk]
+            self._get_ancestors(org, id_list)
+            qs = qs.filter(pk__in=id_list)
+
+        show_dissolved = request.GET.get('show_dissolved', '').lower()
+        if show_dissolved not in ('1', 'true'):
+            qs = qs.filter(dissolution_date=None)
+
+        return qs
+
+    class Meta:
+        queryset = Organization.objects.all()
+        exclude = ['name_fi', 'name_sv']
+        filtering = {
+            'origin_id': ALL,
+            'abbreviation': ALL,
+            'name': ALL,
+        }
+        list_allowed_methods = ['get']
+        detail_allowed_methods = ['get']
+        cache = SimpleCache(timeout=CACHE_TIMEOUT)
+
 all_resources = [
     MeetingDocumentResource, PolicymakerResource, CategoryResource,
     MeetingResource, IssueResource, AgendaItemResource, AttachmentResource,
-    VideoResource
+    VideoResource, OrganizationResource
 ]
