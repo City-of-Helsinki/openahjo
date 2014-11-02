@@ -1,9 +1,36 @@
-{% extends "policymaker_base.html" %}
+{% extends "subpage_base.html" %}
 {% load i18n compress static %}
-{% block title %}{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}{% endblock %}
-{% block content_header %}{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}{% endblock %}
 
-{% block policymaker_content %}
+{% block extra_head %}
+<script type="text/javascript">
+    policymakers = {{pm_list_json|safe}}
+</script>
+{% endblock %}
+
+{% block title %}{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}{% endblock %}
+
+{% block content %}
+  <div class="content-header-content">
+    <h1 class="policymaker-heading">{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}</h1>
+
+    <ul class="nav-disabled nav-pills-disabled policymaker-nav-disabled">
+    </ul>
+
+    <div class="policy-breadcrumb-navi">
+      <ol class="policy-breadcrumb">
+        <li class="breadcrumb-policymaker"><a href="#">Kaupunginvaltuusto</a></li>
+        <li class="breadcrumb-policymaker"><a href="#">Kaupunginhallitus</a></li>
+        <li class="breadcrumb-policymaker is-empty"><a href="#">Sosiaali- ja terveystoimi</a></li>
+        <li class="breadcrumb-policymaker"><a href="#">Sosiaali- ja terveyslautakunta</a></li>
+        <li class="breadcrumb-office is-empty"><a href="#">Sosiaali- ja terveysvirasto</a></li>
+        <li class="breadcrumb-office"><a href="#">Terveys- ja päihdepalvelut</a></li>
+        <li class="breadcrumb-officer"><a href="#">Osastopäällikkö</a></li>
+        <li class="breadcrumb-office is-empty"><a href="#">Psykiatria- ja päihdepalvelut</a></li>
+        <li class="breadcrumb-officer"><a href="#">Psykiatrian ja päihdehuollon erityispalvelujen päällikkö</a></li>
+      </ol>
+    </div>
+
+  </div>
 
 
 <div class="policymaker-content">
@@ -89,5 +116,9 @@
     </div>
 </div>
 </script>
+
+{% compress js %}
+<script type="text/coffeescript" src="{% static 'js/policymaker.coffee' %}"></script>
+{% endcompress %}
 
 {% endblock %}
