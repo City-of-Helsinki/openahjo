@@ -42,6 +42,7 @@ class PolicymakerResource(ModelResource):
         filtering = {
             'abbreviation': ('exact', 'in', 'isnull'),
             'name': ALL,
+            'origin_id': ('exact', 'in'),
             'slug': ('exact', 'in')
         }
         ordering = ('name',)
@@ -349,11 +350,12 @@ class AgendaItemResource(ModelResource):
         queryset = AgendaItem.objects.all().select_related('issue').select_related('category').select_related('attachments')
         resource_name = 'agenda_item'
         filtering = {
-            'meeting': ['exact', 'in'],
+            'meeting': ALL_WITH_RELATIONS,
             'issue': ['exact', 'in'],
             'issue__category': ['exact', 'in'],
             'last_modified_time': ['gt', 'gte', 'lt', 'lte'],
-            'from_minutes': ['exact']
+            'from_minutes': ['exact'],
+            'resolution': ['exact', 'isnull', 'in'],
         }
         ordering = ('last_modified_time', 'origin_last_modified_time', 'meeting', 'index')
         list_allowed_methods = ['get']
@@ -428,8 +430,33 @@ class VideoResource(ModelResource):
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
+
+# Introduce a new version of ToManyField that keeps track if we're
+# dehydrating a nested resource (bundle.related) or not.
+class ToManyField(fields.ToManyField):
+    def dehydrate_related(self, bundle, related_resource, for_list=True):
+        """
+        Based on the ``full_resource``, returns either the endpoint or the data
+        from ``full_dehydrate`` for the related resource.
+        """
+        should_dehydrate_full_resource = self.should_full_dehydrate(bundle, for_list=for_list)
+
+        if not should_dehydrate_full_resource:
+            # Be a good netizen.
+            return related_resource.get_resource_uri(bundle)
+        else:
+            # ZOMG extra data and big payloads.
+            bundle = related_resource.build_bundle(
+                obj=related_resource.instance,
+                request=bundle.request,
+                objects_saved=bundle.objects_saved
+            )
+            bundle.related = True
+            return related_resource.full_dehydrate(bundle)
+
 class OrganizationResource(ModelResource):
-    parents = fields.ToManyField('ahjodoc.api.OrganizationResource', 'parents')
+    parents = ToManyField('self', 'parents', full=True,
+                          full_detail=True, full_list=False)
 
     def _get_ancestors(self, org, id_list):
         parents = org.parents.only('id')
@@ -437,18 +464,22 @@ class OrganizationResource(ModelResource):
             id_list.append(p.id)
             self._get_ancestors(p, id_list)
 
+    def dehydrate(self, bundle):
+        children = bundle.request.GET.get('children', '')
+        if children.lower() in ['1', 'true'] and not hasattr(bundle, 'related'):
+            bundles = []
+            children_list = bundle.obj.all_children.all()
+            req = bundle.request
+            for obj in children_list:
+                c_bundle = self.build_bundle(obj=obj, request=req)
+                c_bundle.related = True
+                bundles.append(self.full_dehydrate(c_bundle, for_list=True))
+            bundle.data['children'] = bundles
+
+        return bundle
+
     def apply_filters(self, request, filters):
         qs = super(OrganizationResource, self).apply_filters(request, filters)
-
-        ancestors_for = request.GET.get('ancestors_for', '')
-        if ancestors_for:
-            try:
-                org = Organization.objects.get(pk=ancestors_for)
-            except Organization.DoesNotExist:
-                raise NotFound("organization '%s' not found" % ancestors_for)
-            id_list = [org.pk]
-            self._get_ancestors(org, id_list)
-            qs = qs.filter(pk__in=id_list)
 
         show_dissolved = request.GET.get('show_dissolved', '').lower()
         if show_dissolved not in ('1', 'true'):
