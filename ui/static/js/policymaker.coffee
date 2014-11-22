@@ -148,7 +148,8 @@ class PolicymakerDetailsView extends Backbone.View
     className: 'policymaker-details'
     template: _.template $("#policymaker-details-template").html()
 
-    initialize: ->
+    initialize: (opts) ->
+        @organization = opts.organization
         @listenTo @model.meeting_list, 'reset', @_select_meeting
         @listenTo @model.meeting_list, 'reset', @render_meeting_list
 
@@ -156,9 +157,48 @@ class PolicymakerDetailsView extends Backbone.View
         m = moment date
         return m.format DATE_FORMAT
 
+    generate_parent_tree: (org) ->
+        FIXED_PARENTS =
+            'hel:02100': 'hel:11010' # Kaupunginkanslia -> Kj
+            'hel:02978': 'hel:11010' # Kaupunginhallituksen konsernijaosto -> Kj
+            'hel:811000': 'hel:81000' # Sote -> Sotelk
+            'hel:40000': 'hel:40200' # Opev -> OLK
+            'hel:60111': 'hel:60100' # Kv -> Klk
+            'hel:900VH1': 'hel:900' # Kaupunginhallituksen puheenjohtaja (VH) -> Khpj
+
+        parents = [org]
+        while org.parents.length > 0
+            parent = org.parents[0]
+            if org.parents.length > 1
+                if not org.id of FIXED_PARENTS
+                    console.error "Too many parents for #{org.name_fi}"
+                else
+                    p_id = FIXED_PARENTS[org.id]
+                    for p in org.parents
+                        if p.id == p_id
+                            parent = p
+                            break
+            parents.push parent
+            org = parent
+
+        for org in parents
+            org.css_class = switch org.type
+                when 'office_holder' then 'officer'
+                when 'department', 'unit', 'city' then 'office'
+                when 'council', 'committee', 'board_division', 'board' then 'policymaker'
+                else 'office'
+            if org.policymaker_slug
+                org.view_url = VIEW_URLS['policymaker-details'].replace 'ID', org.policymaker_slug
+            else
+                org.view_url = null
+
+        return parents.reverse()
+
     render: ->
-        model = @model.toJSON()
-        html = @template model
+        data = @model.toJSON()
+        data.org = @organization.toJSON()
+        data.parents = @generate_parent_tree @organization.attributes
+        html = @template data
         @$el.html html
         return @
 
@@ -188,6 +228,7 @@ class PolicymakerDetailsView extends Backbone.View
         model = meeting.toJSON()
         model.date_str = @format_date meeting.get('date')
         model.policymaker = @model.toJSON()
+        model.org = @organization.toJSON()
 
         agenda_items = []
         meeting.agenda_item_list.each (ai) ->
@@ -300,19 +341,29 @@ class PolicymakerRouter extends Backbone.Router
     pm_details: (slug, year, number) ->
         pm = policymaker_list.filter (m) -> m.get('slug') == slug
         pm = pm[0]
+        org = new Organization
+            id: "hel:#{pm.get 'origin_id'}"
+        org_promise = org.fetch
+            data:
+                children: 'true'
+
         nav_view.set_category pm.get_category()
         $("#content-container > h1").html pm.get('name')
         document.title = pm.get 'name'
-        details_view = new PolicymakerDetailsView model: pm
-        # Choose the latest meeting by default
-        details_view.render()
-        if year and number
-            meeting_id = "#{year}/#{number}"
-        else
-            meeting_id = null
-        details_view.select_meeting meeting_id
-        $(".policymaker-content").empty()
-        $(".policymaker-content").append details_view.$el
+        details_view = new PolicymakerDetailsView model: pm, organization: org
+
+        # Only render the view after the organization object has been
+        # fetched from backend.
+        org_promise.done ->
+            # Choose the latest meeting by default
+            details_view.render()
+            if year and number
+                meeting_id = "#{year}/#{number}"
+            else
+                meeting_id = null
+            details_view.select_meeting meeting_id
+            $(".policymaker-content").empty()
+            $(".policymaker-content").append details_view.$el
 
 router = new PolicymakerRouter
 

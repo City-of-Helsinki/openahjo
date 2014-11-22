@@ -189,6 +189,8 @@ class Command(BaseCommand):
                     'type': org.type, 'origin_id': info['policymaker_id']}
             policymaker = Policymaker(**args)
             policymaker.save()
+            org.policymaker = policymaker
+            org.save(update_fields=['policymaker'])
 
         if not policymaker.abbreviation and 'policymaker_abbr' in info:
             self.logger.info("Saving abbreviation '%s' for %s" % (info['policymaker_abbr'], policymaker))

@@ -8,7 +8,6 @@ from django.templatetags.static import static
 from django.core.urlresolvers import get_script_prefix
 
 # Cache the JSON encodings for some rarely changing data here.
-policymaker_json = None
 category_json = None
 district_json = None
 
@@ -37,10 +36,6 @@ def render_view(request, template, args={}):
     return render_to_response(template, args)
 
 def get_policymakers(request):
-    global policymaker_json
-
-    if policymaker_json:
-        return policymaker_json
     res = PolicymakerResource()
     pm_list = Policymaker.objects.filter(abbreviation__isnull=False)
     bundles = []
@@ -48,7 +43,6 @@ def get_policymakers(request):
         bundle = res.build_bundle(obj=obj, request=request)
         bundles.append(res.full_dehydrate(bundle, for_list=True))
     json = res.serialize(None, bundles, "application/json")
-    policymaker_json = json
     return json
 
 def get_categories(request):

@@ -16,20 +16,6 @@
     <ul class="nav-disabled nav-pills-disabled policymaker-nav-disabled">
     </ul>
 
-    <div class="policy-breadcrumb-navi">
-      <ol class="policy-breadcrumb">
-        <li class="breadcrumb-policymaker"><a href="#">Kaupunginvaltuusto</a></li>
-        <li class="breadcrumb-policymaker"><a href="#">Kaupunginhallitus</a></li>
-        <li class="breadcrumb-policymaker is-empty"><a href="#">Sosiaali- ja terveystoimi</a></li>
-        <li class="breadcrumb-policymaker"><a href="#">Sosiaali- ja terveyslautakunta</a></li>
-        <li class="breadcrumb-office is-empty"><a href="#">Sosiaali- ja terveysvirasto</a></li>
-        <li class="breadcrumb-office"><a href="#">Terveys- ja päihdepalvelut</a></li>
-        <li class="breadcrumb-officer"><a href="#">Osastopäällikkö</a></li>
-        <li class="breadcrumb-office is-empty"><a href="#">Psykiatria- ja päihdepalvelut</a></li>
-        <li class="breadcrumb-officer"><a href="#">Psykiatrian ja päihdehuollon erityispalvelujen päällikkö</a></li>
-      </ol>
-    </div>
-
   </div>
 
 
@@ -45,9 +31,22 @@
 </script>
 
 <script type="text/template" id="policymaker-details-template">
+<div class="policy-breadcrumb-navi">
+    <ol class="policy-breadcrumb">
+        <% 
+          for (i in parents) {
+            var parent = parents[i];
+            var view_url = parent.view_url ? parent.view_url : '#';
+        %>
+            <li class="breadcrumb-<%= parent.css_class %><% if (!parent.view_url) { %> is-empty<% } %>">
+              <a href="<%= view_url %>" <% if (!parent.view_url) { %>class="disabled"<% } %>><%= parent.name %></a>
+            </li>
+        <% } %>
+    </ol>
+</div>
+
 <nav>
-    <a href="#" class="organisation-link">Organisaatio</a>
-    <a href="#" class="description-link">Tehtävät</a>
+    <a href="#" class="description-link">Organisaatio ja tehtävät</a>
     <a href="#" class="meeting-link" data-toggle="collapse" data-target=".meeting-list">Päätökset <i class="toggle-icon"></i></a>
     <ul class="meeting-list collapse in">
     </ul>
@@ -63,20 +62,8 @@
 <script type="text/template" id="policymaker-meeting-details-template">
 <div class="tab-content">
     <div class="organisation-tab tab-pane">
-        /** PLEASE MOVE ORGANISATION CONTENT HERE AND MAKE THIS TAB DEFAULT TAB**/
     </div>
     <div class="meeting-details-tab tab-pane">
-            <h2>Organisaatio</h2>
-        <ul class="policymaker-organisation">
-          <li class="policymaker-underling"><a href="#">Asumisen tuen päällikkö</a></li>
-          <li class="policymaker-underling"><a href="#">Psykiatria- ja päihdepalvelujen johtaja</a></li>
-          <li class="policymaker-underling"><a href="#">Etelän psykiatria- ja päihdekeskuksen johtaja</a></li>
-          <li class="policymaker-underling"><a href="#">Idän psykiatria- ja päihdekeskuksen johtaja</a></li>
-          <li class="policymaker-underling"><a href="#">Lännen psykiatria- ja päihdekeskuksen johtaja</a></li>
-          <li class="policymaker-underling"><a href="#">Pohjoisen psykiatria- ja päihdekeskuksen johtaja</a></li>
-          <li class="policymaker-underling"><a href="#">Psykiatrian ja päihdehuollon erityispalvelujen päällikkö</a></li>
-          <li class="policymaker-underling"><a href="#">Johtajapsykiatri</a></li>
-        </ul>
         <nav>
             <h3>Kokous</h3>
             <div class="back-fwd">
@@ -111,8 +98,19 @@
         </article>
     </div>
     <div class="description-tab tab-pane">
+        <% if (org.children.length) { %>
+        <h2>Alaorganisaatiot</h2>
+        <ul class="policymaker-organisation">
+          <% for (i in org.children) {
+               var child = org.children[i];
+               var view_url = child.view_url ? child.view_url : '#';
+          %>
+          <li class="policymaker-underling"><a href="<%= view_url %>"><%= child.name_fi %></a></li>
+          <% } %>
+        </ul>
+        <% } %>
         <h2>Tehtävät</h2>
-        <%= policymaker.summary %>
+        <% if (policymaker.summary) { %><%= policymaker.summary %><% } else { %><i>Ei tarkempaa kuvausta.</i><% } %>
     </div>
 </div>
 </script>

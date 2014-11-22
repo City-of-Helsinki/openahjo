@@ -457,6 +457,7 @@ class ToManyField(fields.ToManyField):
 class OrganizationResource(ModelResource):
     parents = ToManyField('self', 'parents', full=True,
                           full_detail=True, full_list=False)
+    policymaker = fields.ToOneField(PolicymakerResource, 'policymaker', full=False, null=True)
 
     def _get_ancestors(self, org, id_list):
         parents = org.parents.only('id')
@@ -465,6 +466,8 @@ class OrganizationResource(ModelResource):
             self._get_ancestors(p, id_list)
 
     def dehydrate(self, bundle):
+        if bundle.obj.policymaker:
+            bundle.data['policymaker_slug'] = bundle.obj.policymaker.slug
         children = bundle.request.GET.get('children', '')
         if children.lower() in ['1', 'true'] and not hasattr(bundle, 'related'):
             bundles = []
@@ -488,7 +491,7 @@ class OrganizationResource(ModelResource):
         return qs
 
     class Meta:
-        queryset = Organization.objects.all()
+        queryset = Organization.objects.all().select_related('policymaker')
         exclude = ['name_fi', 'name_sv']
         filtering = {
             'origin_id': ALL,

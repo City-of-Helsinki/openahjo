@@ -201,3 +201,20 @@ class @District extends Backbone.Tastypie.Model
 class @DistrictList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/district'
     model: District
+
+
+class @Organization extends Backbone.Tastypie.Model
+    url: ->
+        API_PREFIX + 'v1/organization/' + encodeURIComponent(@.get 'id') + '/'
+    toJSON: (opts) ->
+        ret = super opts
+        for c in ret['children']
+            if c.policymaker_slug
+                c.view_url = VIEW_URLS['policymaker-details'].replace 'ID', c.policymaker_slug
+            else
+                c.view_url = null
+        return ret
+
+class @OrganizationList extends Backbone.Tastypie.Collection
+    urlRoot: API_PREFIX + 'v1/organization/'
+    model: Organization
