@@ -290,6 +290,7 @@
 06 00 00,Hoidon järjestäminen
 06 00 01,Perustietojen ylläpito
 06 00 02,Potilasasiakirjojen käytön ja luovutuksen hallinta
+06 00 03,Terveydenhuollon ohjaus ja valvonta
 06 01,Ennaltaehkäisevä terveydenhoito
 06 01 00,Terveysneuvonta
 06 01 01,Seulonta
