@@ -4,14 +4,17 @@
 {% block extra_head %}
 <script type="text/javascript">
     policymakers = {{pm_list_json|safe}}
+    {% if organization %}
+    organization_json = {{organization_json|safe}}
+    {% endif %}
 </script>
 {% endblock %}
 
-{% block title %}{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}{% endblock %}
+{% block title %}{% if organization %}{{ organization.name_fi }}{% else %}Päättäjät{% endif %}{% endblock %}
 
 {% block content %}
   <div class="content-header-content">
-    <h1 class="policymaker-heading">{% if policymaker %}{{ policymaker.name }}{% else %}Päättäjät{% endif %}</h1>
+    <h1 class="policymaker-heading">{% if organization %}{{ organization.name_fi }}{% else %}Päättäjät{% endif %}</h1>
 
     <ul class="nav-disabled nav-pills-disabled policymaker-nav-disabled">
     </ul>
@@ -46,12 +49,33 @@
 </div>
 
 <nav>
-    <a href="#" class="description-link">Organisaatio ja tehtävät</a>
+    <a href="<%= org.view_url %>" class="description-link">Organisaatio ja tehtävät</a>
+    <% if (policymaker) { %>
     <a href="#" class="meeting-link" data-toggle="collapse" data-target=".meeting-list">Päätökset <i class="toggle-icon"></i></a>
     <ul class="meeting-list collapse in">
     </ul>
+    <% } %>
 </nav>
 <div class="meeting-details">
+    <div class="tab-content">
+    <div class="description-tab tab-pane<% if (default_tab == 'description') { %> active<% } %>">
+        <% if (org.children.length) { %>
+        <h2>Alaorganisaatiot</h2>
+        <ul class="policymaker-organisation">
+          <% for (i in org.children) {
+               var child = org.children[i];
+               var view_url = child.view_url ? child.view_url : '#';
+          %>
+          <li class="policymaker-underling<% if (child.policymaker_slug) { %> has-decisions<% } %>"><a href="<%= view_url %>"><%= child.name_fi %></a></li>
+          <% } %>
+        </ul>
+        <% } %>
+        <% if (policymaker) { %>
+        <h2>Tehtävät</h2>
+        <% if (policymaker.summary) { %><%= policymaker.summary %><% } else { %><i>Ei tarkempaa kuvausta.</i><% } %>
+        <% } %>
+    </div>
+    </div>
 </div>
 </script>
 
@@ -60,9 +84,6 @@
 </script>
 
 <script type="text/template" id="policymaker-meeting-details-template">
-<div class="tab-content">
-    <div class="organisation-tab tab-pane">
-    </div>
     <div class="meeting-details-tab tab-pane">
         <nav>
             <h3>Kokous</h3>
@@ -97,22 +118,6 @@
             </ol>
         </article>
     </div>
-    <div class="description-tab tab-pane">
-        <% if (org.children.length) { %>
-        <h2>Alaorganisaatiot</h2>
-        <ul class="policymaker-organisation">
-          <% for (i in org.children) {
-               var child = org.children[i];
-               var view_url = child.view_url ? child.view_url : '#';
-          %>
-          <li class="policymaker-underling"><a href="<%= view_url %>"><%= child.name_fi %></a></li>
-          <% } %>
-        </ul>
-        <% } %>
-        <h2>Tehtävät</h2>
-        <% if (policymaker.summary) { %><%= policymaker.summary %><% } else { %><i>Ei tarkempaa kuvausta.</i><% } %>
-    </div>
-</div>
 </script>
 
 {% compress js %}

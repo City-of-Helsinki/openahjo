@@ -883,17 +883,20 @@ li.breadcrumb-officer a:after { border-left-color: @org_color_3; }
     display: block;
     .make-md-column(4);
     margin-bottom: 15px;
-  a {
+    a {
         display: block;
         padding: 5px;
-        background: @org_color_3;
+        background: #666;
         height: 100px;
         color: #FFF;
-  }
-  a:hover {
-      background: @org_color_2;
-      text-decoration: none;
-  }
+    }
+    a:hover {
+        background: @org_color_2;
+        text-decoration: none;
+    }
+    &.has-decisions a {
+        background: @org_color_3;
+    }
 }
 
 /* /Policymaker organisation */

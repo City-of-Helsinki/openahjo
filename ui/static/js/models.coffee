@@ -209,10 +209,7 @@ class @Organization extends Backbone.Tastypie.Model
     toJSON: (opts) ->
         ret = super opts
         for c in ret['children']
-            if c.policymaker_slug
-                c.view_url = VIEW_URLS['policymaker-details'].replace 'ID', c.policymaker_slug
-            else
-                c.view_url = null
+            c.view_url = VIEW_URLS['policymaker-details'].replace 'ID', c.slug
         return ret
 
 class @OrganizationList extends Backbone.Tastypie.Collection

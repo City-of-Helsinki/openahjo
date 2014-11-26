@@ -68,6 +68,10 @@ class HelsinkiImporter(Importer):
         org['id'] = origin_id_to_id(org['origin_id'])
         org['type'] = TYPE_MAP[info['type']]
 
+        if org['type'] in ['introducer', 'introducer_field']:
+            self.skip_orgs.add(org['origin_id'])
+            return
+
         org['name'] = {'fi': info['name_fin'], 'sv': info['name_swe']}
         if info['shortname']:
             org['abbreviation'] = info['shortname']
@@ -111,7 +115,7 @@ class HelsinkiImporter(Importer):
         parents = info['parents']
         if parents == None:
             parents = []
-        org['parents'] = [origin_id_to_id(x) for x in parents]
+        org['parents'] = [origin_id_to_id(x) for x in parents if x not in self.skip_orgs]
 
         self.save_organization(org)
 
@@ -129,6 +133,7 @@ class HelsinkiImporter(Importer):
         org_list = json.load(org_file)
 
         queryset = Organization.objects.all()
+        self.skip_orgs = set()
         self.org_syncher = ModelSyncher(queryset, lambda obj: obj.id, delete_func=mark_deleted)
 
         self.org_dict = {org['id']: org for org in org_list}

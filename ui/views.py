@@ -150,9 +150,19 @@ def policymaker_list(request):
     return policymaker_view(request, 'policymaker.html')
 
 def policymaker_details(request, slug, year=None, number=None):
-    pm = get_object_or_404(Policymaker, slug=slug)
+    org = get_object_or_404(Organization, slug=slug)
     args = {}
-    args['policymaker'] = pm
+
+    res = OrganizationResource()
+    old_get = request.GET # argh
+    request.GET = dict(children='true') # argh2 
+    bundle = res.build_bundle(obj=org, request=request)
+    org_dict = res.full_dehydrate(bundle, for_list=False)
+    args['organization_json'] = res.serialize(None, org_dict, 'application/json')
+    request.GET = old_get
+
+    args['organization'] = org
+    args['policymaker'] = org.policymaker
     if year:
         args['meeting_year'] = year
         args['meeting_number'] = number
