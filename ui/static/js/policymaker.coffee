@@ -361,12 +361,17 @@ class PolicymakerRouter extends Backbone.Router
             org_promise = $.Deferred()
             org_promise.resolve()
         else
-            console.log pm
             if pm
-                console.log pm.get 'origin_id'
                 org_id = pm.get 'origin_id'
             else
-                org_id = slug
+                slug_map =
+                    sotejo1: '82000'
+                    sotejo2: '83000'
+                    sotejo3: '84000'
+                if slug in slug_map
+                    org_id = slug_map[slug]
+                else
+                    org_id = slug
             # If not, we fetch the organization information.
             org = new Organization id: "hel:#{org_id}"
             org_promise = org.fetch
