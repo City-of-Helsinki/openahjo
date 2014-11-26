@@ -189,6 +189,7 @@ class Command(BaseCommand):
             args = {'name': org.name_fi, 'abbreviation': org.abbreviation,
                     'type': org.type, 'origin_id': info['policymaker_id']}
             policymaker = Policymaker(**args)
+            policymaker.slug = org.slug
             policymaker.save()
             org.policymaker = policymaker
             org.save(update_fields=['policymaker'])

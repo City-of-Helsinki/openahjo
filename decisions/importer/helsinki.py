@@ -72,7 +72,15 @@ class HelsinkiImporter(Importer):
         if info['shortname']:
             org['abbreviation'] = info['shortname']
 
-        if org.get('abbreviation', None):
+        # FIXME: Use maybe sometime
+        DUPLICATE_ABBREVS = [
+            'AoOp', 'Vakaj', 'Talk', 'KIT', 'HTA', 'Ryj', 'Pj', 'Sotep', 'Hp', 
+            'Kesvlk siht', 'Kulttj', 'HVI', 'Sostap', 'KOT',
+            'Lsp', 'Kj', 'KYT', 'AST', 'Sote', 'Vp', 'HHE', 'Tj', 'HAKE', 'Ko'
+        ]
+
+        abbr = org.get('abbreviation', None)
+        if org['type'] in ('council', 'committee', 'board_division', 'board'):
             org['slug'] = slugify(org['abbreviation'])
         else:
             org['slug'] = slugify(org['origin_id'])

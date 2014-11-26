@@ -30,7 +30,10 @@ class Organization(popolo_models.Organization):
     parents = models.ManyToManyField('Organization', related_name='all_children')
     deleted = models.BooleanField(default=False)
     type = models.CharField(max_length=30, choices=TYPES)
-    policymaker = models.ForeignKey('ahjodoc.Policymaker', null=True)
+    policymaker = models.OneToOneField('ahjodoc.Policymaker', null=True, related_name='organization')
+
+    def __unicode__(self):
+        return "%s (%s)" % (self.name_fi, self.id)
 
 class OrganizationContactDetail(popolo_models.OrganizationContactDetail):
     postcode = models.CharField(max_length=10)
