@@ -6,6 +6,7 @@ from dateutil.parser import parse as dateutil_parse
 from pprint import pprint
 
 from django.conf import settings
+from django.utils.text import slugify
 from .sync import ModelSyncher
 from .base import Importer, register_importer
 
@@ -70,6 +71,11 @@ class HelsinkiImporter(Importer):
         org['name'] = {'fi': info['name_fin'], 'sv': info['name_swe']}
         if info['shortname']:
             org['abbreviation'] = info['shortname']
+
+        if org.get('abbreviation', None):
+            org['slug'] = slugify(org['abbreviation'])
+        else:
+            org['slug'] = slugify(org['origin_id'])
 
         org['founding_date'] = None
         if info['start_time']:

@@ -9,6 +9,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.conf import settings
 from django.contrib.gis.geos import Point, Polygon
 from django.contrib.gis.gdal import SpatialReference, CoordTransform
+from django.utils.text import slugify
 
 from modeltranslation.translator import translator
 
@@ -96,12 +97,21 @@ class Importer(object):
         setattr(obj, field_name, list(new_set))
 
     def save_organization(self, info):
+        info = info.copy()
+
         obj = self.org_syncher.get(info['id'])
         if not obj:
             obj = Organization(id=info['id'])
             obj._created = True
         else:
             obj._created = False
+
+        # Make sure slug is unique
+        slug = info.get('slug', None)
+        if slug:
+            if Organization.objects.exclude(id=obj.id).filter(slug=slug).exists():
+                slug = slugify(info['origin_id'])
+            info['slug'] = slug
 
         obj._changed_fields = []
 

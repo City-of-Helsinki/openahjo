@@ -12,6 +12,7 @@ from django.core.management.base import BaseCommand
 from django import db
 from django.conf import settings
 from django.db import transaction
+from django.utils.text import slugify
 
 from munigeo.models import District
 from decisions.models import Organization
