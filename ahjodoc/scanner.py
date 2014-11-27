@@ -32,6 +32,8 @@ SKIP_URL_LIST = [
     'http://openhelsinki.hel.fi/files/Keskusvaalilautakunta_11500/Kanslia%202014-09-02%20Kvlk%207%20El%20Su.zip', # wrong date
     'http://openhelsinki.hel.fi/files/Liikuntalautakunta_47100/Liv%202014-10-23%20LILK%2012%20El%20Su.zip', # wrong meeting id
     'http://openhelsinki.hel.fi/files/Pelastuslautakunta_11100/Pel%202014-06-10%20PELK%207%20El%20Su.zip', # corrupt
+    'http://openhelsinki.hel.fi/files/Liikuntalautakunta_47100/Liv%202014-10-23%20LILK%2011%20El%20Su.zip', # wrong meeting id
+    'http://openhelsinki.hel.fi/files/Liikuntalautakunta_47100/Liv%202014-10-07%20LILK%2015%20El%20Su.zip', # wrong meeting id
 ]
 
 CHUNK_SIZE = 32*1024
