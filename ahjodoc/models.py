@@ -58,6 +58,9 @@ class Policymaker(models.Model):
 
         check_org(pm_org)
 
+        for t, val in type_orgs:
+            setattr(self, t, val)
+
     def __unicode__(self):
         return self.name
 
