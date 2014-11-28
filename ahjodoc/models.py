@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.gis.db import models
 from django.utils.text import slugify
+from django.db.models.loading import get_model
 from mptt.models import MPTTModel, TreeForeignKey
 from munigeo.models import District
 from django.utils.html import strip_tags
@@ -20,6 +21,9 @@ def truncate_chars(value, max_length):
 
 class Policymaker(models.Model):
     name = models.CharField(max_length=100, help_text='Name of policymaker')
+    unit = models.CharField(max_length=100, help_text='Policymaker unit')
+    division = models.CharField(max_length=100, help_text='Policymaker division')
+    department = models.CharField(max_length=100, help_text='Policymaker department')
     abbreviation = models.CharField(max_length=20, null=True, help_text='Official abbreviation')
     slug = models.CharField(max_length=50, db_index=True, unique=True, null=True, help_text='Unique slug')
     origin_id = models.CharField(max_length=20, db_index=True, help_text='ID string in upstream system')
@@ -36,6 +40,23 @@ class Policymaker(models.Model):
                 self.slug = '%s-%d' % (slug_base, i)
 
         return super(Policymaker, self).save(*args, **kwargs)
+
+    def determine_org(self):
+        pm_org = self.organization
+        if not pm_org:
+            return
+
+        type_orgs = {}
+        types = ['division', 'department', 'unit']
+
+        def check_org(org):
+            if org.type in types:
+                assert org.type not in type_orgs
+                type_orgs[org.type] = org
+            for p in org.parents.all():
+                check_org(p)
+
+        check_org(pm_org)
 
     def __unicode__(self):
         return self.name
