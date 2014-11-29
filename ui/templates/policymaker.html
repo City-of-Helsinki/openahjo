@@ -27,10 +27,15 @@
 
 
 <script type="text/template" id="policymaker-list-item-template">
-<div class="content">
-    <h3><%= title %></h3>
-    <% if (icon) { %><i class="fa fa-<%= icon %>"></i><% } %>
-</div>
+<a class="content" href="<%= view_url %>">
+    <div class="name-icon">
+        <% if (icon) { %><i class="fa fa-<%= icon %>"></i><% } %>
+        <h3><%= title %></h3>
+    </div>
+    <% if (org_hierarchy) { %>
+    <div class="org-hierarchy"><%= org_hierarchy %></div>
+    <% } %>
+</a>
 </script>
 
 <script type="text/template" id="policymaker-details-template">

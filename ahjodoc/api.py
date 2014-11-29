@@ -36,8 +36,13 @@ class PolicymakerResource(ModelResource):
             qs = qs.annotate(num_meetings=Count('meeting')).filter(num_meetings__gt=0)
         return qs
 
+    def dehydrate(self, bundle):
+        obj = bundle.obj
+        bundle.data['org_type'] = obj.organization.type
+        return bundle
+
     class Meta:
-        queryset = Policymaker.objects.all()
+        queryset = Policymaker.objects.all().select_related('organization')
         resource_name = 'policymaker'
         filtering = {
             'abbreviation': ('exact', 'in', 'isnull'),

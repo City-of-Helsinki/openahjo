@@ -58,8 +58,8 @@ class Policymaker(models.Model):
 
         check_org(pm_org)
 
-        for t, val in type_orgs:
-            setattr(self, t, val)
+        for t, val in type_orgs.items():
+            setattr(self, t, val.name_fi)
 
     def __unicode__(self):
         return self.name

@@ -12,6 +12,8 @@ PM_VIEW_INFO =
         hyphen_names: ['Varhais&shy;kasvatus&shy;lautakunta']
     'Kklk':
         hyphen_names: ['Kulttuuri- ja kirjasto&shy;lautakunta']
+    #'Oivajk':
+    #    hyphen_names: ['Henkilöstön kehittämispalvelut-liikelaitoksen jk']
 
 class PolicymakerListNavView extends Backbone.View
     el: '.policymaker-nav'
@@ -22,10 +24,10 @@ class PolicymakerListNavView extends Backbone.View
     render: ->
         COMPONENTS = [
             {name: 'Kaupunginvaltuusto', category: 'council'}
-            {name: 'Kaupunginhallitus', category: 'government'}
+            {name: 'Kaupunginhallitus', category: 'board'}
             {name: 'Lautakunnat', category: 'committee'}
-            {name: 'Johtokunnat', category: 'board'}
-            {name: 'Muut', category: 'other'}
+            {name: 'Jaostot', category: 'board_division'}
+            {name: 'Viranhaltijat', category: 'office_holder'}
         ]
         @$el.empty()
         $li = $("<li class='list'><a href='#{VIEW_BASE_URL}'>Päättäjät</a></li>")
@@ -61,7 +63,7 @@ class PolicymakerListNavView extends Backbone.View
         @active_category = category
 
 class PolicymakerListItemView extends Backbone.View
-    tagName: 'a'
+    tagName: 'li'
     className: 'org-box'
     template: $("#policymaker-list-item-template").html()
 
@@ -86,10 +88,16 @@ class PolicymakerListItemView extends Backbone.View
         model = @model.toJSON()
         model.title = @format_title()
         model.icon = @model.get_icon()
+        model.view_url = @model.get_view_url()
+        org_hierarchy = [model.department, model.division, model.unit]
+        model.org_hierarchy = (x for x in org_hierarchy when x).join ' / '
         html = _.template @template, model
         @$el.addClass @model.get_category()
-        @$el.attr 'href', @model.get_view_url()
         @$el.append html
+        @$el.find('a.content').click (ev) ->
+            if router.navigate_to_link ev.currentTarget
+                ev.preventDefault()
+
         return @
 
 class PolicymakerListView extends Backbone.View
@@ -97,33 +105,32 @@ class PolicymakerListView extends Backbone.View
     className: 'policymaker-list'
 
     render_pm_section: (list, heading, big, anchor) ->
-        list = _.sortBy list, (m) -> m.get 'name'
+        if anchor == 'office_holder'
+            list = _.sortBy list, (m) ->
+                dep = m.get 'department'
+                if not dep
+                    dep = '0'
+                dep + ' ' + m.get('name')
+        else
+            list = _.sortBy list, (m) -> m.get 'name'
         $container = @$el
         if heading
             $container.append $("<h2>#{heading}</h2>")
         row_idx = 0
-        $row = $("<div class='row'></div>")
+        $row = $("<ul class='row list-unstyled'></ul>")
         if anchor
             $row.attr 'id', anchor
         for m in list
             view = new PolicymakerListItemView {model: m}
             view.render()
             $el = view.$el
-            $row.append view.$el
-            row_idx++
             if big
-                $el.addClass 'span9'
-                $container.append $row
-                $row = $("<div class='row'></div>")
-                row_idx = 0
+                $el.addClass 'col-md-12'
             else
-                $el.addClass 'span3'
-                if row_idx == 3
-                    $container.append $row
-                    row_idx = 0
-                    $row = $("<div class='row'></div>")
-        if row_idx
-            $container.append $row
+                $el.addClass 'col-md-6 col-lg-6'
+            $row.append view.$el
+
+        $container.append $row
 
     render: ->
         @$el.empty()
@@ -131,17 +138,14 @@ class PolicymakerListView extends Backbone.View
         council = @collection.filter (m) -> m.get_category() == 'council'
         @render_pm_section council, null, true, 'council'
 
-        gov = @collection.filter (m) -> m.get_category() == 'government'
-        @render_pm_section gov, null, true, 'government'
+        gov = @collection.filter (m) -> m.get_category() == 'board'
+        @render_pm_section gov, null, true, 'board'
 
-        committees = @collection.filter (m) -> m.get_category() == 'committee'
-        @render_pm_section committees, "Lautakunnat", false, 'committee'
+        committees = @collection.filter (m) -> m.get_category() in ['committee', 'board_division']
+        @render_pm_section committees, "Lautakunnat ja jaostot", false, 'committee'
 
-        boards = @collection.filter (m) -> m.get_category() == 'board'
-        @render_pm_section boards, "Johtokunnat", true, 'board'
-
-        others = @collection.filter (m) -> m.get_category() == 'other'
-        @render_pm_section others, "Muut", true, 'other'
+        office_holders = @collection.filter (m) -> m.get_category() == 'office_holder'
+        @render_pm_section office_holders, "Viranhaltijat", true, 'office_holder'
 
 class PolicymakerDetailsView extends Backbone.View
     tagName: 'div'
@@ -320,8 +324,6 @@ class PolicymakerDetailsView extends Backbone.View
         @policymaker.fetch_meetings()
 
 policymaker_list = new PolicymakerList policymakers
-nav_view = new PolicymakerListNavView {collection: policymaker_list}
-nav_view.render()
 
 list_view = new PolicymakerListView {collection: policymaker_list}
 
@@ -341,8 +343,7 @@ class PolicymakerRouter extends Backbone.Router
 
     pm_list: ->
         $("#content-container > h1").html "Päättäjät"
-        document.title = "Päättäjät"
-        nav_view.set_category 'list'
+        document.title = "Päättäjät | Päätökset | Helsingin kaupunki"
         list_view.render()
         content_el = $(".policymaker-content")
         content_el.empty()
@@ -356,7 +357,7 @@ class PolicymakerRouter extends Backbone.Router
             pm = null
 
         # We might have organization_json passed in from backend code.
-        if organization_json and organization_json.slug == slug
+        if organization_json? and organization_json.slug == slug
             org = new Organization organization_json
             org_promise = $.Deferred()
             org_promise.resolve()
