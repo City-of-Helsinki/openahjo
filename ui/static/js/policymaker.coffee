@@ -127,7 +127,7 @@ class PolicymakerListView extends Backbone.View
             if big
                 $el.addClass 'col-md-12'
             else
-                $el.addClass 'col-md-6 col-lg-6'
+                $el.addClass 'col-md-6 col-lg-4'
             $row.append view.$el
 
         $container.append $row
@@ -135,17 +135,22 @@ class PolicymakerListView extends Backbone.View
     render: ->
         @$el.empty()
 
-        council = @collection.filter (m) -> m.get_category() == 'council'
+        active = @collection.filter (m) -> not m.get 'dissolution_date'
+
+        council = _.filter active, (m) -> m.get_category() == 'council'
         @render_pm_section council, null, true, 'council'
 
-        gov = @collection.filter (m) -> m.get_category() == 'board'
+        gov = _.filter active, (m) -> m.get_category() == 'board'
         @render_pm_section gov, null, true, 'board'
 
-        committees = @collection.filter (m) -> m.get_category() in ['committee', 'board_division']
+        committees = _.filter active, (m) -> m.get_category() in ['committee', 'board_division']
         @render_pm_section committees, "Lautakunnat ja jaostot", false, 'committee'
 
-        office_holders = @collection.filter (m) -> m.get_category() == 'office_holder'
-        @render_pm_section office_holders, "Viranhaltijat", true, 'office_holder'
+        office_holders = _.filter active, (m) -> m.get_category() == 'office_holder'
+        @render_pm_section office_holders, "Viranhaltijat", false, 'office_holder'
+
+        dissolved = @collection.filter (m) -> m.get 'dissolution_date'
+        @render_pm_section dissolved, "Lakkautetut", false, 'dissolved'
 
 class PolicymakerDetailsView extends Backbone.View
     tagName: 'div'
@@ -372,7 +377,7 @@ class PolicymakerRouter extends Backbone.Router
                 if slug in slug_map
                     org_id = slug_map[slug]
                 else
-                    org_id = slug
+                    org_id = slug.toUpperCase()
             # If not, we fetch the organization information.
             org = new Organization id: "hel:#{org_id}"
             org_promise = org.fetch

@@ -38,7 +38,10 @@ class PolicymakerResource(ModelResource):
 
     def dehydrate(self, bundle):
         obj = bundle.obj
-        bundle.data['org_type'] = obj.organization.type
+        org = obj.organization
+        bundle.data['org_type'] = org.type
+        bundle.data['dissolution_date'] = org.dissolution_date
+        bundle.data['founding_date'] = org.founding_date
         return bundle
 
     class Meta:
@@ -497,7 +500,7 @@ class OrganizationResource(ModelResource):
 
     class Meta:
         queryset = Organization.objects.all().select_related('policymaker')
-        exclude = ['name_fi', 'name_sv']
+        excludes = ['name', 'start_date', 'end_date']
         filtering = {
             'origin_id': ALL,
             'abbreviation': ALL,

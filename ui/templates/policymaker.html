@@ -47,7 +47,7 @@
             var view_url = parent.view_url ? parent.view_url : '#';
         %>
             <li class="breadcrumb-<%= parent.css_class %><% if (!parent.view_url) { %> is-empty<% } %>">
-              <a href="<%= view_url %>" <% if (!parent.view_url) { %>class="disabled"<% } %>><%= parent.name %></a>
+              <a href="<%= view_url %>" <% if (!parent.view_url) { %>class="disabled"<% } %>><%= parent.name_fi %></a>
             </li>
         <% } %>
     </ol>
