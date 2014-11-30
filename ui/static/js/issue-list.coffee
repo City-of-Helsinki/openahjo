@@ -372,7 +372,7 @@ class IssueSearchView extends Backbone.View
         if opts.issue_list
             @issue_list = opts.issue_list
         else
-            @issue_list = new IssueSearchList
+            @issue_list = new IssueSearchList()
 
         @count_view = new IssueListCountView collection: @issue_list
 

@@ -34,8 +34,13 @@ class @IssueList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/issue/'
     model: Issue
 
-class @IssueSearchList extends IssueList
+class @IssueSearchList extends Backbone.Tastypie.Collection
     urlRoot: API_PREFIX + 'v1/issue/search/'
+    model: Issue
+
+    constructor: (models, options) ->
+        super models, options
+        @filters['order_by'] = '-latest_decision_date'
 
     set_filter: (type, val) ->
         filter_name = type
