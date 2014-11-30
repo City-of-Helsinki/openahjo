@@ -147,7 +147,7 @@ class PolicymakerListView extends Backbone.View
         @render_pm_section committees, "Lautakunnat ja jaostot", false, 'committee'
 
         office_holders = _.filter active, (m) -> m.get_category() == 'office_holder'
-        @render_pm_section office_holders, "Viranhaltijat", false, 'office_holder'
+        @render_pm_section office_holders, "Viranhaltijat", true, 'office_holder'
 
         dissolved = @collection.filter (m) -> m.get 'dissolution_date'
         @render_pm_section dissolved, "Lakkautetut", false, 'dissolved'
