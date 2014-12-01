@@ -168,7 +168,7 @@ class IssueResource(ModelResource):
 
     def apply_filters(self, request, applicable_filters):
         ret = super(IssueResource, self).apply_filters(request, applicable_filters)
-        for f in ('issuegeometry__in', 'districts__name', 'districts__type'):
+        for f in ('issuegeometry__in', 'districts__name', 'districts__type', 'geometries__isnull'):
             if f in applicable_filters:
                 ret = ret.distinct()
                 break
@@ -183,6 +183,10 @@ class IssueResource(ModelResource):
             bbox_filter = build_bbox_filter(filters['bbox'], 'geometry')
             geom_list = IssueGeometry.objects.filter(**bbox_filter)
             orm_filters['issuegeometry__in'] = geom_list
+
+        has_geometry = filters.get('has_geometry', '')
+        if has_geometry.lower() in ['1', 'true']:
+            orm_filters['geometries__isnull'] = False
 
         district_filters = ['districts__name', 'districts__type']
         for f in district_filters:
