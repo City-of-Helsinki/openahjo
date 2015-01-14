@@ -1,6 +1,6 @@
 db_name: openahjo
 db_password: debicKavquelmOkchylvAihuKryharfyamDesAnUfAtAfHecja
-db_test_table: ahjodoc
+db_test_table: ahjodoc_meeting
 locale: fi_FI.UTF-8
 venv: /home/{{ app_user }}/.virtualenvs/openahjo
 download_base_url: http://dev.hel.fi/openahjo/media/dev

@@ -1,14 +1,10 @@
-- name: PostGIS | Add UbuntuGIS PPA
-  sudo: yes
-  apt_repository: repo='ppa:ubuntugis/ubuntugis-unstable'
-
 - name: PostGIS | Install packages
   apt: pkg={{ item }} state=present
   sudo: yes
   with_items:
   - postgis
-  - postgresql-9.1-postgis-2.0
-  - postgresql-9.1-postgis-2.0-scripts
+  - postgresql-9.3-postgis-2.1
+  - postgresql-9.3-postgis-2.1-scripts
   - gdal-bin
   - python-gdal
   - postgresql
@@ -27,24 +23,6 @@
               regexp='^set -e'
               state=absent
 
-- name: PostGIS | Create template database
-  sudo: yes
-  sudo_user: postgres
-  action: postgresql_db db=postgis_template state=present encoding=utf8 lc_collate={{ locale }} lc_ctype={{ locale }} template=template0
-  register: createdb_postgis_template
-
-- name: PostGIS | Make postgis_template a template
-  sudo: yes
-  sudo_user: postgres
-  action: command psql -d postgis_template -c "UPDATE pg_database SET datistemplate=true WHERE datname='postgis_template';"
-  when: createdb_postgis_template.changed
-
-- name: PostGIS | Create postgis extension
-  sudo: yes
-  sudo_user: postgres
-  action: command psql -d postgis_template -c 'CREATE EXTENSION postgis;'
-  when: createdb_postgis_template.changed
-
 - name: PostgreSQL | Create user
   sudo: yes
   sudo_user: postgres
@@ -58,7 +36,14 @@
 - name: PostgreSQL | Create database
   sudo: yes
   sudo_user: postgres
-  action: postgresql_db name={{ db_name }} encoding=utf8 lc_ctype={{ locale }} lc_collate={{ locale }} owner={{ app_user }} template=postgis_template
+  action: postgresql_db name={{ db_name }} encoding=utf8 lc_ctype={{ locale }} lc_collate={{ locale }} owner={{ app_user }} template=template0
+  register: create_db
+
+- name: PostGIS | Create postgis extension
+  sudo: yes
+  sudo_user: postgres
+  action: command psql -d {{ db_name }} -c 'CREATE EXTENSION postgis;'
+  when: create_db.changed
 
 # - name: PostgreSQL | Grant privileges
 #   sudo: yes

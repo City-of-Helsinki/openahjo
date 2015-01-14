@@ -9,3 +9,4 @@ local_update_config
 static/CACHE
 media/
 .vagrant/
+vagrant_ansible_inventory_default

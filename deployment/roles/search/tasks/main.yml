@@ -8,7 +8,6 @@
   sudo_user: solr
   get_url: url={{ apache_mirror }}{{ solr_package }}
            dest=/home/{{ solr_user }}/solr.tgz mode=0644
-           sha256sum={{ solr_checksum }}
 
 - name: Apache Solr | Create Solr directory
   sudo: yes

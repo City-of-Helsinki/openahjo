@@ -1,12 +1,10 @@
-- name: Node.js | Add the node.js PPA
-  sudo: yes
-  apt_repository: repo='ppa:chris-lea/node.js'
-
 - name: Node.js | Install nodejs package
   sudo: yes
   action: apt pkg={{ item }} state=installed update-cache=yes
   with_items:
   - nodejs
+  - nodejs-legacy
+  - npm
 
 - name: NPM | Install dependencies
   sudo: yes
@@ -22,13 +20,15 @@
 - name: Django | Add virtualenv execute script
   template: src=venv_exec.j2 dest={{ venv }}/exec mode=0755
 
-- name: Django | Check if database exists
-  shell: '[ ! -z "$({{ venv }}/exec /vagrant/manage.py sqlclear {{ db_test_table }})" ]'
+- name: Django | Check if database tables exists
+  shell: '[ ! -z "$(echo select count\(\*\) from {{ db_test_table }}\; | {{ venv }}/exec /vagrant/manage.py dbshell)" ]'
   register: django_db_result
   ignore_errors: yes
+
 - name: Django | Download database dump
-  get_url: url={{ download_base_url }}/{{ db_dump_filename }} dest=/home/{{ app_user }} mode=0644 sha256sum=f361f3a44dceb746f6546723f871ad838e357fb9c956b3ea3c601cb0aacb1dd4
+  get_url: url={{ download_base_url }}/{{ db_dump_filename }} dest=/home/{{ app_user }} mode=0644
   when: django_db_result.rc != 0
+
 - name: Django | Apply database dump
   sudo: yes
   sudo_user: "{{ app_user }}"
