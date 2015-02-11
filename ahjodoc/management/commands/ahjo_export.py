@@ -7,8 +7,8 @@ import json
 
 from collections import OrderedDict
 
-import ogr
-import osr
+#import ogr
+#import osr
 from optparse import make_option
 from django.core.management.base import BaseCommand
 from django.contrib.gis.gdal.error import OGRException, check_err
