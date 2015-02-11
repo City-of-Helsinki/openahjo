@@ -22,3 +22,4 @@ if __name__ == "__main__":
             if getattr(exc_info[0], 'skip_sentry', False):
                 raise
             get_client().captureException(exc_info)
+            raise
