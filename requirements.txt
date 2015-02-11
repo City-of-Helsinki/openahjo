@@ -24,3 +24,4 @@ django-modeltranslation
 django-appconf
 -e git+https://github.com/juyrjola/django-popolo#egg=django-popolo
 python-dateutil
+raven
