@@ -363,11 +363,11 @@ class AgendaItemResource(ModelResource):
         resource_name = 'agenda_item'
         filtering = {
             'meeting': ALL_WITH_RELATIONS,
-            'issue': ['exact', 'in'],
-            'issue__category': ['exact', 'in'],
+            'issue': ALL_WITH_RELATIONS,
             'last_modified_time': ['gt', 'gte', 'lt', 'lte'],
             'from_minutes': ['exact'],
             'resolution': ['exact', 'isnull', 'in'],
+            'classification_code': ALL,
         }
         ordering = ('last_modified_time', 'origin_last_modified_time', 'meeting', 'index')
         list_allowed_methods = ['get']
