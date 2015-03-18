@@ -78,7 +78,9 @@ class AhjoDocument(object):
                 raise ParseError("Unexpected text section container: %s" % ch.tag)
             paras = ch.getchildren()
             for p in paras:
-                if p.tag not in ('Kappale', 'Otsikko', 'Henkilotietoa', 'Salassapidettava', 'XHTML', 'HenkilotietoaXHTML', 'Kuva'):
+                if p.tag not in ('Kappale', 'Otsikko', 'Henkilotietoa',
+                                 'Salassapidettava', 'XHTML', 'HenkilotietoaXHTML',
+                                 'Kuva', 'Korjauskappale'):
                     raise ParseError("Unsupported paragraph tag: %s", p.tag)
                 if p.tag == 'Kappale':
                     for pch in p.getchildren():
@@ -98,6 +100,8 @@ class AhjoDocument(object):
                     content.append(u'<h3>%s</h3>' % clean_text(p.text))
                 elif p.tag in ('Henkilotietoa', 'HenkilotietoaXHTML'):
                     content.append(u'<span class="redacted-personal-information">*****</span>')
+                elif p.tag == 'Korjauskappale':
+                    content.append(u'<p class="correction">%s</p>' % clean_text(p.text))
                 elif p.tag == 'Salassapidettava':
                     content.append(u'<p class="redacted-information">*****</p>')
                 elif p.tag == 'XHTML':
