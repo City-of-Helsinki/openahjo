@@ -282,9 +282,14 @@ class Attachment(models.Model):
     number = models.PositiveIntegerField(help_text='Index number of the item attachment')
     name = models.CharField(max_length=400, null=True, help_text='Short name for the agenda item')
     public = models.BooleanField(default=False, help_text='Is attachment public?')
+    confidentiality_reason = models.CharField(max_length=100, null=True, blank=True,
+                                              help_text='Reason for keeping the attachment confidential')
     file = models.FileField(upload_to=settings.AHJO_PATHS['attachment'], null=True)
     hash = models.CharField(max_length=50, null=True, help_text='SHA-1 hash of the file contents')
     file_type = models.CharField(max_length=10, null=True, help_text='File extension')
+
+    def __unicode__(self):
+        return u"%s: attachment %d: %s" % (self.agenda_item, self.number, self.name)
 
     class Meta:
         unique_together = (('agenda_item', 'number'),)

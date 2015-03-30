@@ -161,6 +161,8 @@ class AhjoDocument(object):
                     subject = 'Esittelijä'
                 elif subject.lower() == 'päätöksen perustelut':
                     subject = 'paatoksenperustelut'
+                elif subject.lower() == 'päätösehdotus':
+                    subject = 'esitysehdotus'
                 if subject.replace('ä', 'a').replace('ö', 'o').lower() != s:
                     self.logger.warning("Unexpected section header: %s, expected: %s" % (subject, s))
             text_section = section_el.find('TekstiSektio')
@@ -178,8 +180,13 @@ class AhjoDocument(object):
             d = {'number': int(att_el.find('Liitenumero').text)}
             id_el = att_el.find('LiitteetId')
             att_list.append(d)
-            if id_el == None:
+            if id_el is None:
                 d['public'] = False
+                reason_el = att_el.find('SalassapitoOptio')
+                if reason_el is not None:
+                    reason_el = reason_el.find('SalassapidonPerustelut')
+                    if reason_el is not None:
+                        d['confidentiality_reason'] = clean_text(reason_el.text)
                 continue
             else:
                 d['public'] = True

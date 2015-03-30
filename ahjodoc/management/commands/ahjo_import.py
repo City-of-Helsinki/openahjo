@@ -24,6 +24,7 @@ from ahjodoc.geo import AhjoGeocoder
 from ahjodoc.video import get_videos_for_meeting, VideoFile
 from ahjodoc.utils import download_file
 
+
 class Command(BaseCommand):
     help = "Import OpenAHJO documents"
     option_list = BaseCommand.option_list + (
@@ -143,14 +144,21 @@ class Command(BaseCommand):
 
         if self.options['no_attachments']:
             return
+
+        att_list = Attachment.objects.filter(agenda_item=agenda_item)
         for att in info['attachments']:
-            args = {'agenda_item': agenda_item, 'number': att['number']}
-            try:
-                obj = Attachment.objects.get(**args)
-            except Attachment.DoesNotExist:
-                obj = Attachment(**args)
+            for obj in att_list:
+                if obj.number == att['number']:
+                    obj._found = True
+                    break
+            else:
+                obj = Attachment(agenda_item=agenda_item, number=att['number'])
+                obj._found = True
+
             if not att['public']:
                 obj.public = False
+                print(att)
+                obj.confidentiality_reason = att.get('confidentiality_reason', None)
                 obj.file = None
                 obj.hash = None
                 obj.save()
@@ -162,6 +170,11 @@ class Command(BaseCommand):
             obj.hash = att['hash']
             obj.name = att['name']
             obj.save()
+
+        for obj in att_list:
+            if not getattr(obj, '_found', False):
+                self.logger.info("Deleting attachment %s" % obj)
+                obj.delete()
 
     @transaction.commit_on_success
     def import_doc(self, info):
