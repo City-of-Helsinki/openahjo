@@ -152,7 +152,14 @@
              if (att.public) { %>
           <li value=<%= att.number %> class="public"><div class="icon"><i class="fa fa-file-text"></i></div><div class="name"><a href="<%= att.file_uri %>"><%= att.number %>. <%= att.name %></a></div></li>
             <%   } else { %>
-          <li value=<%= att.number %> class="non-public"><div class="icon"><i class="fa fa-eye-slash"></i></div><div class="name"><%= att.number %>. Ei-julkinen</div></li>
+          <li value=<%= att.number %> class="non-public">
+            <div class="icon"><i class="fa fa-eye-slash"></i></div>
+            <div class="name"><%= att.number %>. Ei-julkinen
+            <% if (att.confidentiality_reason) { %>
+              <span class="confidentiality-reason">(<%- att.confidentiality_reason %>)</span>
+            <% } %>
+            </div>
+          </li>
         <%   }
             }); %>
           </ol>
