@@ -7,7 +7,7 @@ from django.core.paginator import Paginator, InvalidPage
 from django.utils.html import strip_tags
 from django.conf import settings
 from django.db.models import Count, Sum
-from django.http import Http404
+from django.http import HttpResponseNotFound
 from tastypie import fields
 from tastypie.resources import ModelResource
 from tastypie.exceptions import InvalidFilterError, BadRequest, NotFound
@@ -271,7 +271,7 @@ class IssueResource(ModelResource):
         try:
             page = paginator.page(page_nr)
         except InvalidPage:
-            raise Http404("Sorry, no results on that page.")
+            return HttpResponseNotFound("Sorry, no results on that page.")
 
         objects = []
 
