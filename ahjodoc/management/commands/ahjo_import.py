@@ -325,6 +325,8 @@ class Command(BaseCommand):
         # FIXME: Broken in API
         if meeting.year == 2014 and meeting.number == 3:
             return
+        if meeting.year == 2015 and meeting.number == 6:
+            return
 
         self.logger.debug("Checking for videos for %s" % meeting)
         meeting_info = {'year': meeting.year, 'nr': meeting.number}
