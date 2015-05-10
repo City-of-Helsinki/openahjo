@@ -284,6 +284,8 @@ class Command(BaseCommand):
         register_ids = set()
         for adi in adoc.items:
             register_id = adi.get('register_id', None)
+            if register_id is None:
+                continue
             if register_id in register_ids:
                 self.logger.warning("Issue %s listed more than twice in a meeting" % register_id)
             else:
