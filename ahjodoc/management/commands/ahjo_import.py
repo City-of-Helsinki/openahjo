@@ -279,17 +279,28 @@ class Command(BaseCommand):
         if existing_ais.count() > len(adoc.items):
             self.logger.warning("More agenda items in DB (%d) than in document (%d)" % (existing_ais.count(), len(adoc.items)))
             existing_ais.delete()
-        for idx, ai in enumerate(existing_ais):
-            adi = adoc.items[idx]
+
+        for ai in existing_ais:
+            for adi in adoc.items:
+                if adi['number'] == ai.index:
+                    break
+            else:
+                self.logger.warning("Agenda item %s not found in incoming items" % ai)
+                ai.should_delete = True
+
             if ai.issue is not None:
                 obj_register_id = ai.issue.register_id
             else:
                 obj_register_id = None
-            if adi.get('register_id', None) == obj_register_id and adi['number'] == ai.index:
-                continue
-            self.logger.warning("Issue mismatch at index %d: %s vs. %s" % (idx, adi['register_id'], ai.issue.register_id))
+            if adi.get('register_id', None) != obj_register_id:
+                self.logger.warning("Issue mismatch at index %d: %s vs. %s" % (ai.index, adi['register_id'], obj_register_id))
             AgendaItem.objects.filter(meeting=meeting, index__gte=ai.index).delete()
             break
+
+        for ai in existing_ais:
+            if getattr(ai, 'should_delete', False):
+                self.logger.warning("Deleting stale agenda item %s" % ai)
+                ai.delete()
 
         for issue in adoc.items:
             self.store_issue(meeting, doc, issue, adoc)

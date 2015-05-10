@@ -168,7 +168,7 @@ class AhjoDocument(object):
                     # In the case of mismatch, override the section name
                     # based on what kind of document we're parsing (minutes or
                     # agenda).
-                    if info['type'] == 'proposal':
+                    if self.type == 'agenda':
                         if section_type == 'resolution':
                             section_type = 'draft resolution'
 
