@@ -104,6 +104,7 @@ class @Meeting extends Backbone.Tastypie.Model
         @agenda_item_list = new AgendaItemList
         @agenda_item_list.filters['meeting'] = @get 'id'
         @agenda_item_list.filters['limit'] = 1000
+        @agenda_item_list.filters['show_all'] = 1
 
     fetch_agenda_items: ->
         if @agenda_item_list.length

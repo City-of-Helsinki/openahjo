@@ -165,6 +165,13 @@ class AhjoDocument(object):
                     subject = 'esitysehdotus'
                 if subject.replace('ä', 'a').replace('ö', 'o').lower() != s:
                     self.logger.warning("Unexpected section header: %s, expected: %s" % (subject, s))
+                    # In the case of mismatch, override the section name
+                    # based on what kind of document we're parsing (minutes or
+                    # agenda).
+                    if info['type'] == 'proposal':
+                        if section_type == 'resolution':
+                            section_type = 'draft resolution'
+
             text_section = section_el.find('TekstiSektio')
             if not text_section:
                 # If it's an empty content section, skip it.
@@ -217,7 +224,7 @@ class AhjoDocument(object):
             raise ParseError("Field KuvailutiedotOpenDocument missing")
 
         doc_type = desc_el.find('AsiakirjaTyyppi')
-        if doc_type != None:
+        if doc_type is not None:
             doc_type = doc_type.text
         if doc_type == u'päätös':
             info['type'] = 'decision'
@@ -238,9 +245,6 @@ class AhjoDocument(object):
             print "Invalid language: %s" % lang_id
             return False
         register_id_el = desc_el.find('Dnro')
-        # If archive id was not found, skip item.
-        if not register_id_el:
-            return False
 
         subject = clean_text(desc_el.find('Otsikko').text)
         if subject.startswith('V '):
@@ -257,8 +261,16 @@ class AhjoDocument(object):
         if self.verbosity >= 2:
             self.logger.debug('Parsing item: %s' % info['subject'])
 
-        info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
-        info['category'] = desc_el.find('Tehtavaluokka').text.strip()
+        if register_id_el:
+            info['register_id'] = register_id_el.find('DnroLyhyt').text.strip()
+        else:
+            info['register_id'] = None
+
+        cat_el = desc_el.find('Tehtavaluokka')
+        if cat_el is not None:
+            info['category'] = cat_el.text.strip()
+        else:
+            info['category'] = None
 
         references = desc_el.find('Viite')
         if references is not None:

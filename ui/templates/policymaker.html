@@ -112,13 +112,23 @@
             </header>
             <ol>
                 <% _.each(agenda_items, function (ai) { %>
-                <li><a href="<%= ai.permalink %>">
+                <li>
+                  <% if (ai.permalink) { %>
+                    <a href="<%= ai.permalink %>">
+                  <% } else { %>
+                    <div class="non-issue">
+                  <% } %>
                     <header class="item-header">
                         <div class="index"><%- ai.index %></div>
                         <div class="subject"><%- ai.subject %></div>
                     </header>
                     <% if (ai.summary) { %><p><%- ai.summary %></p><% } %>
-                </a></li>
+                <% if (ai.permalink) { %>
+                  </a>
+                <% } else { %>
+                  </div>
+                <% } %>
+                </li>
                 <% }); %>
             </ol>
         </article>

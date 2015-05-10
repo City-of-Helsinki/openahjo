@@ -214,7 +214,7 @@ class AgendaItem(models.Model):
         (ELECTION, 'Election'),
     )
     meeting = models.ForeignKey(Meeting, db_index=True, help_text='Meeting for the agenda item')
-    issue = models.ForeignKey(Issue, db_index=True, help_text='Issue for the item')
+    issue = models.ForeignKey(Issue, db_index=True, null=True, help_text='Issue for the item')
     index = models.PositiveIntegerField(help_text='Item number on the agenda')
     subject = models.CharField(max_length=500, help_text='One-line description for agenda item')
     from_minutes = models.BooleanField(default=False, help_text='Do the contents come from the minutes document?')
@@ -252,6 +252,8 @@ class AgendaItem(models.Model):
         return text
 
     def get_absolute_url(self):
+        if self.issue is None:
+            return None
         pm = self.meeting.policymaker
         args = dict(slug=self.issue.slug, pm_slug=pm.slug, year=self.meeting.year,
                     number=self.meeting.number)
@@ -259,11 +261,14 @@ class AgendaItem(models.Model):
 
     def save(self, *args, **kwargs):
         ret = super(AgendaItem, self).save(*args, **kwargs)
-        issue = self.issue
-        subject = issue.determine_subject()
-        if subject != issue.subject:
-            issue.subject = subject
-            issue.save()
+
+        if self.issue is not None:
+            issue = self.issue
+            subject = issue.determine_subject()
+            if subject != issue.subject:
+                issue.subject = subject
+                issue.save(update_fields=['subject'])
+
         return ret
 
     def __unicode__(self):

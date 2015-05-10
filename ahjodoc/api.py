@@ -331,6 +331,7 @@ class IssueResource(ModelResource):
         detail_allowed_methods = ['get']
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
+
 class IssueGeometryResource(ModelResource):
     issue = fields.ToOneField(IssueResource, 'issue')
 
@@ -342,10 +343,19 @@ class IssueGeometryResource(ModelResource):
         }
         cache = SimpleCache(timeout=CACHE_TIMEOUT)
 
+
 class AgendaItemResource(ModelResource):
     meeting = fields.ToOneField(MeetingResource, 'meeting', full=True)
-    issue = fields.ToOneField(IssueResource, 'issue', full=True)
+    issue = fields.ToOneField(IssueResource, 'issue', full=True, null=True)
     attachments = fields.ToManyField('ahjodoc.api.AttachmentResource', 'attachment_set', full=True, null=True)
+
+    def apply_filters(self, request, applicable_filters):
+        ret = super(AgendaItemResource, self).apply_filters(request, applicable_filters)
+        # If 'show_all' is supplied, we list also the agenda items that don't
+        # have archive ids (i.e. that don't link to an issue).
+        if request.GET.get('show_all', '').lower() not in ('1', 'true'):
+            ret = ret.exclude(issue__isnull=True)
+        return ret
 
     def dehydrate(self, bundle):
         obj = bundle.obj
@@ -355,8 +365,14 @@ class AgendaItemResource(ModelResource):
             d = {'type': cs.type, 'text': cs.text}
             content.append(d)
         bundle.data['content'] = content
-        bundle.data['permalink'] = bundle.request.build_absolute_uri(obj.get_absolute_url())
+        uri = obj.get_absolute_url()
+        if uri is not None:
+            bundle.data['permalink'] = bundle.request.build_absolute_uri(uri)
+        else:
+            bundle.data['permalink'] = None
         return bundle
+
+
 
     class Meta:
         queryset = AgendaItem.objects.all().select_related('issue').select_related('category').select_related('attachments')

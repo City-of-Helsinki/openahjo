@@ -91,6 +91,65 @@ class Command(BaseCommand):
 
     def store_issue(self, meeting, meeting_doc, info, adoc):
         try:
+            agenda_item = AgendaItem.objects.get(index=info['number'], meeting=meeting)
+        except AgendaItem.DoesNotExist:
+            agenda_item = AgendaItem(index=info['number'], meeting=meeting)
+        agenda_item.subject = info['subject']
+        agenda_item.from_minutes = meeting_doc.type == 'minutes'
+        agenda_item.origin_last_modified_time = meeting_doc.last_modified_time
+        agenda_item.resolution = info.get('resolution')
+        agenda_item.preparer = info.get('preparer')
+        agenda_item.introducer = info.get('introducer')
+        agenda_item.classification_code = info.get('classification_code')
+        agenda_item.classification_description = info.get('classification_description')
+        agenda_item.issue = None
+        agenda_item.save()
+
+        for idx, p in enumerate(info['content']):
+            args = {'agenda_item': agenda_item, 'index': idx}
+            try:
+                section = ContentSection.objects.get(**args)
+            except ContentSection.DoesNotExist:
+                section = ContentSection(**args)
+            section.type = p[0]
+            section.text = '\n'.join(p[1])
+            section.save()
+
+        if not self.options['no_attachments']:
+            att_list = Attachment.objects.filter(agenda_item=agenda_item)
+            for att in info['attachments']:
+                for obj in att_list:
+                    if obj.number == att['number']:
+                        obj._found = True
+                        break
+                else:
+                    obj = Attachment(agenda_item=agenda_item, number=att['number'])
+                    obj._found = True
+
+                if not att['public']:
+                    obj.public = False
+                    obj.confidentiality_reason = att.get('confidentiality_reason', None)
+                    obj.file = None
+                    obj.hash = None
+                    obj.save()
+                    continue
+                adoc.extract_zip_attachment(att, self.attachment_path)
+                obj.public = True
+                obj.file = os.path.join(settings.AHJO_PATHS['attachment'], att['file'])
+                obj.file_type = att['type']
+                obj.hash = att['hash']
+                obj.name = att['name']
+                obj.save()
+
+            for obj in att_list:
+                if not getattr(obj, '_found', False):
+                    self.logger.info("Deleting attachment %s" % obj)
+                    obj.delete()
+
+        if not info['register_id']:
+            return
+
+        try:
             issue = Issue.objects.get(register_id=info['register_id'])
         except Issue.DoesNotExist:
             issue = Issue(register_id=info['register_id'])
@@ -108,73 +167,18 @@ class Command(BaseCommand):
         issue.reference_text = info.get('reference_text')
         issue.save()
 
+        if agenda_item.issue != issue:
+            agenda_item.issue = issue
+            agenda_item.save(update_fields=['issue'])
+
         geo_matches = self.geocode_issue(issue, info)
         text_list = [i for i in info['keywords'] if i not in geo_matches]
         self.store_keywords(issue, text_list)
 
-        try:
-            agenda_item = AgendaItem.objects.get(issue=issue, meeting=meeting)
-        except AgendaItem.DoesNotExist:
-            agenda_item = AgendaItem(issue=issue, meeting=meeting)
-        agenda_item.subject = info['subject']
-        agenda_item.index = info['number']
-        agenda_item.from_minutes = meeting_doc.type == 'minutes'
-        agenda_item.origin_last_modified_time = meeting_doc.last_modified_time
-        agenda_item.resolution = info.get('resolution')
-        agenda_item.preparer = info.get('preparer')
-        agenda_item.introducer = info.get('introducer')
-        agenda_item.classification_code = info.get('classification_code')
-        agenda_item.classification_description = info.get('classification_description')
-        agenda_item.save()
-
         latest_date = issue.determine_latest_decision_date()
         if latest_date != issue.latest_decision_date:
             issue.latest_decision_date = latest_date
-            issue.save()
-
-        for idx, p in enumerate(info['content']):
-            args = {'agenda_item': agenda_item, 'index': idx}
-            try:
-                section = ContentSection.objects.get(**args)
-            except ContentSection.DoesNotExist:
-                section = ContentSection(**args)
-            section.type = p[0]
-            section.text = '\n'.join(p[1])
-            section.save()
-
-        if self.options['no_attachments']:
-            return
-
-        att_list = Attachment.objects.filter(agenda_item=agenda_item)
-        for att in info['attachments']:
-            for obj in att_list:
-                if obj.number == att['number']:
-                    obj._found = True
-                    break
-            else:
-                obj = Attachment(agenda_item=agenda_item, number=att['number'])
-                obj._found = True
-
-            if not att['public']:
-                obj.public = False
-                print(att)
-                obj.confidentiality_reason = att.get('confidentiality_reason', None)
-                obj.file = None
-                obj.hash = None
-                obj.save()
-                continue
-            adoc.extract_zip_attachment(att, self.attachment_path)
-            obj.public = True
-            obj.file = os.path.join(settings.AHJO_PATHS['attachment'], att['file'])
-            obj.file_type = att['type']
-            obj.hash = att['hash']
-            obj.name = att['name']
-            obj.save()
-
-        for obj in att_list:
-            if not getattr(obj, '_found', False):
-                self.logger.info("Deleting attachment %s" % obj)
-                obj.delete()
+            issue.save(update_fields=['latest_decision_date'])
 
     @transaction.commit_on_success
     def import_doc(self, info):
@@ -277,7 +281,11 @@ class Command(BaseCommand):
             existing_ais.delete()
         for idx, ai in enumerate(existing_ais):
             adi = adoc.items[idx]
-            if adi['register_id'] == ai.issue.register_id and adi['number'] == ai.index:
+            if ai.issue is not None:
+                obj_register_id = ai.issue.register_id
+            else:
+                obj_register_id = None
+            if adi.get('register_id', None) == obj_register_id and adi['number'] == ai.index:
                 continue
             self.logger.warning("Issue mismatch at index %d: %s vs. %s" % (idx, adi['register_id'], ai.issue.register_id))
             AgendaItem.objects.filter(meeting=meeting, index__gte=ai.index).delete()
@@ -560,7 +568,8 @@ class Command(BaseCommand):
             #if not 'VH' in info['policymaker_id']:
             #    continue
 
-            if options['policymaker_id'] and info['policymaker_id'] != options['policymaker_id']:
+            if options['policymaker_id'] and \
+               info['policymaker_id'].lower() != options['policymaker_id'].lower():
                 continue
             self.import_doc(info)
         else:
