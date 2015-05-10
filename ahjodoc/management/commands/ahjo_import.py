@@ -117,7 +117,7 @@ class Command(BaseCommand):
             section.save()
 
         att_list = Attachment.objects.filter(agenda_item=agenda_item)
-        if not att_list.count() or not self.options['skip_existing_attachments']:
+        if att_list.count() == 0 or not self.options['skip_existing_attachments']:
             for att in info['attachments']:
                 for obj in att_list:
                     if obj.number == att['number']:
@@ -295,8 +295,8 @@ class Command(BaseCommand):
                 obj_register_id = None
             if adi.get('register_id', None) != obj_register_id:
                 self.logger.warning("Issue mismatch at index %d: %s vs. %s" % (ai.index, adi['register_id'], obj_register_id))
-            AgendaItem.objects.filter(meeting=meeting, index__gte=ai.index).delete()
-            break
+                AgendaItem.objects.filter(meeting=meeting, index__gte=ai.index).delete()
+                break
 
         for ai in existing_ais:
             if getattr(ai, 'should_delete', False):
