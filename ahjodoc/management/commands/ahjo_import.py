@@ -281,6 +281,14 @@ class Command(BaseCommand):
             self.logger.warning("More agenda items in DB (%d) than in document (%d)" % (existing_ais.count(), len(adoc.items)))
             existing_ais.delete()
 
+        register_ids = set()
+        for adi in adoc.items:
+            register_id = adi.get('register_id', None)
+            if register_id in register_ids:
+                self.logger.warning("Issue %s listed more than twice in a meeting" % register_id)
+            else:
+                register_ids.add(register_id)
+
         for ai in existing_ais:
             for adi in adoc.items:
                 if adi['number'] == ai.index:
