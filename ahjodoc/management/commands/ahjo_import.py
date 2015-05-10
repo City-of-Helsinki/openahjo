@@ -33,7 +33,8 @@ class Command(BaseCommand):
         make_option('--start-from', dest='start_from', action='store', help='start from provided meeting'),
         make_option('--policymaker-id', dest='policymaker_id', action='store', help='process only provided policymaker'),
         make_option('--full-update', dest='full_update', action='store_true', help='perform full update (i.e. replace existing elements)'),
-        make_option('--no-attachments', dest='no_attachments', action='store_true', help='do not process document attachments'),
+        make_option('--skip-existing-attachments', dest='skip_existing_attachments', action='store_true',
+                    help='do not process existing document attachments'),
         make_option('--no-videos', dest='no_videos', action='store_true', help='do not import meeting videos'),
         make_option('--no-geocoding', dest='no_geocoding', action='store_true', help='do not perform geocoding'),
         make_option('--force-policymakers', dest='force_policymakers', action='store_true', help='force importing of policymakers'),
@@ -115,8 +116,8 @@ class Command(BaseCommand):
             section.text = '\n'.join(p[1])
             section.save()
 
-        if not self.options['no_attachments']:
-            att_list = Attachment.objects.filter(agenda_item=agenda_item)
+        att_list = Attachment.objects.filter(agenda_item=agenda_item)
+        if not att_list.count() or not self.options['skip_existing_attachments']:
             for att in info['attachments']:
                 for obj in att_list:
                     if obj.number == att['number']:
