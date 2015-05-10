@@ -279,7 +279,7 @@ class AgendaItem(models.Model):
             return u"%s / #%d: %s" % (self.meeting, self.index, self.subject)
 
     class Meta:
-        unique_together = (('meeting', 'issue'), ('meeting', 'index'))
+        unique_together = (('meeting', 'index'),)
         ordering = ('meeting', 'index')
 
 class Attachment(models.Model):
