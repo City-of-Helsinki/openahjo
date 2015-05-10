@@ -15,6 +15,7 @@ SKIP_DOC_LIST = [
     'Opev_SKJ_2013-2_El',
     'HKR_Ytlk_2013-18_El',
     'Ymk_Ylk_2013-1_El',
+    'Ork_Orkjk_2014-4_Pk', # HEL 2014-011315 processed twice
     'Rakpa_Tplk_2013-1_Pk', # KuvailutiedotOpenDocument missing
     'Halke_Khs_2012-27_Pk', # Attachment missing
     'Halke_Khs_2012-26_Pk', # Attachment missing
