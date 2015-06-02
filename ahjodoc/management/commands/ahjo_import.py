@@ -357,6 +357,8 @@ class Command(BaseCommand):
             return
         if meeting.year == 2015 and meeting.number == 6:
             return
+        if meeting.year == 2015 and meeting.number == 10:
+            return
 
         self.logger.debug("Checking for videos for %s" % meeting)
         meeting_info = {'year': meeting.year, 'nr': meeting.number}
