@@ -29,6 +29,13 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+# Remove deleted attachments
+python manage.py prune_attachments >> $LOG_FILE 2>&1
+if [ $? -ne 0 ]; then
+    cat $LOG_FILE
+    exit 1
+fi
+
 if [ ! -z "$VARNISH_BAN_URL" ]; then
     varnishadm ban req.url \~ "$VARNISH_BAN_URL" >> $LOG_FILE 2>&1
     if [ $? -ne 0 ]; then
