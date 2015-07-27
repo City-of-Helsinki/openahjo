@@ -1,7 +1,7 @@
 
 apache_mirror: http://www.nic.funet.fi/pub/mirrors/apache.org/
 solr_user:     solr
-solr_package:  lucene/solr/4.10.3/solr-4.10.3.tgz
+solr_package:  lucene/solr/4.10.4/solr-4.10.4.tgz
 solr_path:     /opt/solr
 
 voikko_dict_baseurl: http://dev.hel.fi/paatokset/media/dev
