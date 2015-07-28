@@ -18,6 +18,8 @@ def truncate_chars(value, max_length):
         return  truncd_val + "..."
     return value
 
+def has_duplicates(coll):
+    return len(coll) != len(set(coll))
 
 class Policymaker(models.Model):
     name = models.CharField(max_length=100, help_text='Name of policymaker')
@@ -257,7 +259,10 @@ class AgendaItem(models.Model):
         pm = self.meeting.policymaker
         args = dict(slug=self.issue.slug, pm_slug=pm.slug, year=self.meeting.year,
                     number=self.meeting.number)
-        return reverse('ui.views.issue_details', kwargs=args)
+        result = reverse('ui.views.issue_details', kwargs=args)
+        if has_duplicates([issue.id for issue in self.meeting.issues.all()]):
+            result += '{}/'.format(self.index)
+        return result
 
     def save(self, *args, **kwargs):
         ret = super(AgendaItem, self).save(*args, **kwargs)

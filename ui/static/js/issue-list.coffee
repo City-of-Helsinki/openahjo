@@ -464,7 +464,7 @@ class IssueDetailsView extends IssueView
         @pm_list = opts.pm_list
         @listenTo @model.agenda_item_list, 'reset', @render
 
-    select_agenda_item: (@meeting_id) ->
+    select_agenda_item: (@meeting_id, @agenda_item_index) ->
         @render()
         return
 
@@ -474,7 +474,7 @@ class IssueDetailsView extends IssueView
             return
 
         if @meeting_id
-            @current_ai = @model.agenda_item_list.find_by_slug @meeting_id, @pm_list
+            @current_ai = @model.agenda_item_list.find_by_slug @meeting_id, @pm_list, @agenda_item_index
             if not @current_ai
                 throw "Agenda item with slug #{@meeting_id} not found"
         else
@@ -556,7 +556,17 @@ class IssueDetailsView extends IssueView
                 return true
             ai_id = $(ev.currentTarget).data 'agenda-item-id'
             ai = @model.agenda_item_list.findWhere id: ai_id
-            router.navigate "#{@model.get 'slug'}/#{ai.get_slug @pm_list}/",
+            issue_id = @model.get 'id'
+            meeting_id = ai.get('meeting').id
+            has_same_meeting = (agenda_item) =>
+                agenda_item.get('issue').id == issue_id and
+                agenda_item.get('meeting').id == meeting_id
+
+            has_many = @model.agenda_item_list.filter(has_same_meeting).length > 1
+            url = "#{@model.get 'slug'}/#{ai.get_slug @pm_list}/"
+            if has_many
+                url += "#{ai.get('index')}/"
+            router.navigate url,
                 trigger: true
                 replace: true
 
@@ -567,6 +577,7 @@ class IssueRouter extends Backbone.Router
         "kartta/": "issue_map_view"
         ":issue/": "issue_details_view"
         ":issue/:meeting/": "issue_details_view"
+        ":issue/:meeting/:index/": "issue_details_view"
 
     initialize: ->
         @current_view = null
@@ -600,10 +611,10 @@ class IssueRouter extends Backbone.Router
         @ensure_view 'search'
         @current_view.select 'map'
 
-    issue_details_view: (issue, meeting) ->
+    issue_details_view: (issue, meeting, index) ->
         model = @issue_list.findWhere slug: issue
         @ensure_view 'details', model
-        @current_view.select_agenda_item meeting
+        @current_view.select_agenda_item meeting, index
 
 
 router = new IssueRouter

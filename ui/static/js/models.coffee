@@ -81,17 +81,19 @@ class @AgendaItemList extends Backbone.Tastypie.Collection
             return ai1.get('index') - ai2.get('index')
         return -diff
 
-    find_by_slug: (slug, pm_list) ->
+    find_by_slug: (slug, pm_list, index) ->
         parts = slug.split('-')
         pm_slug = parts[0]
         year = parseInt parts[1]
         number = parseInt parts[2]
         pm = pm_list.findWhere slug: pm_slug
-        ai = @find (ai) ->
+        @find (ai) ->
             meeting = ai.get 'meeting'
             if meeting.policymaker != pm.id
                 return false
             if meeting.year != year or meeting.number != number
+                return false
+            if index? and "#{ai.get('index')}" != "#{index}"
                 return false
             return true
 

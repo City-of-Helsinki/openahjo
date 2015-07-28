@@ -99,7 +99,7 @@ def issue_list_map(request):
     args = {'title': 'Asiat kartalla', 'description': 'Tarkastele kaupungin päätöksiä kartalla.'}
     return issue_view(request, 'issue.html')
 
-def issue_details(request, slug, pm_slug=None, year=None, number=None):
+def issue_details(request, slug, pm_slug=None, year=None, number=None, index=None):
     issue = get_object_or_404(Issue, slug=slug)
 
     args = {}
@@ -111,7 +111,12 @@ def issue_details(request, slug, pm_slug=None, year=None, number=None):
             'meeting__year': year,
             'meeting__number': number
         }
-        agenda_item = get_object_or_404(AgendaItem, **filter_args)
+        if index is not None:
+            del filter_args['issue']
+            filter_args['index'] = int(index)
+            agenda_item = get_object_or_404(AgendaItem, **filter_args)
+        else:
+            agenda_item = get_object_or_404(AgendaItem, **filter_args)
         args['title'] = agenda_item.subject
         summary = agenda_item.get_summary()
     else:
@@ -143,13 +148,12 @@ def issue_details(request, slug, pm_slug=None, year=None, number=None):
 
 def policymaker_view(request, template, args={}):
     args['pm_list_json'] = get_policymakers(request)
-
     return render_view(request, template, args)
 
 def policymaker_list(request):
     return policymaker_view(request, 'policymaker.html')
 
-def policymaker_details(request, slug, year=None, number=None):
+def policymaker_details(request, slug, year=None, number=None, index=None):
     org = get_object_or_404(Organization, slug=slug)
     args = {}
 
