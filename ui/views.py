@@ -6,6 +6,7 @@ from ahjodoc.api import *
 from munigeo.api import DistrictResource
 from django.templatetags.static import static
 from django.core.urlresolvers import get_script_prefix
+from django.shortcuts import redirect
 
 # Cache the JSON encodings for some rarely changing data here.
 category_json = None
@@ -111,12 +112,22 @@ def issue_details(request, slug, pm_slug=None, year=None, number=None, index=Non
             'meeting__year': year,
             'meeting__number': number
         }
-        if index is not None:
+        if index is None:
+            try:
+                queryset = AgendaItem.objects.filter(**filter_args)
+                agenda_item = AgendaItem.objects.filter(**filter_args).first()
+                if len(queryset) > 1:
+                    # If multiple agenda items for same issue in same meeting,
+                    # redirect to first
+                    return redirect(issue_details, pm_slug=pm_slug, slug=slug, year=year,
+                        number=number, index=unicode(agenda_item.index))
+            except AgendaItem.DoesNotExist:
+                raise Http404("Agenda item not found")
+        else:
             del filter_args['issue']
             filter_args['index'] = int(index)
             agenda_item = get_object_or_404(AgendaItem, **filter_args)
-        else:
-            agenda_item = get_object_or_404(AgendaItem, **filter_args)
+
         args['title'] = agenda_item.subject
         summary = agenda_item.get_summary()
     else:
