@@ -25,6 +25,7 @@ TYPE_MAP = {
     12: 'office_holder',
     13: 'city',
     14: 'unit',
+    15: 'working_group',
 }
 
 TYPE_NAME_FI = {
@@ -42,6 +43,7 @@ TYPE_NAME_FI = {
     12: 'Viranhaltija',
     13: 'Kaupunki',
     14: 'Yksikkö',
+    15: 'Toimikunta',
 }
 
 def mark_deleted(obj):
