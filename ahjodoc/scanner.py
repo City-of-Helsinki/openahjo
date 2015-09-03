@@ -91,7 +91,7 @@ class AhjoScanner(object):
             info['doc_type'] = DOC_TYPES[info['doc_type_id']]
 
             # Fetch timestamp from directory listing
-            ts_text = link_el.getprevious().tail.split('    ')[0].strip()
+            ts_text = link_el.getprevious().tail.split('   ')[0].strip()
             time = datetime.strptime(ts_text, "%m/%d/%Y %I:%M %p")
             time = time.replace(tzinfo=local_timezone)
             info['last_modified'] = time
