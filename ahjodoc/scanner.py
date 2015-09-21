@@ -37,6 +37,8 @@ SKIP_URL_LIST = [
     'http://openhelsinki.hel.fi/files/Liikuntalautakunta_47100/Liv%202014-10-07%20LILK%2015%20El%20Su.zip', # wrong meeting id
     'http://openhelsinki.hel.fi/files/Taidemuseo_46102/Museonjohtaja_46102VH1/Taimu%202104-10-10%2046102VH1%2026%20Pk%20Su.zip', # wrong date
     'http://openhelsinki.hel.fi/files/Rakennusvirasto_52000/Tulosryhman%20johtaja_521112VH1/HKR%202014-12-16%20521112VH1%2012%20Pk%20Su.zip', # wrong date
+    'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveyslautakunta_81000/Sote%202013-06-04%20Sotelk%209%20Pk%20Su.zip', # missing attachment
+    'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveyslautakunta_81000/Sote%202013-06-04%20Sotelk%209%20El%20Su.zip', # missing attachment
 ]
 
 CHUNK_SIZE = 32*1024
