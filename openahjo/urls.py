@@ -26,7 +26,8 @@ urlpatterns = patterns('',
     # url(r'^admin/', include(admin.site.urls)),
     url(r'^', include(v1_api.urls)),
     url(r'^', include('ui.urls')),
-    url(r'^doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger')),
+    url(r'^doc/', include('tastypie_swagger.urls', namespace='tastypie_swagger'),
+        kwargs={"tastypie_api_module":"openahjo.urls.v1_api", "namespace":"tastypie_swagger"}),
 )
 
 if settings.DEBUG:
