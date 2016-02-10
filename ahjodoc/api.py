@@ -19,6 +19,7 @@ from ahjodoc.models import *
 from decisions.models import Organization
 from haystack.query import SearchQuerySet
 from haystack.utils.geo import Point as HaystackPoint
+from haystack.utils.geo import D
 
 CACHE_TIMEOUT = 600
 
@@ -257,6 +258,16 @@ class IssueResource(ModelResource):
             bottom_left = HaystackPoint(e[0], e[1])
             top_right = HaystackPoint(e[2], e[3])
             sqs = sqs.within('location', bottom_left, top_right)
+
+        distance = request.GET.get('distance', '').strip()
+        latitude = request.GET.get('lat', '').strip()
+        longitude = request.GET.get('lon', '').strip()
+        if distance and latitude and longitude:
+            haystack_point = HaystackPoint(float(longitude), float(latitude))
+            sqs = sqs.dwithin('location', haystack_point, D(m=distance))
+            if order_by:
+                sqs = sqs.order_by(order_by)
+
 
         policymaker = request.GET.get('policymaker', '').strip()
         if policymaker:
