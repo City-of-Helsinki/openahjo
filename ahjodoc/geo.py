@@ -42,8 +42,8 @@ class AhjoGeocoder(object):
             if not m:
                 continue
             street_name = m.groups()[0].lower()
-            if not street_name in self.street_hash:
-                print "Street name not found: %s" % street_name
+            if street_name not in self.street_hash:
+                print "Street name not found: %s" % street_name.encode('utf8')
                 self.no_match_addresses.append('%s %s' % (m.groups()[0], m.groups()[1]))
         textl = text.lower()
         ret = [x for x in self.street_tree.findall_long(textl)]
