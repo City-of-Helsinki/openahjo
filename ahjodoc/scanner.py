@@ -39,7 +39,6 @@ SKIP_URL_LIST = [
     'http://openhelsinki.hel.fi/files/Rakennusvirasto_52000/Tulosryhman%20johtaja_521112VH1/HKR%202014-12-16%20521112VH1%2012%20Pk%20Su.zip', # wrong date
     'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveyslautakunta_81000/Sote%202013-06-04%20Sotelk%209%20Pk%20Su.zip', # missing attachment
     'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveyslautakunta_81000/Sote%202013-06-04%20Sotelk%209%20El%20Su.zip', # missing attachment
-    'http://openhelsinki.hel.fi/files/Asuntotuotantotoimisto_60201/Toimitusjohtaja_60201VH1/Att%202016-05-16%2060201VH1%20146%20Pk%20Su.zip', # empty ZIP
 ]
 
 CHUNK_SIZE = 32*1024
@@ -94,12 +93,17 @@ class AhjoScanner(object):
             info['doc_type'] = DOC_TYPES[info['doc_type_id']]
 
             # Fetch timestamp from directory listing
-            ts_text = link_el.getprevious().tail.split('   ')[0].strip()
+            elems = link_el.getprevious().tail.split('   ')
+            ts_text = elems[0].strip()
+            file_size = int(elems[-1].strip())
             time = datetime.strptime(ts_text, "%m/%d/%Y %I:%M %p")
             time = time.replace(tzinfo=local_timezone)
             info['last_modified'] = time
 
             info['url'] = URL_BASE + link
+            if file_size < 500:
+                self.logger.warning("File too small: %s %d" % ((URL_BASE + link), file_size))
+                continue
             info['origin_id'] = self.generate_doc_id(info)
             if info['url'] in SKIP_URL_LIST:
                 self.logger.warning("Skipping document on URL skip list: %s" % info['origin_id'])
