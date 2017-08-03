@@ -2,6 +2,7 @@
 import os
 import json
 import re
+import datetime
 from dateutil.parser import parse as dateutil_parse
 from pprint import pprint
 
@@ -27,6 +28,8 @@ TYPE_MAP = {
     14: 'unit',
     15: 'working_group',
     16: 'board_jk',
+    17: 'packaged_service',
+    19: 'trustee',
 }
 
 TYPE_NAME_FI = {
@@ -46,7 +49,10 @@ TYPE_NAME_FI = {
     14: 'Yksikkö',
     15: 'Toimikunta',
     16: 'Johtokunta',
+    17: 'Palvelukokonaisuus',
+    19: 'Luottamushenkilö'
 }
+
 
 def mark_deleted(obj):
     if obj.deleted:
@@ -55,8 +61,10 @@ def mark_deleted(obj):
     obj.save(update_fields=['deleted'])
     return True
 
+
 def origin_id_to_id(origin_id):
     return 'hel:%s' % origin_id
+
 
 @register_importer
 class HelsinkiImporter(Importer):
@@ -116,47 +124,54 @@ class HelsinkiImporter(Importer):
             org['contact_details'].append(cd)
         org['modified_at'] = dateutil_parse(info['modified_time'])
 
-        parents = info['parents']
-        if parents == None:
-            parents = []
-        org['parents'] = [origin_id_to_id(x) for x in parents if x not in self.skip_orgs]
+        parent = info['parent']
+        if parent and parent not in self.skip_orgs:
+            org['parent'] = origin_id_to_id(parent)
+        else:
+            org['parent'] = None
 
         self.save_organization(org)
-
-    def _import_children(self, org):
-        if not 'children' in org:
-            return
-        for ch in org['children']:
-            self._import_organization(ch)
-        for ch in org['children']:
-            self._import_children(ch)
 
     def import_organizations(self):
         data_path = os.path.join(settings.PROJECT_ROOT, 'data')
         org_file = open(os.path.join(data_path, 'organizations.json'), 'r')
         org_list = json.load(org_file)
 
+        date_now = datetime.datetime.now().strftime('%Y-%m-%d')
+        for org in org_list:
+            org['children'] = []
+            if not org['parents']:
+                org['parent'] = None
+                del org['parents']
+                continue
+            parents = [p for p in org['parents'] if p['primary']]
+            active_parent = None
+            last_parent = parents[0]
+            for p in parents:
+                if p['end_time'] is None or p['end_time'] > date_now:
+                    active_parent = p
+                if last_parent['end_time'] and (p['end_time'] is None or p['end_time'] > last_parent['end_time']):
+                    last_parent = p
+            assert active_parent is None or last_parent == active_parent
+            del org['parents']
+            org['parent'] = last_parent['id']
+
         queryset = Organization.objects.all()
         self.skip_orgs = set()
         self.org_syncher = ModelSyncher(queryset, lambda obj: obj.id, delete_func=mark_deleted)
 
         self.org_dict = {org['id']: org for org in org_list}
-        ordered = []
-        # Start import from the root orgs, move down level by level.
-        while len(ordered) != len(org_list):
-            for org in org_list:
-                if 'added' in org:
-                    continue
-                if not org['parents']:
-                    org['added'] = True
-                    ordered.append(org)
-                    continue
-                for p in org['parents']:
-                    if not 'added' in self.org_dict[p]:
-                        break
-                else:
-                    org['added'] = True
-                    ordered.append(org)
+        roots = []
+        for org in org_list:
+            if not org['parent']:
+                roots.append(org)
+                continue
+            self.org_dict[org['parent']]['children'].append(org)
 
-        for org in ordered:
+        def import_nested(org):
             self._import_organization(org)
+            for child in org['children']:
+                import_nested(child)
+
+        for root in roots:
+            import_nested(root)

@@ -232,6 +232,8 @@ class AhjoDocument(object):
             info['type'] = 'proposal'
         elif doc_type == u'viranhaltijan päätös':
             info['type'] = 'officeholder_decision'
+        elif doc_type == u'luottamushenkilön päätös':
+            info['type'] = 'trustee_decision'
         elif doc_type:
             raise ParseError("Invalid item type: %s" % doc_type)
 

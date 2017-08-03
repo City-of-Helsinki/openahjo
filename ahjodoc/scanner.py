@@ -15,10 +15,14 @@ SKIP_DOC_LIST = [
     'Opev_SKJ_2013-2_El',
     'HKR_Ytlk_2013-18_El',
     'Ymk_Ylk_2013-1_El',
-    'Ork_Orkjk_2014-4_Pk', # HEL 2014-011315 processed twice
-    'Rakpa_Tplk_2013-1_Pk', # KuvailutiedotOpenDocument missing
-    'Halke_Khs_2012-27_Pk', # Attachment missing
-    'Halke_Khs_2012-26_Pk', # Attachment missing
+    'Ork_Orkjk_2014-4_Pk',  # HEL 2014-011315 processed twice
+    'Rakpa_Tplk_2013-1_Pk',  # KuvailutiedotOpenDocument missing
+    'Halke_Khs_2012-27_Pk',  # Attachment missing
+    'Halke_Khs_2012-26_Pk',  # Attachment missing
+    'HKL_75001VH1_2016-44_Pk',
+    'Opev_4009211VH1_2015-18_Pk',  # Invalid attachment
+    'Rakpa_Tplk_2014-11_Pk',  # KuvailutiedotOpenDocument missing
+    'Kymp_U51105100VH1_2017-21_Pk',  # KuvailutiedotOpenDocument missing
 ]
 
 SKIP_URL_LIST = [
@@ -41,9 +45,11 @@ SKIP_URL_LIST = [
     'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveyslautakunta_81000/Sote%202013-06-04%20Sotelk%209%20El%20Su.zip', # missing attachment
 ]
 
+
 CHUNK_SIZE = 32*1024
 
 URL_BASE = "http://openhelsinki.hel.fi"
+
 
 class AhjoScanner(object):
     def __init__(self, verbosity=1):
@@ -53,6 +59,9 @@ class AhjoScanner(object):
         self.logger.setLevel(logging.INFO)
 
     def scan_dir(self, path, policymaker_id):
+        if path.endswith('.zip/'):
+            self.logger.warning("Directory ends with .zip: %s" % path)
+            return []
         r = requests.get(URL_BASE + path)
         if r.status_code != 200:
             raise Exception("Failed to read directory '%s'" % path)
@@ -79,6 +88,9 @@ class AhjoScanner(object):
             if len(fields) == len(FIELD_NAMES) - 1:
                 self.logger.warning("Language field missing in %s" % ' '.join(fields))
                 fields.append('Su')
+            if len(fields) != len(FIELD_NAMES):
+                self.logger.warning("Invalid filename: %s" % fname)
+                continue
             for idx, f in enumerate(FIELD_NAMES):
                 info[f] = fields[idx]
             info['meeting_nr'] = int(info['meeting_nr'])

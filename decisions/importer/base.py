@@ -107,13 +107,17 @@ class Importer(object):
 
         obj._changed_fields = []
 
-        skip_fields = ['id', 'contact_details', 'parents']
+        skip_fields = ['id', 'contact_details', 'parents', 'parent']
         self._update_fields(obj, info, skip_fields)
+        self._set_field(obj, 'parent_id', info['parent'])
 
         if obj._created or obj._changed_fields:
             obj.save()
 
-        self._update_m2m(obj, 'parents', info['parents'])
+        parents = []
+        if info['parent']:
+            parents.append(info['parent'])
+        self._update_m2m(obj, 'parents', parents)
 
         if obj._changed_fields or obj._created:
             if obj._created:
@@ -127,6 +131,7 @@ class Importer(object):
         return
 
 importers = {}
+
 
 def register_importer(klass):
     importers[klass.name] = klass

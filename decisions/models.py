@@ -19,6 +19,7 @@ class Organization(popolo_models.Organization):
         ('introducer', _('Introducer')),
         ('introducer_field', _('Introducer (Field)')),
         ('office_holder', _('Office holder')),
+        ('trustee', _('Trustee')),
         ('city', _('City')),
         ('unit', _('Unit')),
     )

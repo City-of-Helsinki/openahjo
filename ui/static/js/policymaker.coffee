@@ -27,6 +27,7 @@ class PolicymakerListNavView extends Backbone.View
             {name: 'Kaupunginhallitus', category: 'board'}
             {name: 'Lautakunnat', category: 'committee'}
             {name: 'Jaostot', category: 'board_division'}
+            {name: 'Luottamushenkilöt', category: 'trustee'}
             {name: 'Viranhaltijat', category: 'office_holder'}
         ]
         @$el.empty()
@@ -145,6 +146,9 @@ class PolicymakerListView extends Backbone.View
 
         committees = _.filter active, (m) -> m.get_category() in ['committee', 'board_division']
         @render_pm_section committees, "Lautakunnat ja jaostot", false, 'committee'
+
+        trustees = _.filter active, (m) -> m.get_category() == 'trustee'
+        @render_pm_section trustees, "Luottamushenkilöt", true, 'trustee'
 
         office_holders = _.filter active, (m) -> m.get_category() == 'office_holder'
         @render_pm_section office_holders, "Viranhaltijat", true, 'office_holder'

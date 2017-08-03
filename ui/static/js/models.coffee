@@ -166,7 +166,7 @@ class @Policymaker extends Backbone.Tastypie.Model
     get_category: ->
         abbrev = @get('abbreviation')
         ALLOWED_TYPES = ['board', 'division', 'council', 'board_division',
-                         'office_holder', 'committee']
+                         'office_holder', 'trustee', 'committee']
         if @get('org_type') in ALLOWED_TYPES
             return @get 'org_type'
         else
