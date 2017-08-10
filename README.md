@@ -1,3 +1,6 @@
+[![Build status](https://travis-ci.org/City-of-Helsinki/openahjo.svg)](https://travis-ci.org/City-of-Helsinki/openahjo)
+[![codecov](https://codecov.io/gh/City-of-Helsinki/openahjo/branch/master/graph/badge.svg)](https://codecov.io/gh/City-of-Helsinki/openahjo)
+
 OpenAhjo API
 ============
 

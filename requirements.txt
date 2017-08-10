@@ -1,13 +1,13 @@
 requests>=2.2.0
 requests-cache
 lxml
-progressbar
+progressbar33
 psycopg2
 Django
 django-tastypie
 pytz
 django_compressor
-BeautifulSoup
+BeautifulSoup4
 django-cors-headers
 -e git+https://github.com/juyrjola/NoAho.git#egg=NoAho
 django-mptt
