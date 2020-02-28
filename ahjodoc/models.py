@@ -89,7 +89,7 @@ class MeetingDocument(models.Model):
 
     last_modified_time = models.DateTimeField(help_text='Time when the meeting information last changed')
     publish_time = models.DateTimeField(help_text='Time when the meeting document was scheduled for publishing')
-    origin_url = models.URLField(help_text='Link to the upstream file', max_length=300)
+    origin_url = models.URLField(help_text='Link to the upstream file', max_length=350)
     xml_file = models.FileField(upload_to=settings.AHJO_PATHS['xml'])
 
 class Category(MPTTModel):
