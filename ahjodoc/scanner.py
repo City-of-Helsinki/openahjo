@@ -23,9 +23,26 @@ SKIP_DOC_LIST = [
     'Opev_4009211VH1_2015-18_Pk',  # Invalid attachment
     'Rakpa_Tplk_2014-11_Pk',  # KuvailutiedotOpenDocument missing
     'Kymp_U51105100VH1_2017-21_Pk',  # KuvailutiedotOpenDocument missing
+    'KUVA_U480400VH1_2017-33_Pk',  # Liiteteksti empty
+# Disabled all these ignores, as the importer was modified to ignore
+# missing attachments instead of exploding VK/20180410
+#    'Kasko_U42030050VH1_2018-46_Pk',  # Attachment missing
+#    'Kasko_U420300506010VH1_2018-4_Pk',  # Attachment missing
+#    'Kasko_U420300VH1_2018-20_Pk',  # Attachment missing
+#    'Kasko_U42030030VH1_2018-4_Pk',
+#    'Kasko_Skju_2018-3_El',
+#    'Kasko_Kklku_2018-4_El',
+#    'Keha_Eja_2018-3_Pk',
+#    'Keha_Eja_2018-4_Pk',
+#    'Keha_Koja_2018-4_El',
+#    'Keha_Khs_2018-10_Pk',
+#    'Keha_Khs_2018-11_El'
 ]
 
 SKIP_URL_LIST = [
+    'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveystoimiala_U320200/Hallinto_U32020040/Asiakasmaksupaallikko_U320200403030VH1/Sote%202018-10-03%20U320200403030VH1%201%20Pk%20Su.zip',
+    'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveystoimiala_U320200/Sairaala-,%20kuntoutus-%20ja%20hoivapalvelut%20-palvelukokonaisuus_U32020030/Palvelualueen%20johtaja_U3202003030VH1/Sote%202019-10-15%20U3202003030VH1%2015%20Pk%20Su.zip',
+    'http://openhelsinki.hel.fi/files/Kaupunkiympariston%20toimiala_U541000/Maankaytto%20ja%20kaupunkirakenne%20-palvelukokonaisuus_U51105100/Tiimipaallikko%20maanhankinta_U511051003010VH2/Kymp%202019-10-25%20U511051003010VH2%2016%20Pk%20Su.zip',
     'http://openhelsinki.hel.fi/files/Taloushallintopalvelu-liikelaitoksen%20jk_71900/Talpa%202013-05-28%20Talpajk%203%20El%20Su.zip', # Duplicate
     'http://openhelsinki.hel.fi/files/Kaupunginhallituksen%20konsernijaosto_02978/Halke%202013-08-26%20Koja%2011%20El%20Su.zip', # Wrong meeting id
     'http://openhelsinki.hel.fi/files/Kaupunginhallituksen%20konsernijaosto_02978/Halke%202013-08-26%20Koja%2011%20Pk%20Su.zip', # Wrong meeting id
@@ -59,10 +76,14 @@ class AhjoScanner(object):
         self.logger.setLevel(logging.INFO)
 
     def scan_dir(self, path, policymaker_id):
+        self.logger.debug("Scanning path: %s, for policymaker: %s" % (path, policymaker_id))
         if path.endswith('.zip/'):
             self.logger.warning("Directory ends with .zip: %s" % path)
             return []
         r = requests.get(URL_BASE + path)
+        if r.status_code == 500:
+            self.logger.warning("Trying to retrieve directory listing for '%s' in %s caused error 500. Ignoring directory" % (path, URL_BASE))
+            return []
         if r.status_code != 200:
             raise Exception("Failed to read directory '%s'" % path)
         root = html.fromstring(r.content)
