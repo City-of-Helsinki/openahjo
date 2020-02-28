@@ -1,8 +1,9 @@
 import os
+
 from ahjodoc.models import Attachment
 
 att_list = set(list(Attachment.objects.values_list('hash', flat=True)))
-root_path = 'media/att'
+root_path = '../media/att'
 l1_dir = os.listdir(root_path)
 to_remove = set()
 for l1d in l1_dir:
