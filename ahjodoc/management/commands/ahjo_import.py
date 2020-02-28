@@ -134,7 +134,16 @@ class Command(BaseCommand):
                     obj.hash = None
                     obj.save()
                     continue
-                adoc.extract_zip_attachment(att, self.attachment_path)
+                try:
+                    adoc.extract_zip_attachment(att, self.attachment_path)
+                except ParseError as e:
+                    # Typical case for ParseError is missing attachment, although
+                    # it could also be unknown extension or size mismatch with
+                    # zipfile metadata
+                    # We just log the exception message returned from adoc and move on
+                    # FIXME, add status flag for this
+                    self.logger.warning(e)
+                    continue
                 obj.public = True
                 obj.file = os.path.join(settings.AHJO_PATHS['attachment'], att['file'])
                 obj.file_type = att['type']
@@ -202,7 +211,12 @@ class Command(BaseCommand):
         try:
             policymaker = Policymaker.objects.get(origin_id=info['policymaker_id'])
         except Policymaker.DoesNotExist:
-            org = Organization.objects.get(origin_id=info['policymaker_id'])
+            try:
+                org = Organization.objects.get(origin_id=info['policymaker_id'])
+            except Organization.DoesNotExist:
+                print "While trying to create a new policymaker %s, we could not find their organization" % info['policymaker_id']
+                print "This happened while trying to import document %s. Ignoring document." % origin_id
+                return
             print "Creating new policymaker for %s" % org
             args = {'name': org.name_fi, 'abbreviation': org.abbreviation,
                     'type': org.type, 'origin_id': info['policymaker_id']}
