@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from django.http import Http404
 from django.shortcuts import render_to_response, get_object_or_404
 from django.conf import settings
 from ahjodoc.models import *
@@ -113,16 +114,15 @@ def issue_details(request, slug, pm_slug=None, year=None, number=None, index=Non
             'meeting__number': number
         }
         if index is None:
-            try:
-                queryset = AgendaItem.objects.filter(**filter_args)
-                agenda_item = AgendaItem.objects.filter(**filter_args).first()
-                if len(queryset) > 1:
-                    # If multiple agenda items for same issue in same meeting,
-                    # redirect to first
-                    return redirect(issue_details, pm_slug=pm_slug, slug=slug, year=year,
-                        number=number, index=unicode(agenda_item.index))
-            except AgendaItem.DoesNotExist:
+            queryset = AgendaItem.objects.filter(**filter_args)
+            agenda_item = AgendaItem.objects.filter(**filter_args).first()
+            if len(queryset) == 0:
                 raise Http404("Agenda item not found")
+            if len(queryset) > 1:
+                # If multiple agenda items for same issue in same meeting,
+                # redirect to first
+                return redirect(issue_details, pm_slug=pm_slug, slug=slug, year=year,
+                    number=number, index=unicode(agenda_item.index))
         else:
             del filter_args['issue']
             filter_args['index'] = int(index)
