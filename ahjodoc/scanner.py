@@ -40,6 +40,8 @@ SKIP_DOC_LIST = [
 ]
 
 SKIP_URL_LIST = [
+    # too few XMLs in zip
+    'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveystoimiala_U320200/Terveys-%20ja%20paihdepalvelut%20-palvelukokonaisuus_U32020020/Terveys-%20ja%20paihdepalvelujen%20johtaja_U32020020VH1/Sote%202021-01-13%20U32020020VH1%203%20Pk%20Su.zip',
     # too many XMLs in zip
     'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveystoimiala_U320200/Terveys-%20ja%20paihdepalvelut%20-palvelukokonaisuus_U32020020/Psykiatria-%20ja%20paihdepalvelujen%20johtaja_U3202002030VH1/Sote%202021-01-08%20U3202002030VH1%202%20Pk%20Su.zip',
     'http://openhelsinki.hel.fi/files/Sosiaali-%20ja%20terveystoimiala_U320200/Hallinto_U32020040/Asiakasmaksupaallikko_U320200403030VH1/Sote%202018-10-03%20U320200403030VH1%201%20Pk%20Su.zip',
