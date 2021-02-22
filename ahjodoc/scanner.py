@@ -69,7 +69,7 @@ SKIP_URL_LIST = [
 
 CHUNK_SIZE = 32*1024
 
-URL_BASE = "http://openhelsinki.hel.fi"
+URL_BASE = "https://openhelsinki.hel.fi"
 
 
 class AhjoScanner(object):
