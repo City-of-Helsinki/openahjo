@@ -27,6 +27,7 @@
 00 03,Tarkastustoimi
 00 03 00,Hallinnon ja talouden tarkastus
 00 03 01,Sisäinen tarkastus
+00 03 02,Sidonnaisuusilmoituksien valvonta
 00 04,Viestintä ja edustaminen
 00 04 00,Viestinnän ja tiedottamisen järjestäminen ja toteuttaminen
 00 04 01,Julkaisutoiminta
